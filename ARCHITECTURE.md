@@ -168,6 +168,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 | `/orders/$orderId` | `_auth/orders.$orderId.tsx` | ✅ | — (confirmação/recibo) |
 | `/login` | `login.tsx` | só anônimo | `redirect?`, `intent?` |
 | `/register` | `register.tsx` | só anônimo | `redirect?`, `intent?` |
+| `/favorites` | `_auth/favorites.tsx` | ✅ | — (lista de favoritos; Tab Bar mobile e "Lista de interesse") |
 | `/account/profile` | `_auth/account.profile.tsx` | ✅ | — |
 | `/account/wallets` | `_auth/account.wallets.tsx` | ✅ | — |
 | `/tx/$hash` | `_auth/tx.$hash.tsx` | ✅ (dono) | — (explorador simulado; 404 para os demais) |

@@ -2,9 +2,14 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { http } from '@/lib/http'
+import { catalogSearchSchema } from '@/features/catalog/search'
 import { createSocket } from '@/lib/socket'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  validateSearch: catalogSearchSchema,
+  head: () => ({ meta: [{ title: 'Kurio — Marketplace de NFTs' }] }),
+  component: Home,
+})
 
 function Home() {
   const health = useQuery({
@@ -32,10 +37,10 @@ function Home() {
   }, [])
 
   return (
-    <main className="mx-auto max-w-xl p-4">
+    <div className="mx-auto max-w-page px-4 py-8 lg:px-0">
       <h1 className="text-3xl font-bold">NFT Marketplace</h1>
       <p data-testid="api-status">API: {health.data?.status ?? (health.isError ? 'error' : 'loading')}</p>
       <p data-testid="socket-status">Realtime: {realtime}</p>
-    </main>
+    </div>
   )
 }
