@@ -13,13 +13,14 @@ Janela: **21/10 18:40 → 22/10 18:40**. Meta: entregar todos os eliminatórios 
 | E6 | E2E executáveis | `npm run test:e2e` verde a partir de checkout limpo |
 | — | Deploy público | Vercel, SPA rewrite, mocks ligados no build |
 
-## 2. Bloqueio atual
-- **Figma**: o MCP retornou "sem acesso de edição" (`Ff0SksUi7UFtPWUO8kyNtw`). Fidelidade visual vale 20 pts. **Ação do usuário:** duplicar o arquivo para os próprios drafts (Figma → Duplicate) e me passar a nova URL, ou exportar os frames/assets (PNG + tokens). Até lá: estrutura, dados e fluxos sem pixel-perfect.
+## 2. Figma
+- Fonte: cópia nos drafts (conta Yungas Pro, acesso via MCP) — file key `uweCCvGGvM7N1rQTFUjwQ3`, página `0:1` "Marketplace de NFTs GreenMint". Não mover para projeto de time.
+- Saída da extração: `docs/DESIGN.md` (inventário + tokens + mapa de componentes) e `public/assets/` (assets otimizados). É insumo dos contratos (B2) e da fidelidade (B7).
 
 ## 3. Pontuação × esforço
 | Critério | Pts | Prioridade |
 |---|---:|---|
-| Visual/responsivo | 20 | Alta (depende do Figma) |
+| Visual/responsivo | 20 | Alta (Figma extraído no B1a) |
 | Fluxos/UX | 20 | Alta |
 | Integração/estado | 15 | Alta (base de tudo) |
 | Tempo real | 10 | Média-alta |
@@ -33,8 +34,9 @@ Janela: **21/10 18:40 → 22/10 18:40**. Meta: entregar todos os eliminatórios 
 | Bloco | Horário | Entregas | Pronto quando |
 |---|---|---|---|
 | B0 ✅ | 18:40–19:30 | Scaffold, stack instalada, smoke E2E, contexto, segurança base | `typecheck`/`build`/`test:e2e` verdes |
-| B1 | 19:30–20:30 | **Deploy Vercel** (SPA rewrite + CSP validada), layout base (header/footer/nav mobile), tokens do Figma | URL pública abre `/` e rota direta com refresh |
-| B2 | 20:30–23:00 | **Fundação de dados**: `contracts/` (zod), MSW db com persistência (localStorage) + reset, cenários (`?scenario=` / painel dev), latência/falhas configuráveis, fixtures (≥40 NFTs, 2 usuários, edições), money utils | handlers de todos os recursos (§5 do enunciado) respondendo com erros tipados |
+| B1a | 19:30–20:30 | **Extração do Figma**: inventário de frames (tela × desktop/mobile), campos/dados exibidos por tela (→ modelo dos contratos), tokens (cores, tipografia, espaçamento, raio, sombras, breakpoints), assets (download + otimização), mapa componente Figma → shadcn/app, idioma do layout (→ `lang`), estados não desenhados a derivar | `docs/DESIGN.md` + `public/assets/` |
+| B1b | 20:30–21:15 | **Tokens no tema** (`index.css`/shadcn), fontes self-hosted, layout base (header/footer/nav mobile) fiel ao Figma, **deploy Vercel** (SPA rewrite + CSP validada) + Lighthouse inicial | URL pública abre `/` e rota direta com refresh |
+| B2 | 21:15–23:00 | **Fundação de dados**: `contracts/` (zod), MSW db com persistência (localStorage) + reset, cenários (`?scenario=` / painel dev), latência/falhas configuráveis, fixtures (≥40 NFTs, 2 usuários, edições), money utils | handlers de todos os recursos (§5 do enunciado) respondendo com erros tipados |
 | B3 | 23:00–02:00 | **Auth + conta**: cadastro (409), login, sessão (refresh), expiração, logout/troca de usuário, guarda de rotas com `redirect`, perfil (avatar, senha), carteiras | Fluxos de conta ponta a ponta |
 | B4 | 02:00–05:00 | **Catálogo + detalhe**: destaques, busca/filtros/ordenação/paginação na URL, skeletons, vazio/erro/retry, respostas fora de ordem (abort signal + keys), detalhe (galeria, edição, quantidade, 404, esgotado), favoritos com **update otimista + rollback** | Testes E2E 1, 2, 4 |
 | — | 05:00–09:00 | Descanso (não pular: qualidade cai) | |
@@ -79,7 +81,7 @@ Embutido em cada bloco; B7 faz a passada final. Evidência: `e2e/a11y.spec.ts` (
 - B9: `npm audit --omit=dev`, revisar diff por segredos, validar headers no deploy.
 
 ## 8. Riscos
-- Figma sem acesso → ver §2.
+- Figma: nome do arquivo da cópia diverge ("Kurio-v1 (Copy)"); conferir que é o mesmo conteúdo do original.
 - `@mswjs/socket.io-binding` 0.2: sem rooms/namespaces; handshake no microtask (só emitir após o cliente falar). Transporte apenas `websocket`.
 - Lighthouse com MSW: worker adiciona JS no boot → medir cedo (B1) para não ser surpresa.
 - Tempo: blocos B5/B6 são os mais densos; começar o B6 pelos contratos de pedido já no B2.
