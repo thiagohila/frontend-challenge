@@ -2,7 +2,8 @@
 
 Desafio frontend com prazo de 24h (início 2026-10-21 18:40, entrega 2026-10-22 18:40).
 - Enunciado: `docs/CHALLENGE.md` (é a fonte da verdade; o `README.md` vira o README da solução).
-- Plano/prioridades: `docs/PLAN.md`. Segurança: `docs/SECURITY.md`.
+- **O quê**: `docs/REQUIREMENTS.md` — matriz requisito → bloco → teste. Atualize o status ao fechar cada bloco; nada é "pronto" sem teste/evidência.
+- Plano/prioridades: `docs/PLAN.md`. Segurança: `docs/SECURITY.md`. Design: `docs/DESIGN.md`.
 - **Arquitetura (normativa, seguir sempre): `ARCHITECTURE.md`** — camadas, contratos, keys, sessão, realtime, mocks.
 
 ## Modo de trabalho
@@ -11,25 +12,18 @@ Desafio frontend com prazo de 24h (início 2026-10-21 18:40, entrega 2026-10-22 
 - Priorize os eliminatórios (`docs/PLAN.md` §1) antes de polir.
 
 ## Stack (obrigatória, uso efetivo)
-React 19 + TS strict · Vite 8 · TanStack Router (file-based, `src/routes`) · TanStack Query · Axios (`src/lib/http.ts`) · socket.io-client (`src/lib/socket.ts`) · Tailwind v4 · shadcn/ui (radix-nova, `src/components/ui`) · MSW 2 + `@mswjs/socket.io-binding` (`src/mocks`) · Playwright (`e2e/`) · Lighthouse (`scripts/lighthouse.mjs`). Formulários: react-hook-form + zod. Dinheiro: `decimal.js`.
+React 19 + TS strict · Vite 8 · TanStack Router (file-based, `src/routes`) · TanStack Query · Axios (`src/lib/http.ts`) · socket.io-client (`src/lib/realtime/`) · Tailwind v4 · shadcn/ui (radix-nova, `src/components/ui`) · MSW 2 + `@mswjs/socket.io-binding` (`src/mocks`) · Playwright (`e2e/`) · Lighthouse (`scripts/lighthouse.mjs`). Formulários: react-hook-form + zod. Dinheiro: `decimal.js`.
 
 ## Comandos (Node ≥22 — `nvm use`; o shell padrão é v18)
-`npm run dev` · `build` · `preview` · `typecheck` · `lint` · `test:e2e` · `test:e2e:update` · `lighthouse` · `audit:deps`
+`npm run dev` · `build` · `preview` · `typecheck` · `lint` · `test:e2e` · `test:e2e:update` · `test:e2e:docker` (VIS/Linux) · `lighthouse` · `audit:deps`
 
-## Estrutura alvo
-```
-src/
-  routes/            # rotas TanStack (file-based); routeTree.gen.ts é gerado e versionado
-  features/<domínio>/ # api.ts (axios + tipos), queries.ts (queryOptions/mutations), components/
-  components/ui/     # shadcn (não editar à mão sem motivo)
-  components/        # componentes compartilhados do app
-  lib/               # http, query-client, socket, money, zod-resolver
-  contracts/         # schemas zod + tipos compartilhados entre app e mocks
-  mocks/             # MSW: handlers/, db (estado + persistência), scenarios, socket
-e2e/                 # Playwright specs + fixtures
-```
+## Estrutura
+Ver `ARCHITECTURE.md` §2 (camadas e regra de dependência) e §3 (pastas). Não duplicar aqui.
 
 ## Regras
+- Lint bloqueia import de `@/mocks` fora de `src/main.tsx`/`src/mocks`.
+- `npm run lighthouse` precisa rodar fora do sandbox do agente (o Chrome abre uma porta de debug).
+- Testes visuais: baselines Linux via `npm run test:e2e:docker`.
 - **Zero dado fictício fora de `src/mocks`.** Componentes/hooks/axios nunca têm caminho alternativo de mock.
 - **Tempo real só via socket.io-client**; nunca simular eventos chamando setters/cache direto.
 - Contratos em `src/contracts` (zod) usados por app **e** mocks.

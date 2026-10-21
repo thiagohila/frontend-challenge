@@ -13,7 +13,10 @@ Escopo: SPA com backend 100% simulado (MSW). Mesmo assim, tratamos como produç�
 - Token de sessão opaco gerado pelo mock, com expiração. Política: token em memória + `sessionStorage` para sobreviver a refresh (trade-off documentado: num backend real seria cookie `HttpOnly; Secure; SameSite=Lax`).
 - 401 → limpa sessão, preserva rota de retorno (`redirect` validado como caminho interno, sem open redirect).
 - Logout / troca de usuário: `queryClient.clear()`, desconectar socket, remover listeners, limpar storages privados. Eventos de socket são descartados se `userId`/`sessionId` não batem com a sessão atual.
-- Isolamento: query keys privadas incluem `userId`; handlers MSW filtram sempre pelo usuário do token (nunca por id vindo do cliente).
+- Isolamento: query keys privadas incluem `userId`; handlers MSW filtram sempre pelo usuário do token (nunca por id vindo do cliente); recurso de outro usuário → 404.
+- O storage `msw-server-db:v1` é o "banco" do servidor simulado e contém todos os usuários, como um backend teria. O app nunca o lê. Não é vazamento entre usuários; isso fica documentado no README.
+- Storages do app (`sessionStorage`: token, idempotency keys, rascunho do checkout) usam chave com namespace por `userId` e são limpos no logout/troca.
+- `redirect`/`intent` pós-login validados por schema (path interno + allowlist de ações).
 
 ## Entrada e saída
 - Todo formulário e todo search param validados com zod; respostas da API parseadas por schema.
