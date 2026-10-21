@@ -80,10 +80,7 @@ export type IconName =
   | 'social-twitter'
   | 'social-youtube'
 
-export type ArtName =
-  | 'emerald-ape'
-  | 'golden-beat'
-  | 'ivory-baron'
-  | 'sage-nomad'
+export const ART_NAMES = ["emerald-ape","golden-beat","ivory-baron","sage-nomad"] as const
+export type ArtName = (typeof ART_NAMES)[number]
 
 export const ART_WIDTHS = [256,512,900] as const
