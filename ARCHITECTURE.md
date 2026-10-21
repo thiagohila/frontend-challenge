@@ -292,4 +292,13 @@ Preenchido durante a implementação (obrigatório na entrega, D6).
 - Alterações de preço/estoque: aviso inline + `aria-live`, com nova confirmação obrigatória no checkout.
 ### Desvios do Figma
 Detalhe e inventário em `docs/design/DESIGN.md`; **todo desvio fica registrado aqui** (exigência do enunciado §12):
-- _(registrar aqui cada ajuste: asset substituído, contraste corrigido, estado não desenhado)_
+| Desvio | Motivo |
+|---|---|
+| Borda de inputs/controles/paginação/chips `#3F2319` → `--control-border` `#8A6A4A` (≥3:1 sobre ink e card) | `#3F2319` dá 1.34:1, abaixo dos 3:1 da WCAG 1.4.11. Divisórias decorativas mantêm `#3F2319` |
+| Texto do "Aplicar" do cupom mobile: foreground → ink | foreground sobre primary dá 2.50:1 |
+| Cor de erro coral `#F0805F` (não existe no Figma), sempre com ícone e texto | o design não tem estado de erro; 7.29:1 sobre ink |
+| Estados ativos (filtro, sidebar, edição) ganham indicador além da cor (check/borda/peso, `aria-pressed`/`aria-current`) | WCAG 1.4.1 |
+| Texto de 9 px (chip de carteiras) → 11 px; badge do carrinho 10 px → 11 px | legibilidade |
+| Header logado, tablet (768), mobile de Confirmação/Perfil/Carteiras, skeleton, toast, vazio/erro/404 | não desenhados; derivados dos padrões existentes (DESIGN.md §7) |
+| Conteúdo inconsistente do Figma (token IDs, somas do carrinho, "Contrato"/"Direitos autorais" trocados) não copiado | os valores vêm da API simulada (DESIGN.md §9.3) |
+| 4 artes para todos os NFTs, reutilizadas nas fixtures; servidas em AVIF/WebP com `srcset` | só existem 4 artes no Figma (PNG ~2 MB) |

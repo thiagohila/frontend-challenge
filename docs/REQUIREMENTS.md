@@ -17,8 +17,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Escopo, telas e fluxos (§1, §3)
 | ID | Requisito | Bloco | Teste/Evidência | St |
 |---|---|---|---|---|
-| S1 | Frames desktop e mobile do Figma | B1a, B7 | VIS desktop+mobile | ☐ |
-| S2 | Estados não desenhados no mesmo padrão visual | B1a (lista), B7 | DESIGN.md "estados derivados" | ☐ |
+| S1 | Frames desktop e mobile do Figma | B1a, B7 | VIS desktop+mobile | ◐ |
+| S2 | Estados não desenhados no mesmo padrão visual | B1a (lista), B7 | DESIGN.md "estados derivados" | ◐ |
 | S3 | Blockchain/carteira/pagamento só simulados | B2 | ARCHITECTURE §10 | ☐ |
 | S4 | Início: destaques, catálogo, busca, filtros, ordenação, navegação ao NFT | B4 | T1 | ☐ |
 | S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ☐ |
@@ -30,7 +30,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S11 | Perfil: dados, avatar, senha | B6b | T8 | ☐ |
 | S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☐ |
 | S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ☐ |
-| S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ☐ |
+| S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ◐ |
 
 ## Catálogo e detalhe (§3)
 | ID | Requisito | Bloco | Teste | St |
@@ -140,7 +140,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | U8 | Contraste; estado não só por cor | B7 | AXE | ☐ |
 | U9 | Feedback acessível de mutations e realtime | B4–B6 | T11 (`aria-live`) | ☐ |
 | U10 | Sem overflow horizontal; zoom sem perda | B7 | `layout.spec` (320px ≈ zoom 400%) | ☐ |
-| U11 | Assets do Figma locais; substituições documentadas | B1a, B1b | DESIGN.md + ARCHITECTURE §15 | ☐ |
+| U11 | Assets do Figma locais; substituições documentadas | B1a, B1b | DESIGN.md + ARCHITECTURE §15 | ◐ |
 
 ## Testes (§9)
 | ID | Requisito | Bloco | St |

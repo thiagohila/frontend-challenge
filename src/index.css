@@ -15,11 +15,15 @@
     --color-surface-dark: var(--surface-dark);
     --color-border-soft: var(--border-soft);
     --color-text-primary: var(--text-primary);
+    --color-control-border: var(--control-border);
     --color-text-secondary: var(--text-secondary);
     --color-text-accent: var(--text-accent);
     --color-brand-secondary: var(--brand-secondary);
     --color-elevated: var(--background-elevated);
     --color-success: var(--success);
+    --color-surface-raised: var(--surface-raised);
+    --color-coral: var(--coral);
+    --color-amber: var(--amber);
     --container-page: 75rem; /* 1200px content width */
     --animate-shimmer: shimmer 1.6s linear infinite;
     --color-sidebar-ring: var(--sidebar-ring);
@@ -74,7 +78,12 @@
     --text-accent: #e89b55;
     --brand-secondary: #b39463;
     --background-elevated: #fbfbfb;
-    --success: #8cc084;
+    --success: #00a66c;
+    --surface-raised: #2f1d15;
+    --coral: #f0805f;
+    --amber: #e3a44e;
+    /* a11y deviation: Figma borders (#3f2319 = 1.34:1) fail WCAG 1.4.11 for inputs/controls */
+    --control-border: #8a6a4a;
 
     --background: var(--ink);
     --foreground: var(--text-primary);
@@ -90,9 +99,9 @@
     --muted-foreground: var(--text-secondary);
     --accent: var(--surface-dark);
     --accent-foreground: var(--text-accent);
-    --destructive: #f07167;
+    --destructive: var(--coral);
     --border: #3f2319;
-    --input: var(--border-soft);
+    --input: var(--control-border);
     --ring: var(--text-accent);
     --chart-1: #d28a4c;
     --chart-2: #b39463;
