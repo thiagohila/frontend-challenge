@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* Figma reference code lives in docs/ and design-src/; never scan it for classes */
+@source not "../docs";
+@source not "../design-src";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/roboto-mono";
