@@ -14,14 +14,20 @@ function Home() {
   const [realtime, setRealtime] = useState('connecting')
 
   useEffect(() => {
-    const socket = createSocket()
-    socket.on('connect', () => socket.emit('hello'))
-    socket.on('ready', () => setRealtime('ok'))
-    socket.connect()
+    let socket: Awaited<ReturnType<typeof createSocket>> | undefined
+    let cancelled = false
+    createSocket().then((s) => {
+      if (cancelled) return
+      socket = s
+      s.on('connect', () => s.emit('hello'))
+      s.on('ready', () => setRealtime('ok'))
+      s.connect()
+    })
     return () => {
-      socket.off('connect')
-      socket.off('ready')
-      socket.disconnect()
+      cancelled = true
+      socket?.off('connect')
+      socket?.off('ready')
+      socket?.disconnect()
     }
   }, [])
 

@@ -31,6 +31,18 @@
             ],
             "message": "App code must not import mocks (only main.tsx boots MSW)."
           }
+        ],
+        "paths": [
+          {
+            "name": "socket.io-client",
+            "importNames": [
+              "io",
+              "default",
+              "connect",
+              "Manager"
+            ],
+            "message": "Import socket.io-client only via dynamic import in src/lib/socket.ts / src/lib/realtime (must load after MSW patches WebSocket)."
+          }
         ]
       }
     ]
@@ -49,6 +61,15 @@
       "files": [
         "src/main.tsx",
         "src/mocks/**"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    },
+    {
+      "files": [
+        "src/lib/socket.ts",
+        "src/lib/realtime/**"
       ],
       "rules": {
         "no-restricted-imports": "off"
