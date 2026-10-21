@@ -3,6 +3,7 @@
 Desafio frontend com prazo de 24h (início 2026-10-21 18:40, entrega 2026-10-22 18:40).
 - Enunciado: `docs/CHALLENGE.md` (é a fonte da verdade; o `README.md` vira o README da solução).
 - Plano/prioridades: `docs/PLAN.md`. Segurança: `docs/SECURITY.md`.
+- **Arquitetura (normativa, seguir sempre): `ARCHITECTURE.md`** — camadas, contratos, keys, sessão, realtime, mocks.
 
 ## Modo de trabalho
 - Seja sucinto e pragmático. Nada de verbosidade.
