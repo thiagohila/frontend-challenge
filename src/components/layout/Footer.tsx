@@ -1,9 +1,16 @@
 import { Link } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
 import { t } from '@/i18n'
-import { comingSoonProps } from './coming-soon'
+import { iconSrc, type IconName } from '@/lib/assets'
+import { ComingSoon } from './ComingSoon'
 
-const SOCIAL_ICONS = ['social-facebook', 'social-instagram', 'social-twitter', 'social-linkedin', 'social-youtube']
-const COLLECTION_SLUGS = ['arte-digital', 'fotografia', 'musica', 'arte-3d', 'utilidade']
+const SOCIAL: readonly { name: string; icon: IconName }[] = [
+  { name: 'Facebook', icon: 'social-facebook' },
+  { name: 'Instagram', icon: 'social-instagram' },
+  { name: 'Twitter', icon: 'social-twitter' },
+  { name: 'LinkedIn', icon: 'social-linkedin' },
+  { name: 'YouTube', icon: 'social-youtube' },
+]
 
 export function Footer() {
   const { footer } = t
@@ -19,7 +26,7 @@ export function Footer() {
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{feature.body}</p>
           </section>
         ))}
-        <form className="lg:pl-6" onSubmit={(event) => event.preventDefault()}>
+        <div className="lg:pl-6">
           <h2 className="text-base font-bold leading-4">{footer.newsletterTitle}</h2>
           <div className="mt-4 flex shadow-[0_0_10px_rgba(10,6,4,.45)]">
             <label htmlFor="newsletter-email" className="sr-only">
@@ -32,12 +39,12 @@ export function Footer() {
               placeholder={footer.newsletterPlaceholder}
               className="h-10 min-w-0 flex-1 bg-surface-dark px-3 text-sm placeholder:text-brand-secondary"
             />
-            <button type="submit" {...comingSoonProps} className="h-10 bg-primary px-3 text-base font-bold text-primary-foreground">
+            <ComingSoon className="h-10 bg-primary px-3 text-base font-bold text-primary-foreground">
               {footer.newsletterSubmit}
-            </button>
+            </ComingSoon>
           </div>
           <p className="mt-4 text-xs leading-5 text-muted-foreground">{footer.newsletterNote}</p>
-        </form>
+        </div>
       </div>
 
       <div className="grid gap-3 bg-surface-dark px-6 py-6 text-sm sm:grid-cols-2 lg:grid-cols-4 lg:px-7">
@@ -62,10 +69,10 @@ export function Footer() {
           ))}
         </FooterColumn>
         <FooterColumn title={footer.columns.collections.title}>
-          {footer.columns.collections.items.map((item, index) => (
-            <li key={item}>
-              <Link to="/" search={{ collection: [COLLECTION_SLUGS[index]] }} hash="catalogo">
-                {item}
+          {footer.columns.collections.items.map(({ label, slug }) => (
+            <li key={slug}>
+              <Link to="/" search={{ collection: [slug] }} hash="catalogo">
+                {label}
               </Link>
             </li>
           ))}
@@ -73,11 +80,11 @@ export function Footer() {
         <div className="col-span-2 lg:col-span-1">
           <h2 className="text-lg font-bold">{footer.social}</h2>
           <ul className="mt-4 flex gap-2">
-            {footer.socialNetworks.map((network, index) => (
-              <li key={network}>
-                <a href="#" {...comingSoonProps} aria-label={`${network} (${t.comingSoon})`} className="grid size-7 place-items-center rounded border border-primary">
-                  <img src={`/assets/icons/${SOCIAL_ICONS[index]}.svg`} alt="" width={16} height={16} />
-                </a>
+            {SOCIAL.map(({ name, icon }) => (
+              <li key={name}>
+                <ComingSoon aria-label={`${name} (${t.comingSoon})`} className="grid size-7 place-items-center rounded border border-primary">
+                  <img src={iconSrc(icon)} alt="" width={16} height={16} />
+                </ComingSoon>
               </li>
             ))}
           </ul>
@@ -94,7 +101,7 @@ export function Footer() {
   )
 }
 
-function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
+function FooterColumn({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
       <h2 className="text-lg font-bold">{title}</h2>
@@ -106,9 +113,7 @@ function FooterColumn({ title, children }: { title: string; children: React.Reac
 function ComingSoonItem({ label }: { label: string }) {
   return (
     <li>
-      <a href="#" {...comingSoonProps} className="aria-disabled:cursor-not-allowed">
-        {label}
-      </a>
+      <ComingSoon className="text-left">{label}</ComingSoon>
     </li>
   )
 }

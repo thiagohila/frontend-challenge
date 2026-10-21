@@ -40,5 +40,21 @@ Ver `ARCHITECTURE.md` §2 (camadas e regra de dependência) e §3 (pastas). Não
 - Sem `dangerouslySetInnerHTML` (lint bloqueia). Validar todo input com zod.
 - Upload de avatar: allowlist de MIME (png/jpeg/webp), limite de tamanho, sem SVG.
 
+## Padrão de código (nível sênior — inegociável)
+Garantido por ferramenta (`npm run typecheck` / `lint`), não por boa vontade:
+- TS `strict` + `noUncheckedIndexedAccess` + `noImplicitOverride` em **src, e2e, tests e configs** (`tsconfig.test.json`).
+- Lint bloqueia: `any`, non-null `!`, import de tipo sem `type`, `href="#"`/âncora inválida, `<img>` sem `alt`, label solta, clique sem teclado, `key` por índice, `console.log`, `==`, import cíclico, mocks no app, `socket.io-client` estático.
+
+Por revisão (checklist antes de cada commit):
+- **Tipos derivam de schemas zod**; `as` só para estreitar algo já validado; nunca `as never`/`as unknown as`. Configs com `satisfies`.
+- **Nada de string mágica**: ícones/arte via `iconSrc`/`artSources` (union gerada em `assets.gen.ts`), rotas via `Link`/`navigate` tipados, query keys via `lib/query-keys`.
+- **Semântica**: ação = `button`, navegação = `Link`; fora do escopo = `<ComingSoon>`.
+- **Sem arrays paralelos por índice**: dados relacionados vivem juntos (`{ label, slug }`).
+- Toda string de UI no dicionário `src/i18n`; nenhum texto solto em JSX.
+- Componente com uma responsabilidade; lógica de dados em `features/<x>/queries.ts`/hooks, não no JSX; arquivos > ~200 linhas → dividir.
+- Erros tratados explicitamente (`ApiError`), sem `catch` silencioso; estados loading/empty/error em todo componente com dados.
+- **Sem código provisório ao fechar o bloco**: `grep -rn "Scaffold\|TODO\|FIXME" src` zerado para as telas do bloco.
+- Nomes intencionais, sem abreviações; comentários explicam o *porquê*, não o *o quê*.
+
 ## Commits
 Branches `feat/*`, `fix/*`, `chore/*`. Conventional Commits. Não fazer push sem pedido.

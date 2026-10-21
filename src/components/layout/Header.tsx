@@ -1,7 +1,8 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { t } from '@/i18n'
+import { iconSrc } from '@/lib/assets'
 import { cn } from '@/lib/utils'
-import { comingSoonProps } from './coming-soon'
+import { ComingSoon } from './ComingSoon'
 
 const MARKET_PATHS = ['/nft', '/cart', '/checkout', '/orders']
 
@@ -20,23 +21,19 @@ export function Header({ cartCount = 0 }: { cartCount?: number }) {
             <NavItem to="/" label={t.nav.home} active={!inMarket} />
             <NavItem to="/" hash="catalogo" label={t.nav.market} active={inMarket} />
             <li>
-              <a href="#" {...comingSoonProps} className="text-foreground aria-disabled:cursor-not-allowed">
-                {t.nav.creators}
-              </a>
+              <ComingSoon className="text-foreground">{t.nav.creators}</ComingSoon>
             </li>
             <li>
-              <a href="#" {...comingSoonProps} className="text-foreground aria-disabled:cursor-not-allowed">
-                {t.nav.learn}
-              </a>
+              <ComingSoon className="text-foreground">{t.nav.learn}</ComingSoon>
             </li>
           </ul>
         </nav>
         <div className="flex items-center gap-7">
           <Link to="/" hash="catalogo" aria-label={t.header.search} className="grid size-6 place-items-center">
-            <img src="/assets/icons/icon-search.svg" alt="" width={20} height={20} />
+            <img src={iconSrc('icon-search')} alt="" width={20} height={20} />
           </Link>
           <Link to="/cart" aria-label={t.header.cart(cartCount)} className="relative grid size-6 place-items-center">
-            <img src="/assets/icons/icon-cart.svg" alt="" width={24} height={24} />
+            <img src={iconSrc('icon-cart')} alt="" width={24} height={24} />
             {cartCount > 0 && (
               <span
                 aria-hidden
@@ -50,7 +47,7 @@ export function Header({ cartCount = 0 }: { cartCount?: number }) {
             to="/login"
             className="flex h-[35px] w-[100px] items-center justify-center gap-1 rounded-md bg-primary text-base font-medium text-primary-foreground hover:bg-text-accent"
           >
-            <img src="/assets/icons/icon-login-ink.svg" alt="" width={20} height={20} />
+            <img src={iconSrc('icon-login-ink')} alt="" width={20} height={20} />
             {t.header.signIn}
           </Link>
         </div>

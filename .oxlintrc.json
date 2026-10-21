@@ -3,7 +3,10 @@
   "plugins": [
     "react",
     "typescript",
-    "oxc"
+    "oxc",
+    "jsx-a11y",
+    "import",
+    "unicorn"
   ],
   "ignorePatterns": [
     "src/routeTree.gen.ts",
@@ -45,7 +48,29 @@
           }
         ]
       }
-    ]
+    ],
+    "typescript/no-explicit-any": "error",
+    "typescript/no-non-null-assertion": "error",
+    "typescript/consistent-type-imports": "error",
+    "jsx-a11y/anchor-is-valid": "error",
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/label-has-associated-control": "error",
+    "jsx-a11y/no-autofocus": "error",
+    "jsx-a11y/click-events-have-key-events": "error",
+    "jsx-a11y/no-static-element-interactions": "error",
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "error",
+          "warn"
+        ]
+      }
+    ],
+    "eqeqeq": "error",
+    "import/no-cycle": "error",
+    "react/jsx-key": "error",
+    "react/no-array-index-key": "error"
   },
   "overrides": [
     {
@@ -73,6 +98,14 @@
       ],
       "rules": {
         "no-restricted-imports": "off"
+      }
+    },
+    {
+      "files": [
+        "scripts/**"
+      ],
+      "rules": {
+        "no-console": "off"
       }
     }
   ]

@@ -41,10 +41,18 @@ export const pt = {
     columns: {
       profile: { title: 'Meu perfil', items: ['Meu perfil', 'Minha coleção', 'Atividade', 'Estúdio do criador', 'Lista de interesse'] },
       help: { title: 'Central de ajuda', items: ['Central de ajuda', 'Como comprar NFTs', 'Carteira e segurança', 'Política do mercado', 'Denunciar item'] },
-      collections: { title: 'Coleções', items: ['Arte digital', 'Fotografia', 'Música', 'Arte 3D', 'Utilidade'] },
+      collections: {
+        title: 'Coleções',
+        items: [
+          { label: 'Arte digital', slug: 'arte-digital' },
+          { label: 'Fotografia', slug: 'fotografia' },
+          { label: 'Música', slug: 'musica' },
+          { label: 'Arte 3D', slug: 'arte-3d' },
+          { label: 'Utilidade', slug: 'utilidade' },
+        ],
+      },
     },
     social: 'Redes sociais',
-    socialNetworks: ['Facebook', 'Instagram', 'Twitter', 'LinkedIn', 'YouTube'],
     wallets: 'Carteiras compatíveis',
     walletsList: 'METAMASK • WALLETCONNECT • COINBASE',
     copyright: '© 2026 Kurio. Propriedade digital para todos.',
