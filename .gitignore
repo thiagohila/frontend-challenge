@@ -1,0 +1,22 @@
+node_modules
+dist
+*.local
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# secrets: never commit env files (only the example)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# test/audit outputs (reports kept under docs/ when delivered)
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
+/.lighthouse-tmp
