@@ -3,8 +3,8 @@
 Janela: **21/10 18:40 → 22/10 18:40**. **Congelamento do código às 17:30**; depois disso, só folga/extras.
 Fontes de verdade (não duplicar aqui):
 - **O quê**: `docs/REQUIREMENTS.md` (matriz requisito → bloco → teste). O status é atualizado ao fechar cada bloco.
-- **Como**: `ARCHITECTURE.md` (contratos, keys, sessão, realtime, mocks, testes).
-- **Segurança**: `docs/SECURITY.md`. **Design**: `docs/DESIGN.md` (gerado no B1a).
+- **Como**: `ARCHITECTURE.md` (contratos, keys, sessão, realtime, mocks, **API de controle do mock §10**, testes §12).
+- **Segurança**: `docs/SECURITY.md`. **Design**: `docs/design/DESIGN.md`.
 
 ## 1. Eliminatórios (não negociáveis)
 X1 stack efetiva · X2 fluxos reais · X3 confirmação só pela simulação · X4 sem vazamento entre usuários · X5 eventos só via `socket.io-client` · X6 E2E executáveis · **deploy público** (D2). Detalhe e testes: REQUIREMENTS "Eliminatórios".
@@ -12,11 +12,11 @@ X1 stack efetiva · X2 fluxos reais · X3 confirmação só pela simulação · 
 ## 2. Pontuação × prioridade
 | Critério | Pts | Onde se ganha |
 |---|---:|---|
-| Visual/responsivo | 20 | B1a/B1b (base fiel desde o início) + B7 |
-| Fluxos/UX | 20 | B3–B6 |
+| Visual/responsivo | 20 | B1b (tema/shell) + **pixel pass de cada tela no próprio bloco** + B7 (consolidação 320/768) |
+| Fluxos/UX | 20 | B3–B6b |
 | Integração/estado | 15 | B2 (fundação) + todos |
-| Tempo real | 10 | B2 (infra), B4–B6 |
-| Mocking | 10 | B2 |
+| Tempo real | 10 | B5 (infra + `nft.updated`), B6 (`order.updated`) |
+| Mocking | 10 | B2 (REST), B5 (socket) |
 | Testes | 10 | junto de cada feature |
 | A11y | 5 | checklist §5 em cada tela + B7 |
 | Performance | 5 | baseline B1b, B8 |
@@ -24,32 +24,34 @@ X1 stack efetiva · X2 fluxos reais · X3 confirmação só pela simulação · 
 
 ## 3. Definition of Done (todo bloco)
 1. Requisitos do bloco com status atualizado em REQUIREMENTS.
-2. Testes E2E do bloco escritos **no próprio bloco** e verdes em desktop+mobile.
-3. `typecheck` + `lint` + `test:e2e` verdes; checklist a11y (§5) nas telas tocadas.
-4. Commit (Conventional) + push → preview na Vercel abre e funciona.
-5. Desvio de arquitetura → ADR em ARCHITECTURE §14.
+2. Testes do bloco escritos **no próprio bloco** e verdes (desktop + mobile; unit quando houver).
+3. `CI=1 npm run typecheck && npm run lint && npm run test:e2e` verdes; checklist a11y (§5) nas telas tocadas.
+4. Pixel pass das telas do bloco contra `docs/design/frames/` (desktop + mobile).
+5. Commit (Conventional). Desvio de arquitetura → ADR em ARCHITECTURE §14.
+- **Push + preview Vercel** acontece nos checkpoints (B1b, 05:00, 13:30, B9), não em todo bloco, porque depende de login/permissão do usuário (§9).
 
 ## 4. Cronograma
 | Bloco | Horário | Entregas | Requisitos | Pronto quando |
 |---|---|---|---|---|
 | B0 ✅ | 18:40–19:30 | Scaffold, stack, smoke, contexto, segurança base | D7 | verdes |
-| B1a | 19:30–20:30 | **Extração do Figma**: inventário de frames (tela × breakpoint), campos exibidos por tela (→ contratos), tokens (cor, tipografia, espaçamento, raio, sombra, breakpoints), assets (download + AVIF/WebP), mapa componente → shadcn/app, idioma do layout (→ `lang`), itens fora do escopo visíveis no layout, estados não desenhados a derivar; conferir que a cópia "Kurio-v1 (Copy)" = original | S1, S2, S14, U11 | `docs/DESIGN.md` + `public/assets/` |
-| B1b | 20:30–21:15 | Tokens no tema shadcn, fontes self-hosted, shell (header/footer/nav mobile, skip link, `LiveRegion`), **boot rápido** (shell renderiza antes do MSW; queries aguardam `mocksReady`), `robots.txt`, **push + deploy Vercel** (SPA rewrite, CSP validada), **Lighthouse baseline** | D2, D3, M8, L2 | URL pública abre `/` e rota profunda com refresh; baseline LH registrado |
-| B2 | 21:15–23:30 | **Fundação**: `contracts/` (zod, incluindo eventos e carteira), `money.ts` + teste unitário, `http` com interceptors + `ApiError`, `query-keys`; **mock db** (seed determinístico, persistência, reset, `db.update` → versão + broadcast), handlers de todos os recursos com erros tipados, cenários + PRNG com seed, `mock.fail(rota, resp, {times})`, `window.__mock` (reset/scenario/fail/emit/disconnect/advance); **realtime**: servidor mock (conexões por usuário, `session.hello`, broadcast, `dropConnection`) + `RealtimeManager` no cliente (dedupe/versão/filtro de usuário/reconciliação); **fixture E2E** (`mock`, `loginAs`, clock) | I3, R1–R3, M1–M9, RT3, RT4, RT6, TQ3, K7, A8 | handlers respondem os contratos; teste de contrato de idempotência; evento chega via `socket.io-client` em teste |
-| B3 | 23:30–02:00 | **Auth + conta**: cadastro (409), login, sessão (refresh), expiração (`ReauthDialog`), logout/troca de usuário (limpeza total), guards + `redirect` validado, ações protegidas de visitante (retomar após login), perfil (dados, avatar com allowlist, senha), carteiras (principal/secundária) | S9–S13, A1–A7, I1, I7, RT5 | **T3, T8** verdes |
-| B4 | 02:00–05:00 | **Catálogo + detalhe**: destaques, busca/filtros/ordem/página na URL (reset de página), skeletons sem CLS, vazio/erro/retry, `jitter` fora de ordem, detalhe (galeria, edição, quantidade, 404, esgotado), favoritos com **otimista + rollback**, `nft.updated` em lista/detalhe | S4, S5, C1–C6, I4–I6, I9, I10, RT1, U3, U7 | **T1, T2, T4, T12** verdes |
-| ⏸ | 05:00 | **Checkpoint 1**: comparar com o plano; atraso > 1h → aplicar a linha de corte | | |
-| — | 05:00–09:00 | Descanso | | |
-| B5 | 09:00–11:00 | **Carrinho + cotação**: CRUD com limites por edição, carrinho de visitante + merge no login (limitado ao estoque + aviso), cupom (inválido/expirado), resumo da API com skeleton, `nft.updated` no carrinho com aviso `aria-live` e nova cotação | S6, K1–K7, RT1, RT7 (parte 1–3) | **T5** verde |
-| B6 | 11:00–13:30 | **Checkout + pedidos**: dados validados, carteira cadastrada + rede, conectar/recusar/desconectar (contrato próprio), revisão, revalidação da cotação (`QUOTE_STALE` → nova confirmação), idempotência (chave persistida por tentativa), pendente/confirmado/recusado via `order.updated`, recuperação após refresh/reconexão, servidor remove só o comprado, recibo snapshot, explorador simulado, expiração no checkout | S7, S8, P1–P10, K8, RT2, RT7, RT8, A4, I8 | **T6, T7, T9, T10** verdes |
-| ⏸ | 13:30 | **Checkpoint 2**: linha de corte se necessário | | |
-| B7 | 13:30–15:30 | **Visual + responsivo + a11y**: pixel pass vs Figma (390/768/1440 + 320), estados derivados, fora do escopo, passada final do checklist §5, axe em todas as rotas, **VIS no Docker (Linux)** com baselines versionadas | S1, S2, S14, U1–U10, TQ2 | **T11**, AXE, VIS verdes |
-| B8 | 15:30–16:30 | Lighthouse 3× (início/detalhe × mobile/desktop), otimizações reais (imagem LCP com `fetchpriority`, `srcset`, fontes, chunks), `docs/lighthouse/README.md` (versões, ambiente, throttling, LCP/CLS/TBT, justificativas) | L1–L6 | `summary.json` + README |
-| B9 | 16:30–17:30 | README da solução, ARCHITECTURE §15 (limitações, UX, desvios), relatório HTML do Playwright em `docs/playwright-report/`, **checkout limpo** (`git clone → npm ci → build → test:e2e`), smoke contra a URL pública, deploy final = commit entregue | D1–D8, TQ4, I11 | todos os eliminatórios ☑ |
+| B1a | 19:30–20:45 | **Extração do Figma** (subagente): inventário, tokens, componentes, dados por tela (→ contratos), fora do escopo visível, estados derivados, idioma, riscos de contraste, assets | S1, S2, S14, U11 | `docs/design/DESIGN.md` + `design-src/assets/` |
+| B1b | 20:45–21:30 | Tema ✅ e boot rápido ✅; assets otimizados (AVIF/WebP) em `public/assets/`; shell (header/footer/nav mobile, skip link, `LiveRegion`, painel "Servidor simulado (admin)" isolado); `/version.json` + commit no rodapé; **push + deploy Vercel** (CSP validada); **Lighthouse baseline** | D2, D3, M8, L2 | URL pública abre `/` e rota profunda com refresh |
+| B2 | 21:30–00:30 | **Fundação REST**: `contracts/` (zod, inclusive eventos), `money.ts`, `http` (timeout em JS, interceptors, `ApiError`), `query-keys`, session store base; **mock db** (seed determinístico, persistência, reset, versão), **todos os handlers REST** (idempotência consultada primeiro, `resolveAt`, 403 `carol`, cupom no carrinho, `/tx`), cenários + PRNG, API de controle (parte REST); **fixture E2E** (init só na 1ª carga) + projeto `unit` | I3, R1–R3, M1–M5, M8, K7, A8, TQ3 | unit de `money` + contrato de idempotência verdes; handlers cobrem a tabela do ARCH §4 |
+| B3 | 00:30–02:30 | **Auth + sessão**: cadastro (409), login, sessão (refresh), expiração (`ReauthDialog`), logout/troca (ordem do ARCH §7), guards `_auth` + `router.invalidate`, `redirect`/`intent` validados; **carteiras** (principal/secundária, necessárias ao checkout) | S9, S10, S12, A1–A7, I1, I7, RT5 (parte) | **T3** + T8 (carteiras) verdes |
+| B4 | 02:30–05:00 | **Catálogo + detalhe**: destaques, busca/filtros/ordem/página na URL (reset de página), skeletons sem CLS, vazio/erro/retry, `jitter` fora de ordem, indicador de atualização em segundo plano; detalhe (galeria, edição, quantidade, 404, esgotado); favoritos **otimista + rollback** (`isFavorite` derivado); pixel pass de Início e Detalhe | S4, S5, C1–C6, I4–I6, I9, I10, U3, U7 | **T1, T2, T4, T12** verdes |
+| ⏸ | 05:00 | **Checkpoint 1**: push; comparar com o plano; atraso > 1h → linha de corte | | |
+| — | 05:00–08:30 | Descanso | | |
+| B5 | 08:30–11:00 | **Realtime + carrinho**: servidor mock (conexões por usuário, `session.hello`/`ready`, **ping 20s**, broadcast, `dropConnection`) + `RealtimeManager` (import dinâmico, dedupe, versão, filtro de usuário, reconciliação, `keepNewerVersion`); `nft.updated` em catálogo/detalhe/carrinho; **carrinho** (CRUD com limites, visitante + merge com `adjustments`, cupom `PUT/DELETE`, resumo via quote); pixel pass do Carrinho | S6, K1–K7, RT1, RT3, RT4, RT6, RT7 (1–3), M6, M7, M9 | **T5** + `realtime.spec` (RT1, dedupe/versão, reconexão) verdes |
+| B6 | 11:00–13:30 | **Checkout + pedidos**: dados validados, carteira + rede, conectar/recusar/desconectar, revisão, revalidação (`QUOTE_STALE` → nova confirmação), idempotência (pendente antes de chave nova), pendente/confirmado/recusado via `order.updated`, recuperação (`resolveAt`) após refresh/reconexão, servidor remove só o comprado, recibo snapshot, `/tx` só do dono, expiração no checkout; pixel pass de Pagamento e Confirmação | S7, S8, S13, P1–P10, K8, RT2, RT7, RT8, A4, I8 | **T6, T7, T9, T10** verdes |
+| ⏸ | 13:30 | **Checkpoint 2**: push; linha de corte se necessário | | |
+| B6b | 13:30–14:30 | **Perfil**: dados, avatar (resize 256 WebP, allowlist), senha; pixel pass de Perfil/Carteiras | S11, A6, A7 | **T8** completo verde |
+| B7 | 14:30–15:45 | **Consolidação**: responsivo 320/768 (projeto `tablet`), `layout.spec` (overflow/zoom), estados derivados, fora do escopo, passada final do checklist §5, axe em todas as rotas, **VIS no Docker** | S1, S2, S14, U1–U10, TQ2 | **T11**, `layout.spec`, AXE, VIS verdes |
+| B8 | 15:45–16:30 | Lighthouse 3× (início/detalhe × mobile/desktop), otimizações reais, `docs/lighthouse/README.md` (versões, ambiente, throttling, LCP/CLS/TBT, justificativas) | L1–L6 | `summary.json` + README |
+| B9 | 16:30–17:30 | README da solução, ARCHITECTURE §15, relatório HTML do Playwright em `docs/playwright-report/`, **checkout limpo** (`git clone → npm ci → build → test:e2e`), push, deploy final + `deploy.spec` (commit da URL = HEAD) | D1–D8, TQ4, I11 | todos os eliminatórios ☑ |
 | Folga | 17:30–18:40 | Imprevistos → depois extras (§8) | EX1, EX2 | |
 
 **Linha de corte** (nesta ordem): extras → polimento visual fino → pixel-perfect em tablet → cenários extras de latência → VIS mobile (manter desktop).
-**Nunca cortar:** X1–X6, deploy, idempotência, realtime (T9/T10), checklist a11y, REQUIREMENTS sem ☐ nos eliminatórios.
+**Nunca cortar:** X1–X6, deploy, idempotência, realtime (T9/T10), telas obrigatórias (inclusive Perfil), checklist a11y, REQUIREMENTS sem ☐ nos eliminatórios.
 
 ## 5. Checklist de acessibilidade (por tela)
 Evidência: `e2e/a11y.spec.ts` (axe WCAG 2.1 A/AA, falha em `serious`/`critical`) ✅ + T11.
@@ -67,25 +69,31 @@ Evidência: `e2e/a11y.spec.ts` (axe WCAG 2.1 A/AA, falha em `serious`/`critical`
 
 ## 6. Segurança por bloco (detalhes: `docs/SECURITY.md`)
 - B0 ✅ gitignore de segredos, `.env.example`, CSP/headers, `react/no-danger`, `npm audit --omit=dev` = 0.
-- B2: hash PBKDF2 no mock; usuário sempre derivado do token; storage do mock com namespace próprio e documentado.
-- B3: `redirect` só interno; limpeza total no logout/troca; avatar com allowlist (png/jpeg/webp ≤2 MB); nada de token em log.
-- B6: idempotência; eventos de outra sessão descartados.
+- B2: hash PBKDF2 no mock; usuário sempre derivado do token; recurso alheio → 404; storage do mock com namespace próprio e documentado.
+- B3: `redirect`/`intent` validados por origem + allowlist; logout na ordem segura; nada de token em log.
+- B5/B6: eventos de outra sessão descartados; idempotência; `/tx` só do dono.
+- B6b: avatar com allowlist + resize.
 - B9: audit, revisão do diff por segredos, headers validados na URL pública.
 
 ## 7. Riscos e mitigação
 | Risco | Mitigação |
 |---|---|
-| Baselines VIS diferem macOS × Linux | Gerar e rodar VIS no Docker (`mcr.microsoft.com/playwright:v1.64.1`), script `test:e2e:docker`; baselines Linux versionadas |
-| `context.setOffline` não afeta MSW (SW e WS interceptados) | "Sem conexão" simulado pelo mock (`HttpResponse.error()`, `dropConnection`) |
-| Socket.IO não reconecta após pacote "server disconnect" | Mock derruba o **transporte** (`client.close()`), nunca envia `41` |
-| Binding 0.2: handshake em microtask, sem rooms, só websocket | Emitir só após `session.hello`; rooms por mapa de conexões no mock |
-| `page.clock` congela os `delay()` do MSW | Instalar o relógio só nos testes de tempo; usar `runFor`/`fastForward` |
-| Perf mobile: MSW (437 KB) + `await worker.start` antes do render. **Medido no B0: home mobile = 72 (LCP 3,5s, TBT 289ms) com a página quase vazia** | Shell renderiza antes do MSW; `modulepreload`; LCP estável; remedir no B1b (meta ≥90) |
-| Chrome não abre porta de debug no sandbox do agente | Rodar `npm run lighthouse` fora do sandbox (Playwright usa pipe e funciona) |
-| Lighthouse sem Chrome na máquina do avaliador | Script usa `CHROME_PATH` ou o Chromium do Playwright |
-| Avaliador ver dados de 2 usuários no storage do mock | Chave `msw-server-db:v1`, documentado como "storage do servidor simulado"; o app nunca lê |
-| B5/B6 densos | Infra de realtime/idempotência antecipada no B2; checkpoints 1 e 2 |
-| Cópia do Figma com nome diferente | Conferir no B1a |
+| ✅ `socket.io-client` capturando o `WebSocket` antes do MSW (auditoria C1) | Import dinâmico após `mocksReady` + regra de lint (feito, testado) |
+| Binding sem ping → socket cai a cada ~30s (C2) | Mock envia `'2'` a cada 20s por conexão |
+| Pedido duplicado no reenvio após timeout (C3) | Idempotência consultada antes de validar; bloqueio de 2º pedido `pending` |
+| Pendente não resolve após refresh (C4) | `resolveAt` persistido e reagendado no boot do mock |
+| Init script limpando o db no reload (C6) | Flag `sessionStorage['mock:init']` |
+| Baselines VIS diferem macOS × Linux | VIS só no Docker/Linux, `visual.spec` pulado fora do Linux |
+| `context.setOffline` não afeta MSW | "Sem conexão" simulado pelo mock (`fail(..., 'network')`, `dropConnection`) |
+| Socket.IO não reconecta após "server disconnect" | O mock derruba o **transporte**, nunca envia `41` |
+| Timeout nativo do XHR fora do `page.clock` | Timeout do Axios em JS (`AbortController`) |
+| Retry/preload engolem falha pontual nos testes | `times` maior que os retries ou falha persistente + `clearFailures()` |
+| Avatar estourando a cota do `localStorage` | Resize no cliente (256 WebP) + limite de 200 KB no servidor |
+| Perf mobile. **B0: home mobile 72 (LCP 3,5s). Após shell antes do MSW: 81 (LCP 3,4s, TBT 308ms)**, 1 execução. O LCP depende do download do JS (~322 KB) | B8: shell/hero estático no `index.html` (sem fake: o mesmo markup que o React hidrata/substitui), split de vendor, `modulepreload`, imagem LCP AVIF com `fetchpriority` |
+| Chrome não abre porta de debug no sandbox do agente | Rodar `npm run lighthouse` fora do sandbox |
+| Avaliador ver dados de 2 usuários no storage do mock | Chave `msw-server-db:v1`, documentada como storage do servidor simulado |
+| MCP do Figma: limite de chamadas (Starter) | Arquivo nos drafts do Yungas Pro; frames/metadata já salvos em `docs/design/` |
+| B2 e B5 densos | Infra de realtime isolada no B5; perfil movido para B6b; checkpoints |
 
 ## 8. Extras (somente na folga)
 - **EX1 Idioma** pt-BR/en-US: seletor no header/footer, troca o dicionário e o `<html lang>`, persistido, sem reload; erros de validação traduzidos.

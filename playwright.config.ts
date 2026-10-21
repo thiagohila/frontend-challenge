@@ -16,8 +16,15 @@ export default defineConfig({
   },
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
   projects: [
+    // Pure Node tests (money, mock contracts, realtime apply) — no browser.
+    { name: 'unit', testDir: './tests/unit' },
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
     { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },
+    {
+      name: 'tablet',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 768, height: 1024 }, hasTouch: true },
+      testMatch: /(smoke|layout)\.spec\.ts/,
+    },
   ],
   webServer: {
     command: `npm run build && npm run preview -- --port ${PORT} --strictPort`,

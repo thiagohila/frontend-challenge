@@ -1,5 +1,6 @@
-// Runs Lighthouse 3x per page/profile against `npm run preview` and reports the median.
-// Usage: npm run build && npm run preview & npm run lighthouse  (BASE_URL overrides target)
+// Runs Lighthouse 3x per page/profile against the optimized build and reports the median.
+// Usage: npm run build && npm run lighthouse   (starts/stops `vite preview` itself; BASE_URL targets another server)
+import { spawn } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import { chromium } from '@playwright/test'
@@ -7,7 +8,8 @@ import * as chromeLauncher from 'chrome-launcher'
 import lighthouse from 'lighthouse'
 import desktopConfig from 'lighthouse/core/config/desktop-config.js'
 
-const BASE_URL = process.env.BASE_URL ?? 'http://localhost:4173'
+const PORT = 4174
+const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`
 const RUNS = Number(process.env.LH_RUNS ?? 3)
 const PAGES = { home: '/', detail: process.env.LH_DETAIL_PATH ?? '/nft/1' }
 const PROFILES = { mobile: undefined, desktop: desktopConfig }
@@ -16,7 +18,23 @@ const OUT = 'docs/lighthouse'
 
 const median = (xs) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]
 
+async function startPreview() {
+  if (process.env.BASE_URL) return undefined
+  const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+  for (let i = 0; i < 50; i++) {
+    try {
+      if ((await fetch(BASE_URL)).ok) return server
+    } catch {
+      // not up yet
+    }
+    await new Promise((resolve) => setTimeout(resolve, 200))
+  }
+  server.kill()
+  throw new Error(`preview did not start on ${BASE_URL} — run \`npm run build\` first`)
+}
+
 await mkdir(OUT, { recursive: true })
+const preview = await startPreview()
 // CHROME_PATH > Playwright's Chromium (pinned version → reproducible on a clean checkout)
 const chromePath = () => process.env.CHROME_PATH ?? chromium.executablePath()
 
@@ -70,6 +88,7 @@ try {
   }
 } finally {
   chrome.kill()
+  preview?.kill()
 }
 
 await writeFile(`${OUT}/summary.json`, JSON.stringify(summary, null, 2))
