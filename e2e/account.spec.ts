@@ -8,6 +8,24 @@ const PNG = Buffer.from(
 )
 
 test.describe('T8 — wallets', () => {
+  test('edits the primary and the secondary wallet; both changes persist after reload', async ({ page, loginAs }) => {
+    await page.goto('/account/wallets')
+    await loginAs('ana')
+    for (const [region, alias] of [
+      ['Carteira principal', 'Principal editada'],
+      ['Carteira secundária', 'Reserva editada'],
+    ] as const) {
+      const section = page.getByRole('region', { name: region })
+      await section.getByRole('button', { name: 'Editar' }).click()
+      await section.getByRole('textbox', { name: 'Apelido da carteira' }).fill(alias)
+      await section.getByRole('button', { name: 'Salvar carteira' }).click()
+      await expect(section).toContainText(alias)
+    }
+    await page.reload()
+    await expect(page.getByTestId('wallet-primary')).toContainText('Principal editada')
+    await expect(page.getByTestId('wallet-secondary')).toContainText('Reserva editada')
+  })
+
   test('adds a secondary wallet with validation, persists after reload', async ({ page, loginAs }) => {
     await page.goto('/account/wallets')
     await loginAs('bruno')

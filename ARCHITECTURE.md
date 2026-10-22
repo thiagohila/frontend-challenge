@@ -272,7 +272,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - **Checks do DoD** rodam com `CI=1`, para não reaproveitar um servidor de preview com build antigo.
 - **Offline**: `context.setOffline` não afeta respostas do MSW. Falha de conexão é sempre simulada pelo mock (`fail(..., 'network')`, `dropConnection`).
 - **Relógio**: `page.clock` só em testes sensíveis a tempo (expiração, timeout, resolução do pedido). Com `install()` o tempo continua correndo; com `pauseAt()` ele congela tudo, inclusive os `delay()` do MSW e o ping do socket, e então é preciso avançar com `runFor`/`fastForward`.
-- Mapa de specs: `catalog.spec` (T1, T12) · `nft-detail.spec` (T2) · `auth.spec` (T3) · `favorites.spec` (T4) · `cart.spec` (T5) · `checkout.spec` (T6, T7) · `account.spec` (T8) · `realtime.spec` (T9, T10, RT1 no catálogo/detalhe) · `a11y.spec` (T11 + axe) · `layout.spec` (U2, U10) · `visual.spec` (VIS) · `deploy.spec` (smoke contra a URL pública, `BASE_URL`, compara o commit) · `tests/unit/*` (unit).
+- Mapa de specs: `catalog.spec` (T1, T12) · `nft-detail.spec` (T2) · `auth.spec` (T3) · `favorites.spec` (T4) · `cart.spec` (T5) · `checkout.spec` (T6, T7) · `account.spec` (T8) · `realtime.spec` (T9, T10, RT1 no catálogo/detalhe) · `a11y.spec` (T11 + axe) · `layout.spec` (U2, U10, reflow 320 px) · `scenarios.spec` (cenários sem fluxo próprio: 503, conflito de cadastro, TTL da sessão, desconexão da carteira, 403) · `mock-api.spec` (contratos REST, reset, avatar recusado pela API) · `visual.spec` (VIS) · `deploy.spec` (smoke contra a URL pública, `BASE_URL`, compara o commit) · `tests/unit/*` (unit).
 
 ## 13. Performance
 

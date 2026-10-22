@@ -86,3 +86,23 @@ test('reset restores the seed and fresh conditions; a ?scenario= switch reseeds 
   await waitForMockServer(page)
   expect((await api(page, '/nfts')).body).toMatchObject({ total: 45 })
 })
+
+test('the API itself rejects an oversized avatar, whatever the client sends (S11)', async ({ page, loginAs }) => {
+  await loginAs('ana')
+  await waitForMockServer(page)
+  const session = await page.evaluate(() => JSON.parse(sessionStorage.getItem('kurio:session') ?? '{}') as { token: string })
+  const oversized = `data:image/png;base64,${'A'.repeat(300 * 1024)}` // ~225 KB decoded, over the 200 KB limit
+  const response = await api(page, '/me/avatar', {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dataUrl: oversized }),
+  })
+  expect(response).toMatchObject({ status: 422, body: { error: { code: 'VALIDATION' } } })
+  expect(JSON.stringify(response.body)).toContain('Imagem acima de 200 KB')
+  const svg = await api(page, '/me/avatar', {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dataUrl: 'data:image/svg+xml;base64,PHN2Zz4=' }),
+  })
+  expect(svg.status).toBe(422)
+})

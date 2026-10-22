@@ -109,7 +109,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | M2 | Estado consistente entre os recursos; persistência; reset integral | B2 | T5/T8 (refresh) + `mock.reset` | ☑ |
 | M3 | Lentidão, latência variável, timeout, sem conexão, HTTP erro, configuráveis e reproduzíveis (PRNG com seed) | B2 | T1, T7, T12 | ☑ |
 | M4 | Fixtures: variedade p/ filtros+paginação, ≥2 usuários | B2 | `mocks/fixtures` | ☑ |
-| M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ☑ |
+| M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README; cada cenário exercitado em e2e (`scenarios.spec` cobre `server-error`, `register-conflict`, `session-expired`, `wallet-disconnect`, `unauthorized`; os demais nos specs de fluxo) | ☑ |
 | M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ☑ |
 | M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ☑ |
 | M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ☑ |

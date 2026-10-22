@@ -7,7 +7,7 @@ import { DEMO_PASSWORD, DEMO_USERS, SEED_PASSWORD_HASHES } from '../../src/mocks
 import { login, register } from '../../src/mocks/server/services/auth'
 import { addItem, getCart, mergeGuestCart } from '../../src/mocks/server/services/cart'
 import { listNfts } from '../../src/mocks/server/services/catalog'
-import { connectWallet } from '../../src/mocks/server/services/wallets'
+import { connectWallet, disconnectWallet } from '../../src/mocks/server/services/wallets'
 import { createOrder, getOrder, ORDER_RESOLUTION_MS } from '../../src/mocks/server/services/orders'
 import { createQuote } from '../../src/mocks/server/services/quote'
 import { createTestServer } from './server-context'
@@ -85,6 +85,20 @@ test.describe('orders: idempotency (R3, P5)', () => {
     expect(error).toMatchObject({ status: 409, code: 'QUOTE_STALE' })
     const fresh = (error as HttpError).details as { quote: { lines: { unitPriceEth: string }[] } }
     expect(fresh.quote.lines[0]?.unitPriceEth).toBe('1.29')
+  })
+
+  test('the wallet must be connected, on the network being paid on (P3, server-side guard)', async () => {
+    const server = createTestServer()
+    const { user, input } = await readyToBuy(server)
+    const polygonQuote = await createQuote(server.ctx, ana, 'polygon')
+    await expectHttpError(
+      createOrder(server.ctx, user, 'key-network', { ...input, quoteId: polygonQuote.quoteId, network: 'polygon' }),
+      409,
+      'WALLET_DISCONNECTED',
+    )
+    await disconnectWallet(server.ctx, user.id, 'wal_ana_primary', 'test')
+    await expectHttpError(createOrder(server.ctx, user, 'key-disconnected', input), 409, 'WALLET_DISCONNECTED')
+    expect((await server.ctx.db.read()).orders).toHaveLength(0)
   })
 
   test("another user's order is indistinguishable from a missing one (X4)", async () => {
