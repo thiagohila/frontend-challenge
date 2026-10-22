@@ -39,6 +39,26 @@ test.describe('realtime — nft.updated through socket.io-client (RT1, M7, M9)',
     await expect(page.getByTestId('live-region')).toContainText('O resumo foi atualizado')
   })
 
+  test("open cart: a stock drop clamps the line and the summary together; the user's own edits are not reported as changes (RT7, K1)", async ({
+    page,
+    mock,
+    isMobile,
+  }) => {
+    const line = page.getByTestId(isMobile ? 'cart-card-emerald-ape-042' : 'cart-line-emerald-ape-042')
+    await page.goto('/nft/emerald-ape-042?edition=ed-1-10')
+    await page.getByRole('button', { name: /^(COMPRAR|Comprar NFT)$/ }).click()
+    await expect(page.getByTestId('cart-total')).toHaveText('1.206 ETH')
+    await line.getByRole('button', { name: 'Aumentar quantidade' }).click()
+    await expect(page.getByTestId('cart-total')).toHaveText('2.396 ETH')
+    await expect(page.getByTestId('quote-changes')).toHaveCount(0) // own edit: no "availability" notice
+    await waitForSocket(mock)
+
+    await mock.updateNft('emerald-ape-042', { editions: [{ id: 'ed-1-10', available: 1 }] })
+    await expect(page.getByTestId('quote-changes')).toContainText('Emerald Ape #042: quantidade ajustada de 2 para 1 (disponibilidade).')
+    await expect(page.getByTestId('cart-total')).toHaveText('1.206 ETH')
+    await expect(line.locator('output')).toHaveText('1') // the line agrees with the summary
+  })
+
   test('duplicate and stale events are ignored (RT3)', async ({ page, mock }) => {
     await page.goto('/nft/emerald-ape-042')
     await waitForSocket(mock)

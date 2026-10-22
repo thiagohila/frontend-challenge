@@ -38,7 +38,7 @@ export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
           </Button>
         </div>
       ) : (
-        <QuoteValues quote={quote.data} cart={cart} updating={quote.isFetching} />
+        <QuoteValues quote={quote.data} updating={quote.isFetching} />
       )}
       <Button
         asChild
@@ -53,9 +53,7 @@ export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
   )
 }
 
-function QuoteValues({ quote, cart, updating }: { quote: Quote; cart: Cart; updating: boolean }) {
-  const nameOf = (nftId: string) =>
-    quote.lines.find((line) => line.nftId === nftId)?.name ?? cart.items.find((item) => item.nftId === nftId)?.name ?? nftId
+function QuoteValues({ quote, updating }: { quote: Quote; updating: boolean }) {
   return (
     <div className="flex flex-col gap-4" aria-busy={updating}>
       {quote.changes.length > 0 && (
@@ -65,10 +63,10 @@ function QuoteValues({ quote, cart, updating }: { quote: Quote; cart: Cart; upda
             {quote.changes.map((change) => (
               <li key={`${change.nftId}-${change.editionId}-${change.kind}`}>
                 {change.kind === 'price'
-                  ? t.cart.change.price(nameOf(change.nftId), formatEth(change.from), formatEth(change.to))
+                  ? t.cart.change.price(change.name, formatEth(change.from), formatEth(change.to))
                   : change.kind === 'availability'
-                    ? t.cart.change.availability(nameOf(change.nftId), change.from, change.to)
-                    : t.cart.change.removed(nameOf(change.nftId))}
+                    ? t.cart.change.availability(change.name, change.from, change.to)
+                    : t.cart.change.removed(change.name)}
               </li>
             ))}
           </ul>

@@ -10,8 +10,9 @@ export const realtime = createRealtimeManager(queryClient, (result) => {
   for (const listener of appliedListeners) listener(result)
 })
 
-// Sign-out / user switch tears the connection down before private caches are cleared (A5).
-onSessionEnd(() => realtime.stop())
+// Sign-out / user switch tears the ended user's connection down before private caches are cleared (A5).
+// A socket already reopened by `RealtimeBridge` for the next session is left alone.
+onSessionEnd((userId) => realtime.stopIfUser(userId))
 
 export function onRealtimeApplied(listener: (result: Applied) => void) {
   appliedListeners.add(listener)

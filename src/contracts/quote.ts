@@ -20,6 +20,8 @@ export const quoteLineSchema = z.object({
 export const quoteChangeSchema = z.object({
   nftId: id,
   editionId: id,
+  /** Display name — a removed line is no longer in the quote or the cart to look it up. */
+  name: z.string(),
   kind: z.enum(['price', 'availability', 'removed']),
   from: z.string(),
   to: z.string(),

@@ -23,7 +23,8 @@ export function useWalletConnection(userId: string) {
   const key = queryKeys.walletConnection(userId)
   const connection = useQuery<ActiveConnection | null>({
     queryKey: key,
-    queryFn: () => null,
+    // Client-held state: a refetch (e.g. invalidateQueries after re-auth) keeps the current connection.
+    queryFn: () => queryClient.getQueryData<ActiveConnection | null>(key) ?? null,
     staleTime: Number.POSITIVE_INFINITY,
     gcTime: Number.POSITIVE_INFINITY,
   })

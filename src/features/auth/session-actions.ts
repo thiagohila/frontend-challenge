@@ -14,10 +14,13 @@ const privateKeyPrefix = (userId: string) => `kurio:${userId}:`
 
 /** Wipes everything private of the previous session: resources, cache and namespaced storage (A5, X4). */
 async function clearPrivateState(userId: string | null) {
-  await endSessionResources()
-  await queryClient.cancelQueries()
-  queryClient.clear()
+  await endSessionResources(userId)
   if (userId) {
+    // Only the ended user's queries: public ones (catalog) may already be mounted and fetching on the
+    // destination route — a global clear() would orphan them (found in audit: catalog stuck after sign-out).
+    const privateKey = ['user', userId]
+    await queryClient.cancelQueries({ queryKey: privateKey })
+    queryClient.removeQueries({ queryKey: privateKey })
     removeStorageByPrefix('session', privateKeyPrefix(userId))
     removeStorageByPrefix('local', privateKeyPrefix(userId))
   }

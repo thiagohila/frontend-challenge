@@ -87,6 +87,9 @@ export function createRealtimeManager(queryClient: QueryClient, onApplied: (resu
   return {
     start,
     stop,
+    stopIfUser(userId: string | null) {
+      if (context.userId === userId) stop()
+    },
     getStatus: () => status,
     subscribe(listener: Listener) {
       listeners.add(listener)

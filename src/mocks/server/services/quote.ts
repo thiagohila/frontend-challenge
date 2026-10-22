@@ -14,12 +14,25 @@ export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner,
   const ownerKey = ownerKeyOf(owner)
   const record = ensureCart(state, owner)
   // Stock may have dropped since the item was added: clamp quantities to what is purchasable now.
+  // Only these server-side adjustments (and price changes) are reported — never the user's own edits.
+  const changes: QuoteChange[] = []
   record.items = record.items
     .map((item) => {
       const nft = state.nfts.find((candidate) => candidate.id === item.nftId)
       const edition = nft?.editions.find((candidate) => candidate.id === item.editionId)
       const limit = nft && edition ? Math.min(edition.available, nft.maxPerOrder) : 0
-      return { ...item, quantity: Math.min(item.quantity, limit) }
+      const quantity = Math.min(item.quantity, limit)
+      if (quantity !== item.quantity) {
+        changes.push({
+          nftId: item.nftId,
+          editionId: item.editionId,
+          name: nft ? `${nft.name} #${String(nft.number).padStart(3, '0')}` : item.nftId,
+          kind: quantity === 0 ? 'removed' : 'availability',
+          from: String(item.quantity),
+          to: String(quantity),
+        })
+      }
+      return { ...item, quantity }
     })
     .filter((item) => item.quantity > 0)
   const cart = toCartView(state, record, ctx.now())
@@ -40,21 +53,12 @@ export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner,
   const discountEth = cart.coupon ? money.percent(subtotalEth, cart.coupon.percentOff) : money.zero
   const networkFeeEth = NETWORK_FEES[network]
 
+  // Prices are the server's: a different unit price than the previous quote is always a market change.
   const previous = state.quotes.filter((quote) => quote.ownerKey === ownerKey).at(-1)
-  const changes: QuoteChange[] = []
   for (const line of previous?.lines ?? []) {
     const current = lines.find((candidate) => candidate.nftId === line.nftId && candidate.editionId === line.editionId)
-    if (!current) changes.push({ nftId: line.nftId, editionId: line.editionId, kind: 'removed', from: String(line.quantity), to: '0' })
-    else if (!money.equals(current.unitPriceEth, line.unitPriceEth))
-      changes.push({ nftId: line.nftId, editionId: line.editionId, kind: 'price', from: line.unitPriceEth, to: current.unitPriceEth })
-    else if (current.quantity !== line.quantity)
-      changes.push({
-        nftId: line.nftId,
-        editionId: line.editionId,
-        kind: 'availability',
-        from: String(line.quantity),
-        to: String(current.quantity),
-      })
+    if (current && !money.equals(current.unitPriceEth, line.unitPriceEth))
+      changes.push({ nftId: line.nftId, editionId: line.editionId, name: line.name, kind: 'price', from: line.unitPriceEth, to: current.unitPriceEth })
   }
 
   const quote: QuoteRecord = {

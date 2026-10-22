@@ -88,4 +88,32 @@ test.describe('T3 — account and session', () => {
     await expect(page.getByText('Você ainda não adicionou uma carteira secundária.')).toBeVisible()
     await expect(page.getByText('Reserva')).toHaveCount(0)
   })
+
+  test('sign-out without a reload keeps the catalog and realtime alive; the next user in the same tab sees nothing private (A5)', async ({
+    page,
+    loginAs,
+    mock,
+  }) => {
+    const catalog = page.getByRole('list', { name: /NFTs? encontrados?/ })
+    await page.goto('/account/wallets')
+    await loginAs('ana')
+    await expect(page.getByTestId('wallet-primary')).toBeVisible()
+
+    // Pure SPA from here on: no page.goto, so the in-memory cache and socket are what the user really has.
+    await signOutButton(page).click()
+    await expect(page).toHaveURL('/')
+    await expect(catalog).toBeVisible()
+    await expect.poll(() => mock.socketConnections()).toBe(1)
+
+    await page.evaluate(() => {
+      history.pushState({}, '', '/favorites')
+      dispatchEvent(new PopStateEvent('popstate'))
+    })
+    await expect(page).toHaveURL(/\/login/)
+    await signIn(page, DEMO_USERS.bruno.email)
+    await expect(page).toHaveURL('/favorites')
+    await expect(page.getByText('Você ainda não favoritou nenhum NFT.')).toBeVisible()
+    await expect(page.getByText('Sage Nomad #009')).toHaveCount(0) // Ana's favorite
+    await expect.poll(() => mock.socketConnections()).toBe(1)
+  })
 })

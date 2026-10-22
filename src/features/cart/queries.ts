@@ -9,6 +9,7 @@ import { isApiError } from '@/lib/api-error'
 import type { AddCartItem, Cart } from '@/contracts/cart'
 import type { Network } from '@/contracts/common'
 import { guestCart } from '@/lib/guest'
+import { queryClient } from '@/lib/query-client'
 import { type Owner, queryKeys } from '@/lib/query-keys'
 import { useSession } from '@/lib/session/store'
 import { cartApi } from './api'
@@ -68,7 +69,14 @@ export function useQuickAddToCart() {
 export const quoteQuery = (owner: Owner, network: Network, enabled = true) =>
   queryOptions({
     queryKey: queryKeys.quote(owner, network),
-    queryFn: ({ signal }) => cartApi.quote(network, signal),
+    queryFn: async ({ signal }) => {
+      const quote = await cartApi.quote(network, signal)
+      // Pricing clamps the server cart to current stock: refresh the lines so they match the summary.
+      if (quote.changes.some((change) => change.kind !== 'price')) {
+        void queryClient.invalidateQueries({ queryKey: queryKeys.cart(owner) })
+      }
+      return quote
+    },
     staleTime: 0,
     enabled,
   })
