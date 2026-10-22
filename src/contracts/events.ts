@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { id, isoDate, money } from './common'
 import { orderStatusSchema } from './order'
 

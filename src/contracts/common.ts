@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 
 /** ETH amount as a decimal string (never a JS number) — up to 18 fractional digits. */
 export const money = z.string().regex(/^\d+(\.\d{1,18})?$/, 'Valor ETH inválido')

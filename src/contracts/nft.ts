@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { ART_NAMES } from '@/lib/assets.gen'
 import { id, isoDate, money, networkSchema, paginated } from './common'
 

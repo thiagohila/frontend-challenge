@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { emailSchema, passwordSchema, usernameSchema } from '@/contracts/auth'
 import type { Profile, ProfileUpdate } from '@/contracts/profile'
 

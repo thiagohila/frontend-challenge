@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 
 /** Only same-origin paths are accepted as post-login destinations (no open redirect). */
 export function safeRedirect(value: string | undefined, fallback = '/'): string {

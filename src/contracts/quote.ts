@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { id, isoDate, money, networkSchema, quantity } from './common'
 import { couponSchema } from './cart'
 import { artSchema } from './nft'

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { emailSchema, passwordSchema, usernameSchema } from './auth'
 
 export const ensNameSchema = z

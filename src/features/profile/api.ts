@@ -1,6 +1,6 @@
 import { type PasswordChange, type ProfileUpdate, profileSchema } from '@/contracts/profile'
 import { userSchema } from '@/contracts/auth'
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { http } from '@/lib/http'
 
 const profileUpdateResponseSchema = z.object({ profile: profileSchema, user: userSchema })

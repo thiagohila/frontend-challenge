@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useNavigate, useRouter } from '@tanstack/react-router'
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { Button } from '@/components/ui/button'
 import { nftDetailQuery } from '@/features/catalog/queries'
 import { nftDisplayName } from '@/features/catalog/format'

@@ -1,4 +1,3 @@
-import '@/lib/zod-config' // must run before any schema parses
 import { QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'

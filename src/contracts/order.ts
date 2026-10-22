@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { id, isoDate, money, networkSchema } from './common'
 import { quoteLineSchema } from './quote'
 import { walletTypeSchema } from './wallet'

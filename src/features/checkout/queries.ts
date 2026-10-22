@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Network } from '@/contracts/common'
 import type { CreateOrder, Order } from '@/contracts/order'
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { type Quote, quoteSchema } from '@/contracts/quote'
 import type { WalletType } from '@/contracts/wallet'
 import { ordersApi } from '@/features/orders/api'

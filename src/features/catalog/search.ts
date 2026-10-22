@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { money, networkSchema } from '@/contracts/common'
 import { catalogSortSchema, catalogTabSchema, collectionSlugSchema, type NftListQuery } from '@/contracts/nft'
 

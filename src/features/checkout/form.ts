@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { buyerSchema } from '@/contracts/order'
 import { networkSchema } from '@/contracts/common'
 import { walletTypeSchema } from '@/contracts/wallet'

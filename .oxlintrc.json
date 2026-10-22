@@ -26,6 +26,12 @@
             "name": "socket.io-client",
             "importNames": ["io", "default", "connect", "Manager"],
             "message": "Import socket.io-client only via dynamic import in src/lib/socket.ts / src/lib/realtime (must load after MSW patches WebSocket)."
+          },
+          {
+            "name": "zod",
+            "importNames": ["z"],
+            "allowTypeImports": true,
+            "message": "Import { z } from '@/lib/z' (configured: jitless, CSP-safe)."
           }
         ]
       }
@@ -79,6 +85,12 @@
       "files": ["e2e/**", "tests/**"],
       "rules": {
         "react/rules-of-hooks": "off"
+      }
+    },
+    {
+      "files": ["src/lib/z.ts"],
+      "rules": {
+        "no-restricted-imports": "off"
       }
     }
   ]

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { id, isoDate } from './common'
 
 export const emailSchema = z.email('E-mail inválido').max(120)

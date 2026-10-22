@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { emailSchema } from './auth'
 import { id, networkSchema } from './common'
 import { ensNameSchema } from './profile'

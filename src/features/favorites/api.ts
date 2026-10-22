@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '@/lib/z'
 import { nftSummarySchema } from '@/contracts/nft'
 import { http } from '@/lib/http'
 
