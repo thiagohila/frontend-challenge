@@ -1,6 +1,7 @@
 import type { RealtimeEvent } from '@/contracts/events'
 import { runtime } from './runtime'
 import { type FailureResponse, type ScenarioName, scenarios } from './scenarios'
+import { realtimeControl } from './handlers/realtime'
 import { bus } from './server/bus'
 import { db, serverContext as ctx } from './server/browser-context'
 import { expireSessions } from './server/services/auth'
@@ -41,6 +42,9 @@ export const mockControl = {
   updateNft: (id: string, patch: NftPatch) => updateNft(ctx, id, patch),
   /** Sends an event as-is (duplicates / stale versions for T10). */
   emitRaw: (event: RealtimeEvent) => bus.publish(event),
+  /** Closes every socket transport; clients reconnect and reconcile with REST. */
+  dropConnection: () => realtimeControl.dropConnections(),
+  socketConnections: () => realtimeControl.connectionCount,
   resolveOrder: (id: string, outcome: 'confirmed' | 'declined') => forceResolveOrder(ctx, id, outcome),
   async disconnectWallet(walletId: string) {
     const wallet = (await db.read()).wallets.find((candidate) => candidate.id === walletId)

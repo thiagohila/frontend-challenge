@@ -24,4 +24,9 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B4 | Lógica de dados no componente (`quickAdd`) e `PurchasePanel` com 2 layouts | crescimento do bloco | `useQuickAddToCart`; `MobileBuyBar`/`NftFacts` | checklist (responsabilidade única, ~200 linhas) |
 | B4 | Sem formatador | lacuna de setup | Prettier + plugin Tailwind; `format:check` | DoD |
 | B4 | **Lighthouse mobile 45/42** (LCP 5,8 s, TBT 0,75–1,3 s); desktop 94/95; A11y/BP/SEO 100 | LCP (hero) depende de `/nfts/featured` → espera o MSW (437 KB) sob CPU 4×; ~1 MB de JS avaliado no boot | planejado para o B8 (ver PLAN §7) | medir a cada bloco a partir de agora (1 run) |
-
+| B5 | **Carrinho do visitante perdido no login** (intermitente) | `session.signIn` → `router.invalidate` → o guard do `/login` redireciona na hora; a navegação rápida abortava o merge em voo | merge **antes** de publicar a sessão, com o token novo explícito | e2e T5 "guest items…" (repetido 4× sob carga) |
+| B5 | Helper de teste chamava a API antes do MSW | `fetch` em `page.evaluate` antes do `worker.start` caía no servidor estático | helpers esperam `window.__mock` | fixture `waitForMockServer` |
+| B5 | Seletor `name: 'COMPRAR'` pegava "Como comprar NFTs" | match de nome por substring, case-insensitive | `exact: true` / regex ancorada | revisão de seletores |
+| B5 | Preço "oculto" casado no mobile | `getByText(...).first()` pegava o preço do layout desktop (`display:none`) | `.filter({ visible: true })` | padrão nos specs de realtime |
+| B5 | Lint: `role="status"`, spread "inútil", supressões de `exhaustive-deps` | atalhos | `<output>`, dependências estáveis (chave do dono) sem supressão | lint |
+| B5 | `<dl>` inválido no resumo (axe) | `div > div > dt` na linha da taxa de rede | "Taxa estimada" dentro do `<dd>` | axe no carrinho com itens |

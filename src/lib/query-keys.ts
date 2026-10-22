@@ -16,6 +16,7 @@ export const queryKeys = {
     list: (query: NftListQuery) => ['nfts', 'list', query] as const,
     featured: () => ['nfts', 'featured'] as const,
     detail: (id: string) => ['nfts', 'detail', id] as const,
+    relatedAll: () => ['nfts', 'related'] as const,
     related: (id: string) => ['nfts', 'related', id] as const,
   },
   cart: (owner: Owner) => [...ownerKey(owner), 'cart'] as const,
@@ -30,4 +31,6 @@ export const queryKeys = {
     detail: (userId: string, orderId: string) => ['user', userId, 'orders', 'detail', orderId] as const,
   },
   transaction: (userId: string, hash: string) => ['user', userId, 'tx', hash] as const,
+  /** Active simulated wallet connection for checkout (null = disconnected). */
+  walletConnection: (userId: string) => ['user', userId, 'wallet-connection'] as const,
 }

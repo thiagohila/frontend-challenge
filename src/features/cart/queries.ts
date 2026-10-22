@@ -7,6 +7,7 @@ import { t } from '@/i18n'
 import { announce } from '@/lib/announce'
 import { isApiError } from '@/lib/api-error'
 import type { AddCartItem, Cart } from '@/contracts/cart'
+import type { Network } from '@/contracts/common'
 import { guestCart } from '@/lib/guest'
 import { type Owner, queryKeys } from '@/lib/query-keys'
 import { useSession } from '@/lib/session/store'
@@ -59,5 +60,43 @@ export function useQuickAddToCart() {
         onError: (error) => toast.error(isApiError(error) ? error.message : t.cart.addFailed),
       },
     )
+  }
+}
+
+/** Server-side pricing of the cart — the reference for totals and checkout (K5, K8). */
+export const quoteQuery = (owner: Owner, network: Network, enabled = true) =>
+  queryOptions({
+    queryKey: queryKeys.quote(owner, network),
+    queryFn: ({ signal }) => cartApi.quote(network, signal),
+    staleTime: 0,
+    enabled,
+  })
+
+/** Quantity, removal and coupon mutations; every success replaces the cart and re-prices (I5). */
+export function useCartMutations() {
+  const owner = useCartOwner()
+  const queryClient = useQueryClient()
+  const onCart = async (cart: Cart) => {
+    if (!owner) return
+    queryClient.setQueryData<Cart>(queryKeys.cart(owner), cart)
+    await queryClient.invalidateQueries({ queryKey: queryKeys.quotes(owner) })
+  }
+  const onError = (error: unknown) => toast.error(isApiError(error) ? error.message : t.cart.updateFailed)
+  return {
+    updateQuantity: useMutation({
+      mutationFn: ({ itemId, quantity }: { itemId: string; quantity: number }) => cartApi.update(itemId, quantity),
+      onSuccess: onCart,
+      onError,
+    }),
+    remove: useMutation({
+      mutationFn: (itemId: string) => cartApi.remove(itemId),
+      onSuccess: async (cart) => {
+        await onCart(cart)
+        announce(t.cart.removed)
+      },
+      onError,
+    }),
+    applyCoupon: useMutation({ mutationFn: (code: string) => cartApi.applyCoupon(code), onSuccess: onCart }),
+    removeCoupon: useMutation({ mutationFn: () => cartApi.removeCoupon(), onSuccess: onCart, onError }),
   }
 }

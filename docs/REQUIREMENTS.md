@@ -11,7 +11,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ◐ |
 | X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☐ |
 | X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ◐ |
-| X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ☐ |
+| X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ◐ |
 | X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo (B9) | ◐ |
 
 ## Escopo, telas e fluxos (§1, §3)
@@ -22,7 +22,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S3 | Blockchain/carteira/pagamento só simulados | B2 | ARCHITECTURE §10 | ☐ |
 | S4 | Início: destaques, catálogo, busca, filtros, ordenação, navegação ao NFT | B4 | T1 | ☑ |
 | S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ◐ |
-| S6 | Carrinho: quantidades, remoção, cupom, resumo | B5 | T5 | ☐ |
+| S6 | Carrinho: quantidades, remoção, cupom, resumo | B5 | T5 | ☑ |
 | S7 | Pagamento: dados, carteira+rede, revisão, envio | B6 | T6 | ☐ |
 | S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☐ |
 | S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ☑ |
@@ -45,13 +45,13 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Carrinho (§3)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| K1 | Adicionar/alterar/remover respeitando disponibilidade por NFT e edição | B5 | T5 | ☐ |
-| K2 | Persistir após refresh | B5 | T5 | ☐ |
-| K3 | Preservar itens do visitante ao autenticar (merge; excedente limitado ao estoque + aviso) | B5 | T5 | ☐ |
-| K4 | Cupom aplicar/remover (persistido no carrinho do servidor); inválido e expirado | B5 | T5 (inclui refresh com cupom) | ☐ |
-| K5 | Subtotal, desconto, taxa de rede e total vindos da API | B5 | T5 | ☐ |
-| K6 | Reflete preço/disponibilidade recebidos com o carrinho aberto | B5 | `realtime.spec` (carrinho), T9 | ☐ |
-| K7 | ETH como string decimal, precisão no cálculo e na exibição; quantidade inteira | B2, B5 | unit `money.spec` + T5 (valores exatos) | ◐ |
+| K1 | Adicionar/alterar/remover respeitando disponibilidade por NFT e edição | B5 | T5 | ☑ |
+| K2 | Persistir após refresh | B5 | T5 | ☑ |
+| K3 | Preservar itens do visitante ao autenticar (merge; excedente limitado ao estoque + aviso) | B5 | T5 | ☑ |
+| K4 | Cupom aplicar/remover (persistido no carrinho do servidor); inválido e expirado | B5 | T5 (inclui refresh com cupom) | ☑ |
+| K5 | Subtotal, desconto, taxa de rede e total vindos da API | B5 | T5 | ☑ |
+| K6 | Reflete preço/disponibilidade recebidos com o carrinho aberto | B5 | `realtime.spec` (carrinho), T9 | ☑ |
+| K7 | ETH como string decimal, precisão no cálculo e na exibição; quantidade inteira | B2, B5 | unit `money.spec` + T5 (valores exatos) | ☑ |
 | K8 | Cotação da API é a referência para finalizar | B6 | T9 | ☐ |
 
 ## Pagamento e confirmação (§3)
@@ -87,7 +87,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | I2 | Query em consultas, mutations e cache; REST só via Axios | todos | revisão + ARCHITECTURE §5–6 | ☐ |
 | I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ◐ |
 | I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ◐ |
-| I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ◐ |
+| I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ☑ |
 | I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☑ |
 | I7 | Isolamento por usuário e por parâmetros | B3 | T3 | ☑ |
 | I8 | Recuperar falhas sem duplicar operações | B6 | T7 | ☐ |
@@ -110,21 +110,21 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | M3 | Lentidão, latência variável, timeout, sem conexão, HTTP erro, configuráveis e reproduzíveis (PRNG com seed) | B2 | T1, T7, T12 | ◐ |
 | M4 | Fixtures: variedade p/ filtros+paginação, ≥2 usuários | B2 | `mocks/fixtures` | ☑ |
 | M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ◐ |
-| M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ◐ |
-| M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ☐ |
+| M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ☑ |
+| M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ◐ |
 | M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ☑ |
-| M9 | Mudança no dado simulado → REST **e** evento | B5 | `realtime.spec` (`updateNft` → evento + refetch iguais) | ☐ |
+| M9 | Mudança no dado simulado → REST **e** evento | B5 | `realtime.spec` (`updateNft` → evento + refetch iguais) | ☑ |
 
 ## Tempo real (§7)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| RT1 | `nft.updated` atualiza catálogo, detalhe e carrinho | B5 | `realtime.spec`, T9 | ☐ |
+| RT1 | `nft.updated` atualiza catálogo, detalhe e carrinho | B5 | `realtime.spec`, T9 | ☑ |
 | RT2 | `order.updated` atualiza o pedido; mostra confirmação/recusa | B6 | T6, T7 | ☐ |
-| RT3 | Eventos com id estável, recurso e versão; dedupe; não regridem nem reaplicam | B5 | unit `apply.spec` + T10 | ☐ |
-| RT4 | Reconexão → reconciliação com REST | B5, B6 | `realtime.spec`, T10 | ☐ |
+| RT3 | Eventos com id estável, recurso e versão; dedupe; não regridem nem reaplicam | B5 | unit `apply.spec` + T10 | ☑ |
+| RT4 | Reconexão → reconciliação com REST | B5, B6 | `realtime.spec`, T10 | ◐ |
 | RT5 | Evento de sessão anterior não afeta outro usuário | B3, B5 | T10 | ◐ |
-| RT6 | Listeners liberados ao fim do ciclo de vida | B5 | T3 (logout) + revisão | ☐ |
-| RT7 | Cenário: item no carrinho → muda preço/estoque → UI avisa e atualiza o resumo → checkout bloqueia cotação velha | B5, B6 | T9 | ☐ |
+| RT6 | Listeners liberados ao fim do ciclo de vida | B5 | T3 (logout) + revisão | ◐ |
+| RT7 | Cenário: item no carrinho → muda preço/estoque → UI avisa e atualiza o resumo → checkout bloqueia cotação velha | B5, B6 | T9 | ◐ |
 | RT8 | Queda de conexão com pedido pendente → reconectar/recarregar recupera sem nova compra; terminais | B6 | T10 | ☐ |
 
 ## Interface e a11y (§8)
@@ -132,7 +132,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 |---|---|---|---|---|
 | U1 | Fidelidade: tipografia, cores, espaçamentos, hierarquia, imagens, proporções; shadcn adaptado | B1b, B7 | VIS | ☐ |
 | U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ◐ |
-| U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ◐ |
+| U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ☑ |
 | U4 | Teclado e foco visível | todos | T11, AXE | ☐ |
 | U5 | Foco em diálogos e drawers | B4–B6 | T11 | ◐ |
 | U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ◐ |
@@ -149,7 +149,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | T2 | Acesso direto ao detalhe + inexistente | B4 | ☑ |
 | T3 | Cadastro, login, expiração, logout, troca de usuário | B3 | ☑ |
 | T4 | Favoritos + falha de mutation + recuperação | B4 | ☑ |
-| T5 | Carrinho, quantidades, remoção, cupom, persistência refresh/login | B5 | ☐ |
+| T5 | Carrinho, quantidades, remoção, cupom, persistência refresh/login | B5 | ☑ |
 | T6 | Compra completa até o recibo confirmado | B6 | ☐ |
 | T7 | Falha de pagamento, clique repetido, timeout → mesmo pedido | B6 | ☐ |
 | T8 | Perfil, avatar, senha, carteiras + erros de validação | B3 | ☐ |

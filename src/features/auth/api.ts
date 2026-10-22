@@ -10,5 +10,9 @@ export const authApi = {
   logout: async (token: string) => {
     await http.post('/auth/logout', null, { headers: { Authorization: `Bearer ${token}` } })
   },
-  mergeGuestCart: async (guestCartId: string) => mergeCartResponseSchema.parse((await http.post('/cart/merge', { guestCartId })).data),
+  /** Explicit token: runs before the new session is published (see completeSignIn). */
+  mergeGuestCart: async (guestCartId: string, token: string) =>
+    mergeCartResponseSchema.parse(
+      (await http.post('/cart/merge', { guestCartId }, { headers: { Authorization: `Bearer ${token}` } })).data,
+    ),
 }

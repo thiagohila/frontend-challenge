@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { LiveRegion } from '@/components/layout/LiveRegion'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
+import { RealtimeBridge } from '@/components/layout/RealtimeBridge'
 import { Toaster } from '@/components/ui/sonner'
 import { ReauthDialog } from '@/features/auth/components/ReauthDialog'
 import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
@@ -47,6 +48,7 @@ function RootLayout() {
       {showTabBar && <MobileTabBar />}
       <ReauthDialog />
       <FavoriteIntentRunner />
+      <RealtimeBridge />
       <LiveRegion />
       {/* Bottom, above the mobile tab/buy bars: top toasts covered the mobile top-bar actions. */}
       <Toaster position="bottom-center" mobileOffset={{ bottom: 184 }} />

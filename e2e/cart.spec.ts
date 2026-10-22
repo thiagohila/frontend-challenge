@@ -1,0 +1,93 @@
+import type { Page } from '@playwright/test'
+import { DEMO_PASSWORD, DEMO_USERS } from '../src/mocks/server/seed'
+import { expect, test, waitForMockServer } from './fixtures'
+
+/** Adds items as the current owner (guest or user) through the REST API, like the UI does. */
+async function addToCart(page: Page, items: [nftId: string, editionId: string, quantity: number][]) {
+  // Requests must go through MSW, and the app creates the guest cart id on first render.
+  await waitForMockServer(page)
+  await page.waitForFunction(() => localStorage.getItem('kurio:guest-cart') ?? sessionStorage.getItem('kurio:session'))
+  await page.evaluate(async (lines) => {
+    const session = JSON.parse(sessionStorage.getItem('kurio:session') ?? 'null') as { token: string } | null
+    const guest = JSON.parse(localStorage.getItem('kurio:guest-cart') ?? 'null') as string | null
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (session) headers.Authorization = `Bearer ${session.token}`
+    else if (guest) headers['X-Guest-Cart-Id'] = guest
+    for (const [nftId, editionId, quantity] of lines) {
+      await fetch('/api/cart/items', { method: 'POST', headers, body: JSON.stringify({ nftId, editionId, quantity }) })
+    }
+  }, items)
+}
+
+const summary = (page: Page) => page.getByTestId('cart-summary')
+const line = (page: Page, nftId: string, isMobile: boolean) => page.getByTestId(isMobile ? `cart-card-${nftId}` : `cart-line-${nftId}`)
+
+test.describe('T5 — cart', () => {
+  test('buy from the detail, change quantities within stock, remove, totals from the API, persist after refresh', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto('/nft/emerald-ape-042')
+    await page.getByRole('button', { name: isMobile ? 'Comprar NFT' : 'COMPRAR', exact: true }).click()
+    await expect(page).toHaveURL('/cart')
+    await expect(line(page, 'emerald-ape-042', isMobile)).toBeVisible()
+    await expect(summary(page)).toContainText('1.19 ETH')
+    await expect(page.getByTestId('cart-total')).toHaveText('1.206 ETH') // 1.19 + 0.016 fee
+
+    await line(page, 'emerald-ape-042', isMobile).getByRole('button', { name: 'Aumentar quantidade' }).click()
+    await expect(page.getByTestId('cart-total')).toHaveText('2.396 ETH')
+
+    await addToCart(page, [['ivory-baron-088', 'ed-1-50', 1]])
+    await page.reload()
+    await expect(line(page, 'ivory-baron-088', isMobile)).toBeVisible()
+    await expect(page.getByTestId('cart-total')).toHaveText('4.186 ETH') // 2.38 + 1.79 + 0.016
+
+    await line(page, 'ivory-baron-088', isMobile)
+      .getByRole('button', { name: /Remover Ivory Baron/ })
+      .click()
+    await expect(line(page, 'ivory-baron-088', isMobile)).toBeHidden()
+    await page.reload()
+    await expect(page.getByTestId('cart-total')).toHaveText('2.396 ETH')
+  })
+
+  test('coupon: invalid, expired, valid, removal — and it survives a refresh', async ({ page }) => {
+    await page.goto('/cart')
+    await addToCart(page, [['emerald-ape-042', 'ed-1-50', 2]])
+    await page.reload()
+    const code = page.getByRole('textbox', { name: 'Código promocional' })
+    const apply = page.getByRole('button', { name: 'Aplicar' })
+
+    await code.fill('NAOEXISTE')
+    await apply.click()
+    await expect(code).toHaveAccessibleDescription(/Cupom inválido/)
+    await code.fill('GENESIS20')
+    await apply.click()
+    await expect(code).toHaveAccessibleDescription(/Cupom expirado/)
+
+    await code.fill('kurio10')
+    await apply.click()
+    await expect(page.getByText('Cupom KURIO10 aplicado (10% de desconto).')).toBeVisible()
+    await expect(summary(page)).toContainText('(-) 0.238')
+    await expect(page.getByTestId('cart-total')).toHaveText('2.158 ETH') // 2.38 - 0.238 + 0.016
+
+    await page.reload()
+    await expect(page.getByText('Cupom KURIO10 aplicado (10% de desconto).')).toBeVisible()
+    await page.getByRole('button', { name: 'Remover cupom' }).click()
+    await expect(page.getByTestId('cart-total')).toHaveText('2.396 ETH')
+  })
+
+  test("guest items are kept after signing in, clamped to the user's stock", async ({ page }) => {
+    await page.goto('/cart')
+    await addToCart(page, [['emerald-ape-042', 'ed-1-10', 3]])
+    await page.reload()
+    await page.goto('/checkout') // requires auth → login
+    await expect(page).toHaveURL(/\/login/)
+    const dialog = page.getByRole('dialog')
+    await dialog.getByRole('textbox', { name: 'E-mail' }).fill(DEMO_USERS.bruno.email)
+    await dialog.getByLabel('Senha', { exact: true }).fill(DEMO_PASSWORD)
+    await dialog.getByRole('button', { name: 'Entrar', exact: true }).click()
+    await expect(page).toHaveURL('/checkout')
+    await page.goto('/cart')
+    await expect(page.getByTestId('cart-total')).toHaveText('3.586 ETH') // 3 × 1.19 + 0.016, now in bruno's cart
+  })
+})

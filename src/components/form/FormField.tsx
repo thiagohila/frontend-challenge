@@ -3,8 +3,8 @@ import { cn } from '@/lib/utils'
 
 interface FormFieldProps {
   label: string
-  /** Figma auth screens show no visible labels: keep them for assistive tech only. */
-  hideLabel?: boolean
+  /** Label hidden visually (kept for assistive tech) where the Figma shows none; `'mobile'` = only below lg. */
+  hideLabel?: boolean | 'mobile'
   required?: boolean
   error?: string | undefined
   hint?: string
@@ -21,7 +21,10 @@ export function FormField({ label, hideLabel, required, error, hint, className, 
 
   return (
     <div className={cn('flex flex-col gap-2', className)}>
-      <label htmlFor={id} className={cn('text-[15px] leading-4 font-medium', hideLabel && 'sr-only')}>
+      <label
+        htmlFor={id}
+        className={cn('text-[15px] leading-4 font-medium', hideLabel === true && 'sr-only', hideLabel === 'mobile' && 'max-lg:sr-only')}
+      >
         {label}
         {required && (
           <span aria-hidden className="ml-0.5 text-coral">

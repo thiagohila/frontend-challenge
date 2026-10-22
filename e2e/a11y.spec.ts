@@ -24,6 +24,16 @@ for (const path of [
   })
 }
 
+test('no serious a11y violations on /cart (with items and coupon error)', async ({ page }) => {
+  await page.goto('/nft/emerald-ape-042')
+  await page.getByRole('button', { name: /^(COMPRAR|Comprar NFT)$/ }).click()
+  await expect(page.getByTestId('cart-total')).toBeVisible()
+  await page.getByRole('textbox', { name: 'Código promocional' }).fill('XYZ')
+  await page.getByRole('button', { name: 'Aplicar' }).click()
+  await expect(page.getByRole('textbox', { name: 'Código promocional' })).toHaveAttribute('aria-invalid', 'true')
+  await expectNoSeriousViolations(page)
+})
+
 test('no serious a11y violations on /favorites (signed in)', async ({ page, loginAs }) => {
   await page.goto('/favorites')
   await loginAs('ana')

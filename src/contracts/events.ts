@@ -43,5 +43,5 @@ export const SOCKET_EVENTS = {
   walletDisconnected: 'wallet.disconnected',
 } as const
 
-export const helloPayloadSchema = z.object({ token: z.string() })
+export const helloPayloadSchema = z.object({ token: z.string().optional() })
 export const readyPayloadSchema = z.object({ userId: id.nullable() })

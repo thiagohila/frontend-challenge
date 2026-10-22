@@ -29,20 +29,27 @@ export async function completeSignIn(response: SessionResponse, intent?: Intent)
   if (previousUserId && previousUserId !== response.user.id) await clearPrivateState(previousUserId)
   // Persist the intent BEFORE signing in: intent runners react to the session change synchronously.
   if (intent) writeStorage('session', `${privateKeyPrefix(response.user.id)}intent`, intent)
+
+  // Merge the guest cart BEFORE publishing the session: signing in re-runs route guards, which may
+  // navigate away immediately and abort an in-flight merge (found by e2e under load — REVIEW-LOG B5).
+  const merge = await mergeGuestCart(response.token)
+
   session.signIn(response)
   if (previousUserId === response.user.id) await queryClient.invalidateQueries()
-
-  const guestId = guestCart.peek()
-  if (guestId) {
-    try {
-      const { cart, adjustments } = await authApi.mergeGuestCart(guestId)
-      guestCart.forget()
-      if (cart.items.length) toast.success(adjustments.length ? t.auth.cartAdjusted(adjustments.length) : t.auth.cartMerged)
-    } catch {
-      // keep the guest id: the merge is retried on the next sign-in
-    }
-  }
+  if (merge?.hadItems) toast.success(merge.adjusted ? t.auth.cartAdjusted(merge.adjusted) : t.auth.cartMerged)
   announce(t.auth.signedIn(response.user.displayName))
+}
+
+async function mergeGuestCart(token: string) {
+  const guestId = guestCart.peek()
+  if (!guestId) return null
+  try {
+    const { cart, adjustments } = await authApi.mergeGuestCart(guestId, token)
+    guestCart.forget()
+    return { hadItems: cart.items.length > 0, adjusted: adjustments.length }
+  } catch {
+    return null // keep the guest id: the merge is retried on the next sign-in
+  }
 }
 
 /**
