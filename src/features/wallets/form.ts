@@ -3,7 +3,8 @@ import { emailSchema } from '@/contracts/auth'
 import { networkSchema } from '@/contracts/common'
 import { type Wallet, type WalletInput, type WalletRole, walletAddressSchema, walletTypeSchema } from '@/contracts/wallet'
 
-const required = (min: number, max: number) => z.string().trim().min(min, `Mínimo de ${min} caracteres`).max(max, `Máximo de ${max} caracteres`)
+const required = (min: number, max: number) =>
+  z.string().trim().min(min, `Mínimo de ${min} caracteres`).max(max, `Máximo de ${max} caracteres`)
 
 /** Form shape (strings only); converted to the API contract on submit. */
 export const walletFormSchema = z.object({

@@ -25,9 +25,9 @@ X1 stack efetiva · X2 fluxos reais · X3 confirmação só pela simulação · 
 ## 3. Definition of Done (todo bloco)
 1. Requisitos do bloco com status atualizado em REQUIREMENTS.
 2. Testes do bloco escritos **no próprio bloco** e verdes (desktop + mobile; unit quando houver).
-3. `CI=1 npm run typecheck && npm run lint && npm run test:e2e` verdes; checklist a11y (§5) nas telas tocadas.
+3. `CI=1 npm run typecheck && npm run lint && npm run format:check && npm run test:e2e` verdes; checklist a11y (§5) nas telas tocadas.
 4. Pixel pass das telas do bloco contra `docs/design/frames/` (desktop + mobile).
-5. **Revisão do bloco antes de fechar** (não deixar para o fim): reler o diff do bloco contra o checklist "Padrão de código" do `CLAUDE.md`, a regra de camadas (ARCH §2) e o checklist a11y (§5); rodar o axe nas telas novas; corrigir na hora o que aparecer e registrar o que virou regra.
+5. **Revisão do bloco antes de fechar** (não deixar para o fim): reler o diff do bloco contra o checklist "Padrão de código" do `CLAUDE.md`, a regra de camadas (ARCH §2) e o checklist a11y (§5); rodar o axe nas telas novas; corrigir na hora o que aparecer e registrar em `docs/REVIEW-LOG.md` (problema, causa, correção, prevenção).
 6. Commit (Conventional). Desvio de arquitetura → ADR em ARCHITECTURE §14.
 - **Push + preview Vercel** acontece nos checkpoints (B1b, 05:00, 13:30, B9), não em todo bloco, porque depende de login/permissão do usuário (§9).
 
@@ -91,6 +91,7 @@ Evidência: `e2e/a11y.spec.ts` (axe WCAG 2.1 A/AA, falha em `serious`/`critical`
 | Retry/preload engolem falha pontual nos testes | `times` maior que os retries ou falha persistente + `clearFailures()` |
 | Avatar estourando a cota do `localStorage` | Resize no cliente (256 WebP) + limite de 200 KB no servidor |
 | Perf mobile. **B0: home mobile 72 (LCP 3,5s). Após shell antes do MSW: 81 (LCP 3,4s, TBT 308ms)**, 1 execução. O LCP depende do download do JS (~322 KB) | B8: shell/hero estático no `index.html` (sem fake: o mesmo markup que o React hidrata/substitui), split de vendor, `modulepreload`, imagem LCP AVIF com `fetchpriority` |
+| **Perf mobile real (B4): 45 (home) / 42 (detalhe)**: LCP 5,8 s, TBT até 1,3 s | B8: (1) hero editorial estático (não depende da API/MSW) + `preload` da imagem LCP; (2) dividir chunks (radix/zod/msw) e adiar o que não é do primeiro paint; (3) `modulepreload` do MSW; (4) medir de novo a cada mudança |
 | Chrome não abre porta de debug no sandbox do agente | Rodar `npm run lighthouse` fora do sandbox |
 | Avaliador ver dados de 2 usuários no storage do mock | Chave `msw-server-db:v1`, documentada como storage do servidor simulado |
 | MCP do Figma: limite de chamadas (Starter) | Arquivo nos drafts do Yungas Pro; frames/metadata já salvos em `docs/design/` |

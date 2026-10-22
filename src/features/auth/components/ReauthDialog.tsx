@@ -16,7 +16,10 @@ export function ReauthDialog() {
 
   return (
     <Dialog open onOpenChange={() => undefined}>
-      <DialogContent showCloseButton={false} className="w-[min(500px,calc(100vw-2rem))] max-w-none rounded-lg border border-border bg-card p-8">
+      <DialogContent
+        showCloseButton={false}
+        className="w-[min(500px,calc(100vw-2rem))] max-w-none rounded-lg border border-border bg-card p-8"
+      >
         <DialogTitle className="text-xl font-bold">{t.auth.reauthTitle}</DialogTitle>
         <DialogDescription className="text-sm leading-6 text-muted-foreground">{t.auth.reauthBody}</DialogDescription>
         <LoginForm compact defaultEmail={state.user.email} onSuccess={() => undefined} />

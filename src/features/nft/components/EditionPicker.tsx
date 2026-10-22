@@ -3,7 +3,15 @@ import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
 
 /** Single choice among editions; sold-out ones are disabled and say so (not color-only, U8). */
-export function EditionPicker({ editions, selectedId, onSelect }: { editions: Edition[]; selectedId: string | undefined; onSelect: (id: string) => void }) {
+export function EditionPicker({
+  editions,
+  selectedId,
+  onSelect,
+}: {
+  editions: Edition[]
+  selectedId: string | undefined
+  onSelect: (id: string) => void
+}) {
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-2 text-[15px] font-bold">{t.detail.edition}</legend>
@@ -20,7 +28,9 @@ export function EditionPicker({ editions, selectedId, onSelect }: { editions: Ed
               onClick={() => onSelect(edition.id)}
               className={cn(
                 'h-7 rounded-full border px-2.5 text-sm',
-                selected ? 'border-primary font-medium text-text-accent' : 'border-control-border text-brand-secondary hover:border-primary',
+                selected
+                  ? 'border-primary font-medium text-text-accent'
+                  : 'border-control-border text-brand-secondary hover:border-primary',
                 soldOut && 'cursor-not-allowed line-through opacity-60 hover:border-control-border',
               )}
             >

@@ -10,7 +10,9 @@ const itemClass = 'grid size-[35px] place-items-center rounded border border-con
 export function CatalogPagination({ page, totalPages }: { page: number; totalPages: number }) {
   if (totalPages <= 1) return null
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
-  const to = (target: number) => (previous: CatalogSearch): CatalogSearch => ({ ...previous, page: target === 1 ? undefined : target })
+  const to =
+    (target: number) =>
+    (previous: CatalogSearch): CatalogSearch => ({ ...previous, page: target === 1 ? undefined : target })
 
   return (
     <nav aria-label={t.catalog.pagination} className="flex justify-end">

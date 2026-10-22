@@ -1,4 +1,11 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import type { NftSummary } from '@/contracts/nft'
+import { nftDetailQuery } from '@/features/catalog/queries'
+import { nftDisplayName } from '@/features/catalog/format'
+import { t } from '@/i18n'
+import { announce } from '@/lib/announce'
+import { isApiError } from '@/lib/api-error'
 import type { AddCartItem, Cart } from '@/contracts/cart'
 import { guestCart } from '@/lib/guest'
 import { type Owner, queryKeys } from '@/lib/query-keys'
@@ -31,4 +38,26 @@ export function useAddToCart() {
       return queryClient.invalidateQueries({ queryKey: queryKeys.quotes(owner) })
     },
   })
+}
+
+/** Card "add to cart": first edition still in stock, quantity 1, with accessible feedback. */
+export function useQuickAddToCart() {
+  const queryClient = useQueryClient()
+  const addToCart = useAddToCart()
+  return async (nft: NftSummary) => {
+    const detail = await queryClient.fetchQuery(nftDetailQuery(nft.id))
+    const edition = detail.editions.find((candidate) => candidate.available > 0)
+    if (!edition) return
+    addToCart.mutate(
+      { nftId: nft.id, editionId: edition.id, quantity: 1 },
+      {
+        onSuccess: () => {
+          const message = t.cart.added(nftDisplayName(nft), 1)
+          toast.success(message)
+          announce(message)
+        },
+        onError: (error) => toast.error(isApiError(error) ? error.message : t.cart.addFailed),
+      },
+    )
+  }
 }

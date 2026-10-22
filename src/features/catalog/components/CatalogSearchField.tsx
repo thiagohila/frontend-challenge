@@ -6,7 +6,15 @@ import { cn } from '@/lib/utils'
 const DEBOUNCE_MS = 300
 
 /** Debounced search bound to the URL `q` (the URL is the source of truth; local state only while typing). */
-export function CatalogSearchField({ value, onSearch, className }: { value: string | undefined; onSearch: (q: string) => void; className?: string }) {
+export function CatalogSearchField({
+  value,
+  onSearch,
+  className,
+}: {
+  value: string | undefined
+  onSearch: (q: string) => void
+  className?: string
+}) {
   const [draft, setDraft] = useState(value ?? '')
   const [syncedValue, setSyncedValue] = useState(value)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)

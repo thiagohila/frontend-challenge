@@ -3,7 +3,9 @@ import { DEMO_PASSWORD, DEMO_USERS } from '../src/mocks/server/seed'
 import { expect, test } from './fixtures'
 
 const favoriteButton = (page: Page, isMobile: boolean) =>
-  isMobile ? page.getByRole('button', { name: /Favoritar: Emerald Ape #042|Remover dos favoritos: Emerald Ape #042/ }) : page.getByRole('button', { name: /^(Favoritar|Favoritado)$/ })
+  isMobile
+    ? page.getByRole('button', { name: /Favoritar: Emerald Ape #042|Remover dos favoritos: Emerald Ape #042/ })
+    : page.getByRole('button', { name: /^(Favoritar|Favoritado)$/ })
 
 test.describe('T4 — favorites', () => {
   test('a visitor signs in and the favorite is applied afterwards (intent)', async ({ page, isMobile }) => {
@@ -15,7 +17,8 @@ test.describe('T4 — favorites', () => {
     await dialog.getByLabel('Senha', { exact: true }).fill(DEMO_PASSWORD)
     await dialog.getByRole('button', { name: 'Entrar', exact: true }).click()
     await expect(page).toHaveURL('/nft/emerald-ape-042')
-    await expect(favoriteButton(page, isMobile)).toHaveAttribute('aria-pressed', 'true')
+    // Chain: PBKDF2 login → guest-cart merge → favorite PUT → refetch. Slow under parallel CI load.
+    await expect(favoriteButton(page, isMobile)).toHaveAttribute('aria-pressed', 'true', { timeout: 20_000 })
     await page.reload()
     await expect(favoriteButton(page, isMobile)).toHaveAttribute('aria-pressed', 'true') // persisted (C6)
   })

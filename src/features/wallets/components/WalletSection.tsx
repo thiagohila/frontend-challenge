@@ -21,20 +21,32 @@ export function WalletSection({ userId, email, walletRole: role, wallet, primary
     <section aria-labelledby={headingId}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 id={headingId} className="text-lg font-bold leading-5">
+          <h2 id={headingId} className="text-lg leading-5 font-bold">
             {title}
           </h2>
           {role === 'primary' && <p className="mt-1 text-sm text-muted-foreground">{t.wallets.description}</p>}
         </div>
         {!editing && (
-          <Button variant="link" onClick={() => setEditing(true)} className="h-auto p-0 text-base font-bold text-text-accent" aria-describedby={headingId}>
+          <Button
+            variant="link"
+            onClick={() => setEditing(true)}
+            className="h-auto p-0 text-base font-bold text-text-accent"
+            aria-describedby={headingId}
+          >
             {wallet ? t.wallets.edit : t.wallets.add}
           </Button>
         )}
       </div>
 
       {editing ? (
-        <WalletForm userId={userId} walletRole={role} wallet={wallet} primary={role === 'secondary' ? primary : undefined} defaultEmail={email} onDone={() => setEditing(false)} />
+        <WalletForm
+          userId={userId}
+          walletRole={role}
+          wallet={wallet}
+          primary={role === 'secondary' ? primary : undefined}
+          defaultEmail={email}
+          onDone={() => setEditing(false)}
+        />
       ) : wallet ? (
         <dl className="mt-4 grid gap-x-7 gap-y-2 rounded bg-card p-5 text-sm md:grid-cols-2" data-testid={`wallet-${role}`}>
           <WalletDetail label={t.wallets.fields.alias} value={wallet.alias} />

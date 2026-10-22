@@ -27,16 +27,23 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
   const name = nftDisplayName(nft)
   return (
     <article className="group relative flex flex-col gap-3" aria-labelledby={`nft-${nft.id}`}>
-      <div className="relative bg-card pt-6 pb-1 transition-[border-color] group-focus-within:border-primary group-hover:border-primary border-t border-transparent">
+      <div className="relative border-t border-transparent bg-card pt-6 pb-1 transition-[border-color] group-focus-within:border-primary group-hover:border-primary">
         <NftArt art={nft.art} alt={name} width={250} priority={priority} className="mx-auto w-[calc(100%-8px)] rounded-[15px]" />
         {nft.rarity === 'rare' && (
-          <span className="absolute top-0 left-0 z-10 bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground">{t.catalog.rare}</span>
+          <span className="absolute top-0 left-0 z-10 bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground">
+            {t.catalog.rare}
+          </span>
         )}
         {nft.soldOut && (
           <span className="absolute top-2 right-2 rounded bg-ink/80 px-2 py-1 text-xs font-bold text-foreground">{t.catalog.soldOut}</span>
         )}
         {/* Mobile (Figma): favorite at the top-right of the art. */}
-        <FavoriteButton name={name} active={isFavorite} onClick={() => onToggleFavorite(nft)} className="absolute top-8 right-3 z-10 lg:hidden" />
+        <FavoriteButton
+          name={name}
+          active={isFavorite}
+          onClick={() => onToggleFavorite(nft)}
+          className="absolute top-8 right-3 z-10 lg:hidden"
+        />
         {/* Desktop (Figma hover): cart, favorite, view — also revealed on keyboard focus. */}
         <div className="absolute inset-x-0 bottom-3 z-10 hidden justify-center gap-2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 lg:flex">
           {onQuickAdd && !nft.soldOut && (
@@ -52,7 +59,11 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
       </div>
       <h3 id={`nft-${nft.id}`} className="text-base leading-4">
         {/* Whole-card link target is the title (single tab stop per card). */}
-        <Link to="/nft/$nftId" params={{ nftId: nft.id }} className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none">
+        <Link
+          to="/nft/$nftId"
+          params={{ nftId: nft.id }}
+          className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+        >
           {name}
         </Link>
       </h3>

@@ -9,7 +9,15 @@ async function expectNoSeriousViolations(page: Page) {
   expect(blocking.map((violation) => `${violation.id}: ${violation.help} (${violation.nodes.length})`)).toEqual([])
 }
 
-for (const path of ['/', '/?collection=%5B%22arte-digital%22%5D&sort=price-asc', '/nft/emerald-ape-042', '/nft/nao-existe', '/rota-inexistente', '/login', '/register']) {
+for (const path of [
+  '/',
+  '/?collection=%5B%22arte-digital%22%5D&sort=price-asc',
+  '/nft/emerald-ape-042',
+  '/nft/nao-existe',
+  '/rota-inexistente',
+  '/login',
+  '/register',
+]) {
   test(`no serious a11y violations on ${path}`, async ({ page }) => {
     await page.goto(path)
     await expectNoSeriousViolations(page)

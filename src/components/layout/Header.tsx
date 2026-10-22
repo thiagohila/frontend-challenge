@@ -42,7 +42,7 @@ export function Header() {
             {cartCount > 0 && (
               <span
                 aria-hidden
-                className="absolute -top-1 -right-2 grid size-4 place-items-center rounded-full bg-primary text-[11px] font-medium leading-none text-primary-foreground"
+                className="absolute -top-1 -right-2 grid size-4 place-items-center rounded-full bg-primary text-[11px] leading-none font-medium text-primary-foreground"
               >
                 {cartCount}
               </span>

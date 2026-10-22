@@ -1,12 +1,8 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { NftSummary } from '@/contracts/nft'
-import { useAddToCart } from '@/features/cart/queries'
+import { useQuery } from '@tanstack/react-query'
+import { useQuickAddToCart } from '@/features/cart/queries'
 import { useFavorites } from '@/features/favorites/queries'
 import { t } from '@/i18n'
-import { announce } from '@/lib/announce'
-import { featuredQuery, nftDetailQuery, nftListQuery } from '../queries'
-import { nftDisplayName } from '../format'
+import { featuredQuery, nftListQuery } from '../queries'
 import { type CatalogSearch, toListQuery } from '../search'
 import { CatalogFilters } from './CatalogFilters'
 import { CatalogResults } from './CatalogResults'
@@ -29,28 +25,13 @@ export function CatalogHome({ search, onSearchChange, onClearFilters }: CatalogH
   const list = useQuery(nftListQuery(toListQuery(search)))
   const featured = useQuery(featuredQuery())
   const favorites = useFavorites()
-  const addToCart = useAddToCart()
-  const queryClient = useQueryClient()
+  const quickAdd = useQuickAddToCart()
 
-  // Quick add from the card hover: first edition still available, quantity 1.
-  const quickAdd = async (nft: NftSummary) => {
-    const detail = await queryClient.fetchQuery(nftDetailQuery(nft.id))
-    const edition = detail.editions.find((candidate) => candidate.available > 0)
-    if (!edition) return
-    addToCart.mutate(
-      { nftId: nft.id, editionId: edition.id, quantity: 1 },
-      {
-        onSuccess: () => {
-          const message = t.cart.added(nftDisplayName(nft), 1)
-          toast.success(message)
-          announce(message)
-        },
-        onError: () => toast.error(t.cart.addFailed),
-      },
-    )
+  const filterProps = {
+    search,
+    facets: list.data?.facets,
+    onChange: (patch: Partial<Omit<CatalogSearch, 'page'>>) => onSearchChange(patch),
   }
-
-  const filterProps = { search, facets: list.data?.facets, onChange: (patch: Partial<Omit<CatalogSearch, 'page'>>) => onSearchChange(patch) }
 
   return (
     <>
@@ -61,7 +42,11 @@ export function CatalogHome({ search, onSearchChange, onClearFilters }: CatalogH
 
       <HomeHero slides={featured.data?.hero} />
 
-      <section id="catalogo" aria-labelledby="catalog-title" className="mx-auto mt-10 flex max-w-page scroll-mt-6 gap-12 px-4 lg:mt-24 lg:px-0">
+      <section
+        id="catalogo"
+        aria-labelledby="catalog-title"
+        className="mx-auto mt-10 flex max-w-page scroll-mt-6 gap-12 px-4 lg:mt-24 lg:px-0"
+      >
         <h2 id="catalog-title" className="sr-only">
           {t.catalog.sectionTitle}
         </h2>

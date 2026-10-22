@@ -47,7 +47,13 @@ export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner,
     else if (!money.equals(current.unitPriceEth, line.unitPriceEth))
       changes.push({ nftId: line.nftId, editionId: line.editionId, kind: 'price', from: line.unitPriceEth, to: current.unitPriceEth })
     else if (current.quantity !== line.quantity)
-      changes.push({ nftId: line.nftId, editionId: line.editionId, kind: 'availability', from: String(line.quantity), to: String(current.quantity) })
+      changes.push({
+        nftId: line.nftId,
+        editionId: line.editionId,
+        kind: 'availability',
+        from: String(line.quantity),
+        to: String(current.quantity),
+      })
   }
 
   const quote: QuoteRecord = {

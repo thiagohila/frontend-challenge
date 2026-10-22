@@ -14,7 +14,9 @@ function HomeRoute() {
   return (
     <CatalogHome
       search={search}
-      onSearchChange={(patch, options) => void navigate({ search: withFilters(patch), replace: options?.replace ?? false, resetScroll: false })}
+      onSearchChange={(patch, options) =>
+        void navigate({ search: withFilters(patch), replace: options?.replace ?? false, resetScroll: false })
+      }
       onClearFilters={() => void navigate({ search: {}, resetScroll: false })}
     />
   )

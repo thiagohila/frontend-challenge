@@ -19,7 +19,10 @@ export function Footer() {
       <div className="grid gap-8 bg-card p-6 lg:grid-cols-[1fr_1fr_1fr_1.2fr] lg:gap-0 lg:px-10 lg:py-8">
         {footer.features.map((feature) => (
           <section key={feature.letter} className="lg:border-r lg:border-primary lg:px-6 lg:first:pl-0">
-            <span aria-hidden className="grid size-[66px] place-items-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
+            <span
+              aria-hidden
+              className="grid size-[66px] place-items-center rounded-full bg-primary text-2xl font-bold text-primary-foreground"
+            >
               {feature.letter}
             </span>
             <h2 className="mt-4 text-base font-bold">{feature.title}</h2>
@@ -27,7 +30,7 @@ export function Footer() {
           </section>
         ))}
         <div className="lg:pl-6">
-          <h2 className="text-base font-bold leading-4">{footer.newsletterTitle}</h2>
+          <h2 className="text-base leading-4 font-bold">{footer.newsletterTitle}</h2>
           <div className="mt-4 flex shadow-[0_0_10px_rgba(10,6,4,.45)]">
             <label htmlFor="newsletter-email" className="sr-only">
               {footer.newsletterLabel}
@@ -39,9 +42,7 @@ export function Footer() {
               placeholder={footer.newsletterPlaceholder}
               className="h-10 min-w-0 flex-1 bg-surface-dark px-3 text-sm placeholder:text-brand-secondary"
             />
-            <ComingSoon className="h-10 bg-primary px-3 text-base font-bold text-primary-foreground">
-              {footer.newsletterSubmit}
-            </ComingSoon>
+            <ComingSoon className="h-10 bg-primary px-3 text-base font-bold text-primary-foreground">{footer.newsletterSubmit}</ComingSoon>
           </div>
           <p className="mt-4 text-xs leading-5 text-muted-foreground">{footer.newsletterNote}</p>
         </div>
@@ -82,7 +83,10 @@ export function Footer() {
           <ul className="mt-4 flex gap-2">
             {SOCIAL.map(({ name, icon }) => (
               <li key={name}>
-                <ComingSoon aria-label={`${name} (${t.comingSoon})`} className="grid size-7 place-items-center rounded border border-primary">
+                <ComingSoon
+                  aria-label={`${name} (${t.comingSoon})`}
+                  className="grid size-7 place-items-center rounded border border-primary"
+                >
                   <img src={iconSrc(icon)} alt="" width={16} height={16} />
                 </ComingSoon>
               </li>

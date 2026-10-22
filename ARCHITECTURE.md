@@ -4,21 +4,23 @@ Guia normativo do projeto (o **como**). O que está aqui **deve** ser seguido; d
 Enunciado: `docs/CHALLENGE.md` · O quê: `docs/REQUIREMENTS.md` · Plano: `docs/PLAN.md` · Segurança: `docs/SECURITY.md` · Design: `docs/DESIGN.md`.
 
 ## 0. Avaliação do estado atual (B0)
-| Item | Situação | Ação |
-|---|---|---|
-| Vite + TS strict + aliases `@/` | ✅ adequado | — |
-| Router file-based + `routeTree.gen.ts` versionado | ✅ typecheck funciona sem build | manter versionado |
-| QueryClient global | ✅ | ajustar retry por erro (§6) |
-| Axios `http` | ⚠️ sem interceptors | adicionar auth, normalização de erro, 401 (§5) |
-| Socket criado dentro da rota `/` (import dinâmico após `mocksReady`) | ⚠️ provisório (smoke) | mover para `RealtimeProvider` por sessão (§9) |
-| MSW boot lazy + shell antes do MSW | ✅ feito (§13, ADR 10/12) | — |
-| Handlers MSW em arquivo único | ⚠️ não escala | dividir por recurso + db + cenários (§10) |
-| Contratos | ❌ inexistentes | criar `src/contracts` (§4) antes de qualquer feature |
-| E2E smoke + axe | ✅ | evoluir fixtures (§12) |
+
+| Item                                                                 | Situação                        | Ação                                                 |
+| -------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------- |
+| Vite + TS strict + aliases `@/`                                      | ✅ adequado                     | —                                                    |
+| Router file-based + `routeTree.gen.ts` versionado                    | ✅ typecheck funciona sem build | manter versionado                                    |
+| QueryClient global                                                   | ✅                              | ajustar retry por erro (§6)                          |
+| Axios `http`                                                         | ⚠️ sem interceptors             | adicionar auth, normalização de erro, 401 (§5)       |
+| Socket criado dentro da rota `/` (import dinâmico após `mocksReady`) | ⚠️ provisório (smoke)           | mover para `RealtimeProvider` por sessão (§9)        |
+| MSW boot lazy + shell antes do MSW                                   | ✅ feito (§13, ADR 10/12)       | —                                                    |
+| Handlers MSW em arquivo único                                        | ⚠️ não escala                   | dividir por recurso + db + cenários (§10)            |
+| Contratos                                                            | ❌ inexistentes                 | criar `src/contracts` (§4) antes de qualquer feature |
+| E2E smoke + axe                                                      | ✅                              | evoluir fixtures (§12)                               |
 
 Conclusão: a base é sólida. Os riscos estão no que ainda não existe, então a ordem é contratos → mock db → http/sessão → features.
 
 ## 1. Princípios
+
 1. **A rede é a fronteira.** O app só conhece contratos HTTP/WS. MSW é "o backend". Nenhum `if (mock)` fora de `src/mocks` e `main.tsx`.
 2. **O servidor é a fonte da verdade.** Preço, disponibilidade, cotação, pedido e carrinho são autoritativos do mock. O cliente exibe, valida a UX e reconcilia.
 3. **Estado remoto = TanStack Query; estado de navegação = URL (Router); estado local = React.** Sem store global extra; a exceção é a sessão, com um store mínimo (§7).
@@ -26,12 +28,14 @@ Conclusão: a base é sólida. Os riscos estão no que ainda não existe, então
 5. **Isolamento por usuário em todas as camadas**: key, handler, evento, storage.
 
 ## 2. Camadas e regra de dependência
+
 ```
 routes/  ──►  features/*  ──►  lib/, contracts/, components/
                  │
                  └──► api.ts ──► lib/http (axios) ──► [rede] ──► mocks/ (MSW)
 mocks/  ──►  contracts/   (nunca importa app)
 ```
+
 - `routes` compõem a página: `validateSearch`, `beforeLoad` (guards), `loader` (prefetch), pending/error/notFound. Lógica de negócio fica fora das rotas.
 - `features/<x>`: sem barrel `index.ts` (ADR 17). Outras partes importam só `components/*`, `queries.ts` e `api.ts` de uma feature; helpers internos (ex.: `form.ts`) são privados a ela.
 - Rotas só compõem: `validateSearch`, guards, loader, `head` e montagem de componentes de feature. UI com estado vive em `features/<x>/components`.
@@ -39,6 +43,7 @@ mocks/  ──►  contracts/   (nunca importa app)
 - `components/ui` é shadcn. `components/` tem os blocos compartilhados do app (Skeleton, QueryState, FormField, PriceTag…).
 
 ## 3. Estrutura
+
 ```
 src/
   main.tsx                 # boot: mocks? → providers → router
@@ -79,6 +84,7 @@ scripts/lighthouse.mjs
 ```
 
 ## 4. Contratos
+
 - **Money**: `z.string().regex(/^\d+(\.\d{1,18})?$/)` (ETH, string decimal). Cálculos só em `lib/money.ts` (decimal.js). Proibido `Number(price)` e `parseFloat`.
 - **Quantidade**: `z.number().int().positive()`.
 - **Erro (envelope único)**:
@@ -93,31 +99,35 @@ scripts/lighthouse.mjs
 - **Versionamento**: `Nft` e `Order` carregam `version: number` (monotônico por recurso) e `updatedAt`. As edições não têm versão própria: qualquer mudança de preço ou disponibilidade de uma edição incrementa a `version` do NFT. É ela que governa o dedupe.
 
 ### Endpoints (base `/api`)
-| Recurso | Método/rota | Notas |
-|---|---|---|
-| Sessão | `POST /auth/register` · `POST /auth/login` · `GET /auth/session` · `POST /auth/logout` | 409 email em uso; 401 `SESSION_EXPIRED` |
-| NFTs | `GET /nfts?q&collection&category&priceMin&priceMax&status&sort&page&pageSize` · `GET /nfts/featured` · `GET /nfts/:id` | 404 inexistente; edições com `available` |
-| Favoritos | `GET /me/favorites` · `PUT /me/favorites/:nftId` · `DELETE /me/favorites/:nftId` | idempotentes |
-| Carrinho | `GET /cart` · `POST /cart/items` · `PATCH /cart/items/:itemId` · `DELETE /cart/items/:itemId` · `POST /cart/merge { guestCartId }` | dono = usuário (token) ou visitante (`X-Guest-Cart-Id`); 409 `OUT_OF_STOCK` com `available`; o merge soma por (nft, edição), limita ao estoque e devolve `adjustments[]` para avisar |
-| Cupom | `PUT /cart/coupon { code }` · `DELETE /cart/coupon` | cupom **guardado no carrinho do servidor** (sobrevive a refresh/login/merge); 422 `COUPON_INVALID`/`COUPON_EXPIRED` |
-| Cotação | `POST /quote { network? }` (usa o cupom do carrinho) | retorna `quoteId`, `version`, `expiresAt`, linhas (preço unitário da cotação), `subtotal`, `discount`, `networkFee`, `total`, `changes[]` (diferenças vs carrinho/cotação anterior) |
-| Pedidos | `POST /orders { quoteId, walletId, network, buyer }` (header `Idempotency-Key`) · `GET /orders/:id` · `GET /orders?status=pending` | 409 `QUOTE_STALE` + nova cotação; mesma key + mesmo payload → **mesmo pedido** (200); mesma key + payload diferente → 409 `IDEMPOTENCY_CONFLICT`. **Ordem no handler: 1) consultar a `Idempotency-Key` (se existe, devolve o pedido, sem revalidar cotação/estoque); 2) se o usuário já tem pedido `pending` → 409 `CONFLICT` com `details.orderId`; 3) só então validar cotação/estoque/carteira.** A criação reserva o estoque; a recusa o libera. Ao confirmar, o servidor **subtrai do carrinho só (nft, edição, qtd) comprados** e grava o **snapshot** do recibo (linhas, preços, taxas, total, `txHash`, `explorerUrl`). Cada pedido `pending` guarda `resolveAt` no db (C4) |
-| Perfil | `GET /me/profile` · `PATCH /me/profile` · `PUT /me/avatar` · `POST /me/password` | 422 validação por campo; senha atual incorreta → 422 `fields.currentPassword` |
-| Transação | `GET /tx/:hash` | só para o dono do pedido (os outros recebem 404); devolve `{ hash, network, status, total, confirmedAt }`, sem itens |
-| Carteiras | `GET /me/wallets` · `POST /me/wallets` · `PATCH /me/wallets/:id` | `role: 'primary'|'secondary'` (no máximo uma de cada); `address` validado; `networks[]` |
-| Conexão de carteira | `POST /me/wallets/:id/connect { network }` · `DELETE /me/wallets/:id/connect` | 200 `{ connectionId, status: 'connected' }` · 403 `WALLET_REJECTED` (usuário "recusou") · desconexão do lado da "carteira" chega como evento `wallet.disconnected`; criar pedido com conexão inativa → 409 `WALLET_DISCONNECTED` |
+
+| Recurso             | Método/rota                                                                                                                        | Notas                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sessão              | `POST /auth/register` · `POST /auth/login` · `GET /auth/session` · `POST /auth/logout`                                             | 409 email em uso; 401 `SESSION_EXPIRED`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| NFTs                | `GET /nfts?q&collection&category&priceMin&priceMax&status&sort&page&pageSize` · `GET /nfts/featured` · `GET /nfts/:id`             | 404 inexistente; edições com `available`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Favoritos           | `GET /me/favorites` · `PUT /me/favorites/:nftId` · `DELETE /me/favorites/:nftId`                                                   | idempotentes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Carrinho            | `GET /cart` · `POST /cart/items` · `PATCH /cart/items/:itemId` · `DELETE /cart/items/:itemId` · `POST /cart/merge { guestCartId }` | dono = usuário (token) ou visitante (`X-Guest-Cart-Id`); 409 `OUT_OF_STOCK` com `available`; o merge soma por (nft, edição), limita ao estoque e devolve `adjustments[]` para avisar                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Cupom               | `PUT /cart/coupon { code }` · `DELETE /cart/coupon`                                                                                | cupom **guardado no carrinho do servidor** (sobrevive a refresh/login/merge); 422 `COUPON_INVALID`/`COUPON_EXPIRED`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Cotação             | `POST /quote { network? }` (usa o cupom do carrinho)                                                                               | retorna `quoteId`, `version`, `expiresAt`, linhas (preço unitário da cotação), `subtotal`, `discount`, `networkFee`, `total`, `changes[]` (diferenças vs carrinho/cotação anterior)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Pedidos             | `POST /orders { quoteId, walletId, network, buyer }` (header `Idempotency-Key`) · `GET /orders/:id` · `GET /orders?status=pending` | 409 `QUOTE_STALE` + nova cotação; mesma key + mesmo payload → **mesmo pedido** (200); mesma key + payload diferente → 409 `IDEMPOTENCY_CONFLICT`. **Ordem no handler: 1) consultar a `Idempotency-Key` (se existe, devolve o pedido, sem revalidar cotação/estoque); 2) se o usuário já tem pedido `pending` → 409 `CONFLICT` com `details.orderId`; 3) só então validar cotação/estoque/carteira.** A criação reserva o estoque; a recusa o libera. Ao confirmar, o servidor **subtrai do carrinho só (nft, edição, qtd) comprados** e grava o **snapshot** do recibo (linhas, preços, taxas, total, `txHash`, `explorerUrl`). Cada pedido `pending` guarda `resolveAt` no db (C4) |
+| Perfil              | `GET /me/profile` · `PATCH /me/profile` · `PUT /me/avatar` · `POST /me/password`                                                   | 422 validação por campo; senha atual incorreta → 422 `fields.currentPassword`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Transação           | `GET /tx/:hash`                                                                                                                    | só para o dono do pedido (os outros recebem 404); devolve `{ hash, network, status, total, confirmedAt }`, sem itens                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Carteiras           | `GET /me/wallets` · `POST /me/wallets` · `PATCH /me/wallets/:id`                                                                   | `role: 'primary'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | 'secondary'`(no máximo uma de cada);`address`validado;`networks[]` |
+| Conexão de carteira | `POST /me/wallets/:id/connect { network }` · `DELETE /me/wallets/:id/connect`                                                      | 200 `{ connectionId, status: 'connected' }` · 403 `WALLET_REJECTED` (usuário "recusou") · desconexão do lado da "carteira" chega como evento `wallet.disconnected`; criar pedido com conexão inativa → 409 `WALLET_DISCONNECTED`                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ### Eventos Socket.IO (namespace `/`)
+
 Envelope: `{ eventId: string, type, resourceId: string, version: number, occurredAt: string, userId?: string, payload }`.
-| Evento | Direção | Payload |
-|---|---|---|
-| `nft.updated` | server→client | `{ price, editions: [{ id, available }] }` |
-| `order.updated` | server→client (só ao dono) | `{ status: 'pending'|'confirmed'|'declined', txHash?, reason? }` |
-| `wallet.disconnected` | server→client (só ao dono) | `{ walletId, connectionId, reason }` |
-| `session.hello` | client→server | `{ token }` (auth após conectar) |
-| `session.ready` | server→client | `{ userId }` (confirma o hello; o binding não suporta ack/callback) |
+
+| Evento                | Direção                    | Payload                                                             |
+| --------------------- | -------------------------- | ------------------------------------------------------------------- |
+| `nft.updated`         | server→client              | `{ price, editions: [{ id, available }] }`                          |
+| `order.updated`       | server→client (só ao dono) | `{ status: 'pending'                                                | 'confirmed' | 'declined', txHash?, reason? }` |
+| `wallet.disconnected` | server→client (só ao dono) | `{ walletId, connectionId, reason }`                                |
+| `session.hello`       | client→server              | `{ token }` (auth após conectar)                                    |
+| `session.ready`       | server→client              | `{ userId }` (confirma o hello; o binding não suporta ack/callback) |
 
 ## 5. HTTP (Axios)
+
 - Instância única `lib/http.ts`: `baseURL`, JSON. **Timeout implementado em JS** (`AbortController` + `setTimeout`, 10s; checkout 15s), não no `timeout` nativo do XHR, para que o `page.clock` controle o timeout nos testes (T7). Ele é combinado com o `signal` do Query.
 - **Request interceptor**: `Authorization: Bearer <token>` vindo do session store; `X-Guest-Cart-Id` quando visitante.
 - **Response interceptor**: converte para `ApiError { status, code, message, fields }`; timeout/rede → `code: 'UNAVAILABLE'`, `transient: true`. Em 401 `SESSION_EXPIRED`/`UNAUTHORIZED` → `session.expire()`, exceto em `/auth/*` **e quando o status da sessão já não é `authenticated`** (evita reauth depois do logout, I6).
@@ -127,6 +137,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - **Idempotency-Key** (`lib/idempotency.ts`): uma chave por **tentativa de compra** = (userId, quoteId), persistida em `sessionStorage` até o pedido ficar terminal. Retry/timeout/refresh reutilizam a chave. **Antes de gerar uma chave nova** (nova cotação), o cliente consulta `GET /orders?status=pending`; se existir pedido pendente, retoma esse pedido em vez de criar outro (C3).
 
 ## 6. Estado remoto (TanStack Query)
+
 - **Keys** (`lib/query-keys.ts`):
   - públicas: `['nfts', 'list', params]`, `['nfts', 'featured']`, `['nfts', 'detail', id]`
   - privadas: `['user', userId, 'favorites' | 'cart' | 'profile' | 'wallets' | 'orders', ...]`, `['user', userId, 'quote', { network }]`
@@ -136,18 +147,19 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - **Versão nunca regride**: o `structuralSharing` customizado (`keepNewerVersion`) em queries de `Nft`/`Order` mantém o dado em cache quando a resposta REST traz `version` menor que a já aplicada por evento (I5).
 - **Respostas fora de ordem**: key por params + `signal` (abort) + `placeholderData: keepPreviousData`. Nunca `setState` manual com resultado de fetch.
 - **Invalidação após mutation**:
-  | Mutation | Invalida/atualiza |
-  |---|---|
-  | favorito on/off | **otimista** em `['user',id,'favorites']` (cancelQueries → snapshot → set); rollback no erro; `invalidate` no settle |
-  | item do carrinho | `cart`, `quote` |
-  | cupom aplicar/remover | `cart`, `quote` |
-  | criar pedido | `setQueryData(order)`; após `confirmed`: `cart`, `nfts.detail` dos itens |
-  | perfil/avatar | `profile` (+ header) |
-  | carteiras | `wallets` |
-  | login/logout | `queryClient.clear()` (§7) |
+  | Mutation              | Invalida/atualiza                                                                                                    |
+  | --------------------- | -------------------------------------------------------------------------------------------------------------------- |
+  | favorito on/off       | **otimista** em `['user',id,'favorites']` (cancelQueries → snapshot → set); rollback no erro; `invalidate` no settle |
+  | item do carrinho      | `cart`, `quote`                                                                                                      |
+  | cupom aplicar/remover | `cart`, `quote`                                                                                                      |
+  | criar pedido          | `setQueryData(order)`; após `confirmed`: `cart`, `nfts.detail` dos itens                                             |
+  | perfil/avatar         | `profile` (+ header)                                                                                                 |
+  | carteiras             | `wallets`                                                                                                            |
+  | login/logout          | `queryClient.clear()` (§7)                                                                                           |
 - **Estados**: todo componente com dados usa `<QueryState>` (loading = skeleton com dimensões fixas, empty, error com retry, `isFetching` = indicador discreto de atualização em segundo plano).
 
 ## 7. Sessão e autenticação
+
 - `lib/session`: store externo (`useSyncExternalStore`) com `{ status: 'unknown'|'authenticated'|'anonymous'|'expired', user, token }`; token persistido em `sessionStorage`.
 - Boot: se há token → `GET /auth/session` antes de resolver guards. A sessão entra em `createRouter({ context: { queryClient, session } })`, e cada mudança de sessão chama `router.invalidate()` para reavaliar os guards.
 - A chave do token (`kurio:session`) é fixa. As demais chaves privadas do app usam o namespace `kurio:<userId>:*`.
@@ -159,27 +171,30 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - Ao logar, um pedido `pending` do usuário (`GET /orders?status=pending`) é retomado: banner + link para o status (RT8).
 
 ## 8. Rotas
-| Rota | Arquivo | Auth | Search (zod) |
-|---|---|---|---|
-| `/` | `index.tsx` | — | `q, collection[], category[], priceMin, priceMax, status, sort, page` |
-| `/nft/$nftId` | `nft.$nftId.tsx` | — | `edition?` |
-| `/cart` | `cart.tsx` | — | — |
-| (layout) | `_auth.tsx` | ✅ | `beforeLoad` com o guard |
-| `/checkout` | `_auth/checkout.tsx` | ✅ | `step: 'details'|'review'` |
-| `/orders/$orderId` | `_auth/orders.$orderId.tsx` | ✅ | — (confirmação/recibo) |
-| `/login` | `login.tsx` | só anônimo | `redirect?`, `intent?` |
-| `/register` | `register.tsx` | só anônimo | `redirect?`, `intent?` |
-| `/favorites` | `_auth/favorites.tsx` | ✅ | — (lista de favoritos; Tab Bar mobile e "Lista de interesse") |
-| `/account/profile` | `_auth/account.profile.tsx` | ✅ | — |
-| `/account/wallets` | `_auth/account.wallets.tsx` | ✅ | — |
-| `/tx/$hash` | `_auth/tx.$hash.tsx` | ✅ (dono) | — (explorador simulado; 404 para os demais) |
-| `*` | `__root notFoundComponent` | — | — |
+
+| Rota               | Arquivo                     | Auth       | Search (zod)                                                          |
+| ------------------ | --------------------------- | ---------- | --------------------------------------------------------------------- |
+| `/`                | `index.tsx`                 | —          | `q, collection[], category[], priceMin, priceMax, status, sort, page` |
+| `/nft/$nftId`      | `nft.$nftId.tsx`            | —          | `edition?`                                                            |
+| `/cart`            | `cart.tsx`                  | —          | —                                                                     |
+| (layout)           | `_auth.tsx`                 | ✅         | `beforeLoad` com o guard                                              |
+| `/checkout`        | `_auth/checkout.tsx`        | ✅         | `step: 'details'                                                      | 'review'` |
+| `/orders/$orderId` | `_auth/orders.$orderId.tsx` | ✅         | — (confirmação/recibo)                                                |
+| `/login`           | `login.tsx`                 | só anônimo | `redirect?`, `intent?`                                                |
+| `/register`        | `register.tsx`              | só anônimo | `redirect?`, `intent?`                                                |
+| `/favorites`       | `_auth/favorites.tsx`       | ✅         | — (lista de favoritos; Tab Bar mobile e "Lista de interesse")         |
+| `/account/profile` | `_auth/account.profile.tsx` | ✅         | —                                                                     |
+| `/account/wallets` | `_auth/account.wallets.tsx` | ✅         | —                                                                     |
+| `/tx/$hash`        | `_auth/tx.$hash.tsx`        | ✅ (dono)  | — (explorador simulado; 404 para os demais)                           |
+| `*`                | `__root notFoundComponent`  | —          | —                                                                     |
+
 - Mudança de qualquer filtro → `page: 1` (feito no helper `updateFilters`, nunca no componente).
 - `loader` do detalhe: `queryClient.ensureQueryData(nftDetail(id))`; 404 → `throw notFound()`.
 - `/checkout` com carrinho vazio e sem pedido pendente → `redirect` para `/cart` com aviso. `/orders/$orderId` de outro usuário ou inexistente → página 404. Status `pending` mostra a tela de aguardando; `declined` mostra a recusa com volta ao checkout; **recibo só em `confirmed`**.
 - Cada rota define `head`/título e move o foco para o `h1` após a navegação.
 
 ## 9. Tempo real
+
 - `lib/realtime/manager.ts`: **um** socket por sessão (`transports: ['websocket']`, `autoConnect: false`). Criado no login/boot, destruído no logout. Na conexão emite `session.hello { token }` e espera `session.ready`.
 - **`socket.io-client` só por `import()` dinâmico depois de `mocksReady`** (`lib/socket.ts`). O engine.io-client captura `globalThis.WebSocket` quando o módulo é avaliado, e o MSW só o substitui em `worker.start()`. Import estático é bloqueado pelo lint (C1, já corrigido e testado).
 - `RealtimeProvider` monta e desmonta o manager conforme a sessão; hooks `useRealtime(type, handler)` sempre fazem cleanup (`off`).
@@ -194,6 +209,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - **Queda de conexão**: socket.io reconecta sozinho após **queda de transporte**; não reconecta após `io server disconnect`. Por isso o mock simula queda fechando o transporte (§10). Enquanto estiver desconectado, a UI mostra o status "reconectando" e pedidos `pending` fazem polling REST leve (5s) como fallback.
 
 ## 10. Mocks (MSW)
+
 - **db** (`mocks/db`): estado único em memória (users, sessions, nfts/editions, favorites, carts, coupons, quotes, orders, idempotency, wallets, walletConnections). Persistido em `localStorage` (`msw-server-db:v1`) a cada escrita; `reset()` recarrega o seed do cenário. Seed determinístico; latência variável vem de PRNG com seed (ex.: mulberry32), então é reproduzível.
 - Esse storage é **do servidor simulado** (contém todos os usuários, como um banco). O app nunca o lê; documentado no README/SECURITY para não ser confundido com vazamento.
 - **Handlers** derivam o usuário **sempre** do token. Senhas como hash PBKDF2 + salt.
@@ -202,18 +218,18 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - **Avatar**: o cliente redimensiona para 256×256 WebP (canvas, ~<100 KB) antes do upload; o servidor rejeita >200 KB. Assim o db cabe na cota do `localStorage` (I9).
 - **Seleção**: `?scenario=<nome>` (persistido) → painel dev (visível no build demo) → `window.__mock.setScenario()` nos testes. Reset: `window.__mock.reset()` + botão no painel.
 - **API de controle** (`mocks/control.ts`, em `window.__mock`). **Fonte única dos nomes**; o PLAN e a fixture usam estes:
-  | Função | Efeito |
-  |---|---|
-  | `reset(scenario?)` | restaura o seed (e o cenário) |
-  | `setScenario(name)` | troca o cenário ativo |
+  | Função                                                      | Efeito                                                                  |
+  | ----------------------------------------------------------- | ----------------------------------------------------------------------- |
+  | `reset(scenario?)`                                          | restaura o seed (e o cenário)                                           |
+  | `setScenario(name)`                                         | troca o cenário ativo                                                   |
   | `fail(route, { status \| 'network' \| 'timeout', times? })` | falha pontual (`times` omitido = persistente); `clearFailures()` remove |
-  | `setLatency(ms \| [min, max])` | latência fixa/variável (PRNG com seed) |
-  | `updateNft(id, patch)` | escreve no db → REST + `nft.updated` |
-  | `emitRaw(event)` | envia evento cru (duplicado/antigo, T10) |
-  | `dropConnection()` | fecha o transporte (o cliente reconecta) |
-  | `resolveOrder(id, 'confirmed' \| 'declined')` | resolve um pedido pendente |
-  | `disconnectWallet(id)` | emite `wallet.disconnected` |
-  | `expireSession()` | invalida o token atual (próxima chamada → 401) |
+  | `setLatency(ms \| [min, max])`                              | latência fixa/variável (PRNG com seed)                                  |
+  | `updateNft(id, patch)`                                      | escreve no db → REST + `nft.updated`                                    |
+  | `emitRaw(event)`                                            | envia evento cru (duplicado/antigo, T10)                                |
+  | `dropConnection()`                                          | fecha o transporte (o cliente reconecta)                                |
+  | `resolveOrder(id, 'confirmed' \| 'declined')`               | resolve um pedido pendente                                              |
+  | `disconnectWallet(id)`                                      | emite `wallet.disconnected`                                             |
+  | `expireSession()`                                           | invalida o token atual (próxima chamada → 401)                          |
 - **Painel dev** fica em `src/mocks/devtools/`, carregado só com os mocks ligados, e usa apenas a API de controle (servidor simulado → socket), nunca o cache ou os setters do app. Ele aparece **visualmente isolado** (botão flutuante "Servidor simulado (admin)", visual distinto do app) para não ser confundido com UI do produto.
 - **Mudança de dado = REST + evento**: toda escrita em `nfts`/`orders` passa por `db.update()`, que incrementa `version` e chama `realtime.broadcast()`. O pedido fica `pending` com `resolveAt` (e o resultado planejado pelo cenário) **gravados no db**. No boot do mock e a cada `GET /orders/:id`, pedidos com `resolveAt` vencido são resolvidos e emitem `order.updated`; os não vencidos são reagendados. Assim o pedido sobrevive a refresh (C4). O timer é controlável pelo `page.clock`.
 - **Socket** (`handlers/realtime.ts`): `ws.link(env.socketUrl + '/*')` + `toSocketIo`. Registra as conexões e o usuário de cada uma (após `session.hello`). Limitações do binding 0.2 (verificadas no código):
@@ -229,6 +245,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - `window.__mock` só existe quando os mocks estão ligados. É a "API admin" do servidor simulado; a UI de produção nunca a chama para simular eventos.
 
 ## 11. UI, formulários e a11y
+
 - shadcn como primitivas, tematizado por tokens CSS em `index.css` (cores, raio, tipografia do Figma). Não fazer fork de componente sem necessidade.
 - Formulários: `useZodForm(schema)` (react-hook-form + resolver próprio em `lib/zod-form.ts`); erros da API (`fields`) mapeados via `setError`. `FormField` garante `label`, `aria-invalid` e `aria-describedby`.
 - Skeleton com shimmer (`motion-safe:` no Tailwind) e dimensões do conteúdo real.
@@ -238,6 +255,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - **Explorador de transação**: link para `/tx/$hash`, uma página interna "Explorador simulado", **só para o dono** (404 para os demais). Mostra apenas hash, rede, status, total e data, sem itens, com o aviso de simulação. Não aponta para Etherscan com hash falso.
 
 ## 12. Testes
+
 - **Isolamento**: cada teste em contexto novo. O `addInitScript` define o cenário e limpa o db **só na primeira carga** (flag `sessionStorage['mock:init']`), para que `page.reload()` preserve o estado nos testes de persistência (C6).
 - **Fixture** `e2e/fixtures.ts`: objeto `mock` que espelha 1:1 a API de controle do §10 (via `page.evaluate` → `window.__mock`, ou seja, servidor simulado → socket.io-client), mais `loginAs(user)` e `page.clock` para timers.
 - **Falhas e retry**: falhas transitórias são absorvidas por até 2 retries. Os testes de erro (T4, T12) usam `fail(..., { times: 3+ })` ou uma falha persistente seguida de `clearFailures()` e "Tentar novamente", e evitam hover nos links durante a falha (preload `intent`).
@@ -255,6 +273,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - Mapa de specs: `catalog.spec` (T1, T12) · `nft-detail.spec` (T2) · `auth.spec` (T3) · `favorites.spec` (T4) · `cart.spec` (T5) · `checkout.spec` (T6, T7) · `account.spec` (T8) · `realtime.spec` (T9, T10, RT1 no catálogo/detalhe) · `a11y.spec` (T11 + axe) · `layout.spec` (U2, U10) · `visual.spec` (VIS) · `deploy.spec` (smoke contra a URL pública, `BASE_URL`, compara o commit) · `tests/unit/*` (unit).
 
 ## 13. Performance
+
 - **Boot** ✅: `render()` imediato (shell + skeletons) em paralelo com `import('./mocks/browser')` + `worker.start()`; a rede (Axios **e** o import do socket) espera `mocksReady` (§5, §9). `modulepreload` do chunk do MSW. O LCP é medido no B1b para decidir otimizações.
 - Code splitting por rota (`autoCodeSplitting`); MSW e socket são carregados sob demanda.
 - **Versão publicada = código**: o build injeta o commit (`VERCEL_GIT_COMMIT_SHA` ou `git rev-parse`) em `/version.json` e no rodapé; o `deploy.spec` confere com o HEAD entregue (D2).
@@ -264,57 +283,66 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - Sem trabalho síncrono pesado no boot; listas grandes paginadas pelo servidor.
 
 ## 14. Decisões (ADRs curtas)
-| # | Decisão | Motivo |
-|---|---|---|
-| 1 | Sem lib de i18n; dicionário tipado + `Intl` | o enunciado não exige; zero custo de bundle; habilita os extras |
-| 2 | Resolver zod próprio | `@hookform/resolvers` com conflito de peers impede `npm ci` limpo |
-| 3 | msw 2.x | `@mswjs/socket.io-binding` exige `msw@^2` |
-| 4 | Token em `sessionStorage` | sobrevive a refresh, isolado por aba; em produção real seria cookie HttpOnly |
-| 5 | Carrinho no servidor (também para visitante) | uma fonte de verdade para disponibilidade, cotação e merge |
-| 6 | Lighthouse via API + script próprio | `@lhci/cli` trazia 17 vulnerabilidades; script dá mediana de 3 |
-| 7 | `routeTree.gen.ts` versionado | typecheck/lint independem de build |
-| 8 | Recurso de outro usuário → 404 | não revela existência (X4) |
-| 9 | Explorador de transação interno (`/tx/$hash`) | link externo com hash falso pareceria real (S14, P10) |
-| 10 | Shell renderiza antes do MSW; rede aguarda `mocksReady` | LCP/FCP no mobile sem burlar a auditoria (L2, L6) |
-| 11 | Baselines VIS em Linux (Docker); `visual.spec` pulado fora do Linux | reprodutível na máquina de quem avalia, sem quebrar `test:e2e` no macOS (TQ2, X6) |
-| 12 | `socket.io-client` só por import dinâmico após `mocksReady` | engine.io captura o `WebSocket` no carregamento do módulo (C1) |
-| 13 | Ping manual no mock | o binding não envia ping; sem ele o socket cai a cada 30s (C2) |
-| 14 | Idempotência consultada antes de qualquer validação | reenvio após timeout recupera o pedido, nunca duplica (C3) |
-| 15 | Cupom guardado no carrinho do servidor | aplicar/remover persiste em refresh e login (K4, K2) |
-| 16 | Timeout do Axios em JS (AbortController) | controlável pelo `page.clock` (TQ3, T7) |
-| 17 | Sem barrel files nas features | barrels puxam o módulo inteiro para o chunk de cada rota e pioram o code splitting e o HMR |
+
+| #   | Decisão                                                             | Motivo                                                                                     |
+| --- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1   | Sem lib de i18n; dicionário tipado + `Intl`                         | o enunciado não exige; zero custo de bundle; habilita os extras                            |
+| 2   | Resolver zod próprio                                                | `@hookform/resolvers` com conflito de peers impede `npm ci` limpo                          |
+| 3   | msw 2.x                                                             | `@mswjs/socket.io-binding` exige `msw@^2`                                                  |
+| 4   | Token em `sessionStorage`                                           | sobrevive a refresh, isolado por aba; em produção real seria cookie HttpOnly               |
+| 5   | Carrinho no servidor (também para visitante)                        | uma fonte de verdade para disponibilidade, cotação e merge                                 |
+| 6   | Lighthouse via API + script próprio                                 | `@lhci/cli` trazia 17 vulnerabilidades; script dá mediana de 3                             |
+| 7   | `routeTree.gen.ts` versionado                                       | typecheck/lint independem de build                                                         |
+| 8   | Recurso de outro usuário → 404                                      | não revela existência (X4)                                                                 |
+| 9   | Explorador de transação interno (`/tx/$hash`)                       | link externo com hash falso pareceria real (S14, P10)                                      |
+| 10  | Shell renderiza antes do MSW; rede aguarda `mocksReady`             | LCP/FCP no mobile sem burlar a auditoria (L2, L6)                                          |
+| 11  | Baselines VIS em Linux (Docker); `visual.spec` pulado fora do Linux | reprodutível na máquina de quem avalia, sem quebrar `test:e2e` no macOS (TQ2, X6)          |
+| 12  | `socket.io-client` só por import dinâmico após `mocksReady`         | engine.io captura o `WebSocket` no carregamento do módulo (C1)                             |
+| 13  | Ping manual no mock                                                 | o binding não envia ping; sem ele o socket cai a cada 30s (C2)                             |
+| 14  | Idempotência consultada antes de qualquer validação                 | reenvio após timeout recupera o pedido, nunca duplica (C3)                                 |
+| 15  | Cupom guardado no carrinho do servidor                              | aplicar/remover persiste em refresh e login (K4, K2)                                       |
+| 16  | Timeout do Axios em JS (AbortController)                            | controlável pelo `page.clock` (TQ3, T7)                                                    |
+| 17  | Sem barrel files nas features                                       | barrels puxam o módulo inteiro para o chunk de cada rota e pioram o code splitting e o HMR |
 
 ## 15. Limitações, decisões de UX e desvios do Figma
+
 Preenchido durante a implementação (obrigatório na entrega, D6).
+
 ### Limitações
+
 - Backend, carteiras e blockchain simulados (MSW). Limitações do binding Socket.IO em §10 (sem rooms, sem ping, sem ack, só websocket).
 - Sessão em `sessionStorage` (por aba): uma nova aba exige novo login.
+
 ### Decisões de UX
+
 - Ações fora do escopo: "Em breve" sem simular sucesso (§11).
 - Expiração de sessão: modal de reautenticação sem perder o formulário/rota.
 - Alterações de preço/estoque: aviso inline + `aria-live`, com nova confirmação obrigatória no checkout.
+
 ### Desvios do Figma
+
 Detalhe e inventário em `docs/design/DESIGN.md`; **todo desvio fica registrado aqui** (exigência do enunciado §12):
-| Desvio | Motivo |
-|---|---|
-| Borda de inputs/controles/paginação/chips `#3F2319` → `--control-border` `#8A6A4A` (≥3:1 sobre ink e card) | `#3F2319` dá 1.34:1, abaixo dos 3:1 da WCAG 1.4.11. Divisórias decorativas mantêm `#3F2319` |
-| Texto do "Aplicar" do cupom mobile: foreground → ink | foreground sobre primary dá 2.50:1 |
-| Cor de erro coral `#F0805F` (não existe no Figma), sempre com ícone e texto | o design não tem estado de erro; 7.29:1 sobre ink |
-| Estados ativos (filtro, sidebar, edição) ganham indicador além da cor (check/borda/peso, `aria-pressed`/`aria-current`) | WCAG 1.4.1 |
-| Texto de 9 px (chip de carteiras) → 11 px; badge do carrinho 10 px → 11 px | legibilidade |
-| Header logado, tablet (768), mobile de Confirmação/Perfil/Carteiras, skeleton, toast, vazio/erro/404 | não desenhados; derivados dos padrões existentes (DESIGN.md §7) |
-| Conteúdo inconsistente do Figma (token IDs, somas do carrinho, "Contrato"/"Direitos autorais" trocados) não copiado | os valores vêm da API simulada (DESIGN.md §9.3) |
-| 4 artes para todos os NFTs, reutilizadas nas fixtures; servidas em AVIF/WebP com `srcset` | só existem 4 artes no Figma (PNG ~2 MB) |
-| Logo do Google inline (SVG oficial) | o export do Figma veio fatiado em 7 partes |
-| "Código de indicação" opcional (Figma marca `*`) | indicação é opcional por natureza; obrigá-lo bloquearia o cadastro de carteira |
-| Header logado (avatar + nome → Minha conta) | estado logado não desenhado; derivado do estilo da sidebar da conta |
-| Login/cadastro com labels só para leitores de tela | Figma usa apenas placeholder; label visível mudaria o layout, então fica `sr-only` (WCAG 1.3.1/4.1.2 atendidos) |
-| ENS: ".eth" como afixo fixo (não um select) | só existe a opção ".eth"; um select de uma opção não faz sentido |
-| Campo de busca no topo da sidebar no desktop (o Figma desktop só tem o ícone no header) | busca é requisito (S4); o ícone do header leva ao catálogo; o mobile segue o Figma ("Explorar coleções") |
-| Paginação ganha "anterior" (a partir da pág. 2) | navegação por teclado/leitor sem depender de números; o Figma só tem números + "próxima" |
-| Preço do filtro com ponto ("0.39 - 12.11") | o Figma usa vírgula só ali; todos os outros preços usam ponto (consistência) |
-| Aba "Avaliações" com aviso "em breve" | o conteúdo da aba não foi desenhado; o resumo (estrelas e contagem) continua visível |
-| Galeria com 4 miniaturas da mesma arte | o Figma tem uma arte por NFT, repetida 4×; mantido |
-| Toasts embaixo (acima da tab bar/buy bar) | no topo, cobriam as ações da barra superior do mobile (achado em teste) |
-| "Ordenar por" também no mobile | ordenação é requisito (S4); o frame mobile não a mostra |
-| Card no mobile: favoritar no topo direito; desktop: 3 ações no hover **e no foco do teclado** | Figma; o foco revela as ações para quem navega por teclado |
+
+| Desvio                                                                                                                  | Motivo                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Borda de inputs/controles/paginação/chips `#3F2319` → `--control-border` `#8A6A4A` (≥3:1 sobre ink e card)              | `#3F2319` dá 1.34:1, abaixo dos 3:1 da WCAG 1.4.11. Divisórias decorativas mantêm `#3F2319`                     |
+| Texto do "Aplicar" do cupom mobile: foreground → ink                                                                    | foreground sobre primary dá 2.50:1                                                                              |
+| Cor de erro coral `#F0805F` (não existe no Figma), sempre com ícone e texto                                             | o design não tem estado de erro; 7.29:1 sobre ink                                                               |
+| Estados ativos (filtro, sidebar, edição) ganham indicador além da cor (check/borda/peso, `aria-pressed`/`aria-current`) | WCAG 1.4.1                                                                                                      |
+| Texto de 9 px (chip de carteiras) → 11 px; badge do carrinho 10 px → 11 px                                              | legibilidade                                                                                                    |
+| Header logado, tablet (768), mobile de Confirmação/Perfil/Carteiras, skeleton, toast, vazio/erro/404                    | não desenhados; derivados dos padrões existentes (DESIGN.md §7)                                                 |
+| Conteúdo inconsistente do Figma (token IDs, somas do carrinho, "Contrato"/"Direitos autorais" trocados) não copiado     | os valores vêm da API simulada (DESIGN.md §9.3)                                                                 |
+| 4 artes para todos os NFTs, reutilizadas nas fixtures; servidas em AVIF/WebP com `srcset`                               | só existem 4 artes no Figma (PNG ~2 MB)                                                                         |
+| Logo do Google inline (SVG oficial)                                                                                     | o export do Figma veio fatiado em 7 partes                                                                      |
+| "Código de indicação" opcional (Figma marca `*`)                                                                        | indicação é opcional por natureza; obrigá-lo bloquearia o cadastro de carteira                                  |
+| Header logado (avatar + nome → Minha conta)                                                                             | estado logado não desenhado; derivado do estilo da sidebar da conta                                             |
+| Login/cadastro com labels só para leitores de tela                                                                      | Figma usa apenas placeholder; label visível mudaria o layout, então fica `sr-only` (WCAG 1.3.1/4.1.2 atendidos) |
+| ENS: ".eth" como afixo fixo (não um select)                                                                             | só existe a opção ".eth"; um select de uma opção não faz sentido                                                |
+| Campo de busca no topo da sidebar no desktop (o Figma desktop só tem o ícone no header)                                 | busca é requisito (S4); o ícone do header leva ao catálogo; o mobile segue o Figma ("Explorar coleções")        |
+| Paginação ganha "anterior" (a partir da pág. 2)                                                                         | navegação por teclado/leitor sem depender de números; o Figma só tem números + "próxima"                        |
+| Preço do filtro com ponto ("0.39 - 12.11")                                                                              | o Figma usa vírgula só ali; todos os outros preços usam ponto (consistência)                                    |
+| Aba "Avaliações" com aviso "em breve"                                                                                   | o conteúdo da aba não foi desenhado; o resumo (estrelas e contagem) continua visível                            |
+| Galeria com 4 miniaturas da mesma arte                                                                                  | o Figma tem uma arte por NFT, repetida 4×; mantido                                                              |
+| Toasts embaixo (acima da tab bar/buy bar)                                                                               | no topo, cobriam as ações da barra superior do mobile (achado em teste)                                         |
+| "Ordenar por" também no mobile                                                                                          | ordenação é requisito (S4); o frame mobile não a mostra                                                         |
+| Card no mobile: favoritar no topo direito; desktop: 3 ações no hover **e no foco do teclado**                           | Figma; o foco revela as ações para quem navega por teclado                                                      |

@@ -23,15 +23,17 @@ export const CATALOG_PAGE_SIZE = 9
 export const toListQuery = (search: CatalogSearch): NftListQuery => ({ ...search, pageSize: CATALOG_PAGE_SIZE })
 
 /** Any filter change resets pagination (C2). */
-export const withFilters = (patch: Partial<Omit<CatalogSearch, 'page'>>) => (previous: CatalogSearch): CatalogSearch => {
-  const next: CatalogSearch = { ...previous, ...patch, page: undefined }
-  // Drop empty values so the URL stays clean and comparable.
-  for (const key of Object.keys(next) as (keyof CatalogSearch)[]) {
-    const value = next[key]
-    if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) delete next[key]
+export const withFilters =
+  (patch: Partial<Omit<CatalogSearch, 'page'>>) =>
+  (previous: CatalogSearch): CatalogSearch => {
+    const next: CatalogSearch = { ...previous, ...patch, page: undefined }
+    // Drop empty values so the URL stays clean and comparable.
+    for (const key of Object.keys(next) as (keyof CatalogSearch)[]) {
+      const value = next[key]
+      if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) delete next[key]
+    }
+    return next
   }
-  return next
-}
 
 export const toggleValue = <T extends string>(values: readonly T[] | undefined, value: T): T[] =>
   values?.includes(value) ? values.filter((item) => item !== value) : [...(values ?? []), value]

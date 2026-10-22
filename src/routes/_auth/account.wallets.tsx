@@ -38,7 +38,13 @@ function WalletsPage() {
       ) : (
         <div className="flex flex-col gap-10">
           <WalletSection userId={user.id} email={user.email} walletRole="primary" wallet={byRole('primary')} />
-          <WalletSection userId={user.id} email={user.email} walletRole="secondary" wallet={byRole('secondary')} primary={byRole('primary')} />
+          <WalletSection
+            userId={user.id}
+            email={user.email}
+            walletRole="secondary"
+            wallet={byRole('secondary')}
+            primary={byRole('primary')}
+          />
         </div>
       )}
     </div>

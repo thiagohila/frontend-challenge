@@ -1,150 +1,157 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 /* Figma reference code lives in docs/ and design-src/; never scan it for classes */
-@source not "../docs";
-@source not "../design-src";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/roboto-mono";
+@source not '../docs';
+@source not '../design-src';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/roboto-mono';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Roboto Mono Variable', ui-monospace, monospace;
-    --font-mono: 'Roboto Mono Variable', ui-monospace, monospace;
-    /* Kurio brand tokens (Figma variables) */
-    --color-ink: var(--ink);
-    --color-surface-card: var(--surface-card);
-    --color-surface-dark: var(--surface-dark);
-    --color-border-soft: var(--border-soft);
-    --color-text-primary: var(--text-primary);
-    --color-control-border: var(--control-border);
-    --color-text-secondary: var(--text-secondary);
-    --color-text-accent: var(--text-accent);
-    --color-brand-secondary: var(--brand-secondary);
-    --color-elevated: var(--background-elevated);
-    --color-success: var(--success);
-    --color-surface-raised: var(--surface-raised);
-    --color-coral: var(--coral);
-    --color-amber: var(--amber);
-    --container-page: 75rem; /* 1200px content width */
-    --animate-shimmer: shimmer 1.6s linear infinite;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --font-heading: var(--font-sans);
+  --font-sans: 'Roboto Mono Variable', ui-monospace, monospace;
+  --font-mono: 'Roboto Mono Variable', ui-monospace, monospace;
+  /* Kurio brand tokens (Figma variables) */
+  --color-ink: var(--ink);
+  --color-surface-card: var(--surface-card);
+  --color-surface-dark: var(--surface-dark);
+  --color-border-soft: var(--border-soft);
+  --color-text-primary: var(--text-primary);
+  --color-control-border: var(--control-border);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-accent: var(--text-accent);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-elevated: var(--background-elevated);
+  --color-success: var(--success);
+  --color-surface-raised: var(--surface-raised);
+  --color-coral: var(--coral);
+  --color-amber: var(--amber);
+  --container-page: 75rem; /* 1200px content width */
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
-    /* Single dark theme from Figma (no light variant in the design) */
-    color-scheme: dark;
-    --ink: #140d0a;
-    --surface-card: #241612;
-    --surface-dark: #38220f;
-    --border-soft: #55321f;
-    --text-primary: #f7f3ec;
-    --text-secondary: #cfb28c;
-    --text-accent: #e89b55;
-    --brand-secondary: #b39463;
-    --background-elevated: #fbfbfb;
-    --success: #00a66c;
-    --surface-raised: #2f1d15;
-    --coral: #f0805f;
-    --amber: #e3a44e;
-    /* a11y deviation: Figma borders (#3f2319 = 1.34:1) fail WCAG 1.4.11 for inputs/controls */
-    --control-border: #8a6a4a;
+  /* Single dark theme from Figma (no light variant in the design) */
+  color-scheme: dark;
+  --ink: #140d0a;
+  --surface-card: #241612;
+  --surface-dark: #38220f;
+  --border-soft: #55321f;
+  --text-primary: #f7f3ec;
+  --text-secondary: #cfb28c;
+  --text-accent: #e89b55;
+  --brand-secondary: #b39463;
+  --background-elevated: #fbfbfb;
+  --success: #00a66c;
+  --surface-raised: #2f1d15;
+  --coral: #f0805f;
+  --amber: #e3a44e;
+  /* a11y deviation: Figma borders (#3f2319 = 1.34:1) fail WCAG 1.4.11 for inputs/controls */
+  --control-border: #8a6a4a;
 
-    --background: var(--ink);
-    --foreground: var(--text-primary);
-    --card: var(--surface-card);
-    --card-foreground: var(--text-primary);
-    --popover: var(--surface-card);
-    --popover-foreground: var(--text-primary);
-    --primary: #d28a4c;
-    --primary-foreground: var(--ink);
-    --secondary: var(--surface-dark);
-    --secondary-foreground: #f5f1eb;
-    --muted: var(--surface-card);
-    --muted-foreground: var(--text-secondary);
-    --accent: var(--surface-dark);
-    --accent-foreground: var(--text-accent);
-    --destructive: var(--coral);
-    --border: #3f2319;
-    --input: var(--control-border);
-    --ring: var(--text-accent);
-    --chart-1: #d28a4c;
-    --chart-2: #b39463;
-    --chart-3: #e89b55;
-    --chart-4: #cfb28c;
-    --chart-5: #55321f;
-    --radius: 0.5rem;
-    --sidebar: var(--surface-card);
-    --sidebar-foreground: var(--text-primary);
-    --sidebar-primary: #d28a4c;
-    --sidebar-primary-foreground: var(--ink);
-    --sidebar-accent: var(--surface-dark);
-    --sidebar-accent-foreground: var(--text-accent);
-    --sidebar-border: #3f2319;
-    --sidebar-ring: var(--text-accent);
+  --background: var(--ink);
+  --foreground: var(--text-primary);
+  --card: var(--surface-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface-card);
+  --popover-foreground: var(--text-primary);
+  --primary: #d28a4c;
+  --primary-foreground: var(--ink);
+  --secondary: var(--surface-dark);
+  --secondary-foreground: #f5f1eb;
+  --muted: var(--surface-card);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--surface-dark);
+  --accent-foreground: var(--text-accent);
+  --destructive: var(--coral);
+  --border: #3f2319;
+  --input: var(--control-border);
+  --ring: var(--text-accent);
+  --chart-1: #d28a4c;
+  --chart-2: #b39463;
+  --chart-3: #e89b55;
+  --chart-4: #cfb28c;
+  --chart-5: #55321f;
+  --radius: 0.5rem;
+  --sidebar: var(--surface-card);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: #d28a4c;
+  --sidebar-primary-foreground: var(--ink);
+  --sidebar-accent: var(--surface-dark);
+  --sidebar-accent-foreground: var(--text-accent);
+  --sidebar-border: #3f2319;
+  --sidebar-ring: var(--text-accent);
 }
 
 @keyframes shimmer {
-  from { background-position: -200% 0; }
-  to { background-position: 200% 0; }
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
     cursor: pointer;
-    }
+  }
   html {
     @apply font-sans;
-    }
+  }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
-    }
+  }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;

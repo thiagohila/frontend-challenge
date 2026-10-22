@@ -68,7 +68,12 @@ export function WalletForm({ userId, walletRole: role, wallet, primary, defaultE
           <TextInput {...form.register('alias')} />
         </FormField>
         <FormField label={fields.network} required error={errors.network?.message}>
-          <SelectControl control={form.control} name="network" placeholder={fields.networkPlaceholder} options={networkSchema.options.map((value) => ({ value, label: t.networks[value] }))} />
+          <SelectControl
+            control={form.control}
+            name="network"
+            placeholder={fields.networkPlaceholder}
+            options={networkSchema.options.map((value) => ({ value, label: t.networks[value] }))}
+          />
         </FormField>
         <FormField label={fields.profileName} required error={errors.profileName?.message}>
           <TextInput {...form.register('profileName')} />
@@ -80,7 +85,12 @@ export function WalletForm({ userId, walletRole: role, wallet, primary, defaultE
           <TextInput placeholder={fields.secondaryRef} {...form.register('secondaryRef')} />
         </FormField>
         <FormField label={fields.walletType} required error={errors.walletType?.message}>
-          <SelectControl control={form.control} name="walletType" placeholder={fields.walletTypePlaceholder} options={walletTypeSchema.options.map((value) => ({ value, label: t.walletTypes[value] }))} />
+          <SelectControl
+            control={form.control}
+            name="walletType"
+            placeholder={fields.walletTypePlaceholder}
+            options={walletTypeSchema.options.map((value) => ({ value, label: t.walletTypes[value] }))}
+          />
         </FormField>
         <FormField label={fields.referralCode} error={errors.referralCode?.message}>
           <TextInput {...form.register('referralCode')} />

@@ -5,6 +5,7 @@ Solução do desafio frontend — enunciado em [`docs/CHALLENGE.md`](docs/CHALLE
 > Em construção. Setup completo, cenários, credenciais fictícias e contratos serão documentados aqui.
 
 ## Setup
+
 ```bash
 nvm use        # Node 22
 npm ci
@@ -14,10 +15,11 @@ npm run dev
 ```
 
 ## Comandos
-| Comando | Descrição |
-|---|---|
-| `npm run dev` | Dev server com mocks MSW |
-| `npm run build` / `npm run preview` | Build otimizado / servir build |
-| `npm run typecheck` / `npm run lint` | Tipos / lint (oxlint) |
-| `npm run test:e2e` | Playwright (desktop + mobile, Chromium) |
-| `npm run lighthouse` | Lighthouse 3× por página/perfil (com `preview` rodando) |
+
+| Comando                              | Descrição                                               |
+| ------------------------------------ | ------------------------------------------------------- |
+| `npm run dev`                        | Dev server com mocks MSW                                |
+| `npm run build` / `npm run preview`  | Build otimizado / servir build                          |
+| `npm run typecheck` / `npm run lint` | Tipos / lint (oxlint)                                   |
+| `npm run test:e2e`                   | Playwright (desktop + mobile, Chromium)                 |
+| `npm run lighthouse`                 | Lighthouse 3× por página/perfil (com `preview` rodando) |

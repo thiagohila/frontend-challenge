@@ -44,16 +44,29 @@ export function LoginForm({ defaultEmail = '', intent, onSuccess, compact }: Log
       className="flex flex-col gap-3"
     >
       <FormField label={t.auth.email} hideLabel error={errors.email?.message}>
-        <TextInput type="email" autoComplete="email" placeholder={t.auth.emailPlaceholder} className="h-[50px] lg:h-10" {...form.register('email')} />
+        <TextInput
+          type="email"
+          autoComplete="email"
+          placeholder={t.auth.emailPlaceholder}
+          className="h-[50px] lg:h-10"
+          {...form.register('email')}
+        />
       </FormField>
       <FormField label={t.auth.password} hideLabel error={errors.password?.message}>
-        <PasswordInput autoComplete="current-password" placeholder={t.auth.passwordPlaceholder} className="h-[50px] lg:h-10" {...form.register('password')} />
+        <PasswordInput
+          autoComplete="current-password"
+          placeholder={t.auth.passwordPlaceholder}
+          className="h-[50px] lg:h-10"
+          {...form.register('password')}
+        />
       </FormField>
-      {!compact && (
-        <ComingSoon className="self-end text-sm text-text-accent">{t.auth.forgotPassword}</ComingSoon>
-      )}
+      {!compact && <ComingSoon className="self-end text-sm text-text-accent">{t.auth.forgotPassword}</ComingSoon>}
       <FormError message={formError} />
-      <Button type="submit" disabled={login.isPending} className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md">
+      <Button
+        type="submit"
+        disabled={login.isPending}
+        className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md"
+      >
         {login.isPending ? t.auth.submitting : t.auth.submitSignIn}
       </Button>
       {!compact && (

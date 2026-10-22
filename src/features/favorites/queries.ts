@@ -27,7 +27,8 @@ export function useFavorites() {
   const ids = new Set(favorites.data?.map((nft) => nft.id))
 
   const mutation = useMutation({
-    mutationFn: ({ nft, favorite }: { nft: NftSummary; favorite: boolean }) => (favorite ? favoritesApi.add(nft.id) : favoritesApi.remove(nft.id)),
+    mutationFn: ({ nft, favorite }: { nft: NftSummary; favorite: boolean }) =>
+      favorite ? favoritesApi.add(nft.id) : favoritesApi.remove(nft.id),
     onMutate: async ({ nft, favorite }) => {
       if (!userId) return { previous: undefined }
       const key = queryKeys.favorites(userId)
@@ -43,7 +44,8 @@ export function useFavorites() {
       toast.error(t.favorites.failed)
       announce(t.favorites.failed)
     },
-    onSuccess: (_data, { nft, favorite }) => announce(favorite ? t.favorites.added(displayName(nft)) : t.favorites.removed(displayName(nft))),
+    onSuccess: (_data, { nft, favorite }) =>
+      announce(favorite ? t.favorites.added(displayName(nft)) : t.favorites.removed(displayName(nft))),
     onSettled: () => (userId ? queryClient.invalidateQueries({ queryKey: queryKeys.favorites(userId) }) : undefined),
   })
 

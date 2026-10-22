@@ -14,10 +14,16 @@ export function HomeHero({ slides }: { slides: NftSummary[] | undefined }) {
   const current = slides?.[index] ?? slides?.[0]
 
   return (
-    <section aria-labelledby="hero-title" className="relative mx-auto mt-6 max-w-page px-4 lg:mt-8 lg:flex lg:items-center lg:justify-between lg:px-0">
+    <section
+      aria-labelledby="hero-title"
+      className="relative mx-auto mt-6 max-w-page px-4 lg:mt-8 lg:flex lg:items-center lg:justify-between lg:px-0"
+    >
       <div className="relative z-10 overflow-hidden rounded-xl bg-[linear-gradient(139.5deg,#241612_12%,#2f1d15_106.6%)] p-4 lg:w-[600px] lg:rounded-none lg:bg-none lg:p-0 lg:pl-12">
         <p className="text-xs tracking-[0.1em] lg:text-sm">{t.catalog.heroEyebrow}</p>
-        <h1 id="hero-title" className="mt-2 max-w-[190px] text-lg leading-7 font-bold tracking-[0.05em] lg:mt-6 lg:max-w-none lg:text-[43px] lg:leading-[70px]">
+        <h1
+          id="hero-title"
+          className="mt-2 max-w-[190px] text-lg leading-7 font-bold tracking-[0.05em] lg:mt-6 lg:max-w-none lg:text-[43px] lg:leading-[70px]"
+        >
           <span className="lg:hidden">{t.catalog.heroTitleMobile.join(' ')}</span>
           <span className="hidden lg:inline">
             {t.catalog.heroTitle[0]}
@@ -39,7 +45,11 @@ export function HomeHero({ slides }: { slides: NftSummary[] | undefined }) {
         </Link>
         {/* Mobile: art sits inside the hero card (Figma). */}
         <div className="absolute top-3 right-3 w-[138px] lg:hidden">
-          {current ? <NftArt art={current.art} alt={nftDisplayName(current)} width={138} priority className="rounded-xl" /> : <Skeleton className="aspect-square rounded-xl" />}
+          {current ? (
+            <NftArt art={current.art} alt={nftDisplayName(current)} width={138} priority className="rounded-xl" />
+          ) : (
+            <Skeleton className="aspect-square rounded-xl" />
+          )}
         </div>
       </div>
 

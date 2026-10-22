@@ -17,8 +17,7 @@ export const money = {
     return toMoney(new Eth(value).times(quantity))
   },
   /** Percentage of a value, rounded down to 6 decimals (never over-discount). */
-  percent: (value: Money, pct: number): Money =>
-    toMoney(new Eth(value).times(pct).dividedBy(100).toDecimalPlaces(6, Decimal.ROUND_DOWN)),
+  percent: (value: Money, pct: number): Money => toMoney(new Eth(value).times(pct).dividedBy(100).toDecimalPlaces(6, Decimal.ROUND_DOWN)),
   compare: (a: Money, b: Money): -1 | 0 | 1 => new Eth(a).comparedTo(b) as -1 | 0 | 1,
   equals: (a: Money, b: Money) => new Eth(a).equals(b),
   /** Display: at least 2 decimals, trailing zeros trimmed beyond that ("1.19", "26.846"). */

@@ -39,7 +39,7 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
           // Figma shows the page behind the modal with no blur.
           overlayClassName="bg-ink/40 supports-backdrop-filter:backdrop-blur-none"
           className={cn(
-            'fixed inset-0 z-50 flex max-w-none sm:max-w-none translate-x-0 translate-y-0 flex-col gap-0 overflow-y-auto rounded-none border-0 bg-background p-7 shadow-none',
+            'fixed inset-0 z-50 flex max-w-none translate-x-0 translate-y-0 flex-col gap-0 overflow-y-auto rounded-none border-0 bg-background p-7 shadow-none sm:max-w-none',
             'lg:inset-auto lg:top-1/2 lg:left-1/2 lg:h-auto lg:max-h-[90dvh] lg:w-[500px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:bg-card lg:p-0 lg:pb-2.5',
             "lg:after:absolute lg:after:inset-x-0 lg:after:bottom-0 lg:after:h-2.5 lg:after:bg-primary lg:after:content-['']",
           )}
@@ -90,9 +90,24 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
   )
 }
 
-function AuthTab({ to, active, search, children }: { to: '/login' | '/register'; active: boolean; search: AuthSearch; children: ReactNode }) {
+function AuthTab({
+  to,
+  active,
+  search,
+  children,
+}: {
+  to: '/login' | '/register'
+  active: boolean
+  search: AuthSearch
+  children: ReactNode
+}) {
   return (
-    <Link to={to} search={search} aria-current={active ? 'page' : undefined} className={cn('font-medium', active ? 'text-text-accent' : 'text-foreground')}>
+    <Link
+      to={to}
+      search={search}
+      aria-current={active ? 'page' : undefined}
+      className={cn('font-medium', active ? 'text-text-accent' : 'text-foreground')}
+    >
       {children}
     </Link>
   )

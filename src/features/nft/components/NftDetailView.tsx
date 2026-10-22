@@ -29,7 +29,12 @@ export function NftDetailView({ nftId, editionId, onEditionChange }: NftDetailVi
     <div className="mx-auto max-w-page px-4 pt-4 pb-72 lg:px-0 lg:pt-8 lg:pb-0">
       {/* Mobile top bar (Figma): back + favorite. */}
       <div className="mb-4 flex justify-between lg:hidden">
-        <button type="button" onClick={() => router.history.back()} aria-label={t.detail.back} className="grid size-[30px] place-items-center rounded-full border border-border bg-surface-raised">
+        <button
+          type="button"
+          onClick={() => router.history.back()}
+          aria-label={t.detail.back}
+          className="grid size-[30px] place-items-center rounded-full border border-border bg-surface-raised"
+        >
           <ChevronLeft aria-hidden className="size-4" />
         </button>
         <button

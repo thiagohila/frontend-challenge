@@ -43,16 +43,31 @@ export function RegisterForm({ intent, onSuccess }: { intent?: Intent | undefine
         <TextInput autoComplete="username" placeholder={t.auth.username} className={inputClass} {...form.register('username')} />
       </FormField>
       <FormField label={t.auth.email} hideLabel error={errors.email?.message}>
-        <TextInput type="email" autoComplete="email" placeholder={t.auth.emailSignUpPlaceholder} className={inputClass} {...form.register('email')} />
+        <TextInput
+          type="email"
+          autoComplete="email"
+          placeholder={t.auth.emailSignUpPlaceholder}
+          className={inputClass}
+          {...form.register('email')}
+        />
       </FormField>
       <FormField label={t.auth.password} hideLabel error={errors.password?.message}>
         <PasswordInput autoComplete="new-password" placeholder={t.auth.password} className={inputClass} {...form.register('password')} />
       </FormField>
       <FormField label={t.auth.confirmPassword} hideLabel error={errors.confirmPassword?.message}>
-        <PasswordInput autoComplete="new-password" placeholder={t.auth.confirmPassword} className={inputClass} {...form.register('confirmPassword')} />
+        <PasswordInput
+          autoComplete="new-password"
+          placeholder={t.auth.confirmPassword}
+          className={inputClass}
+          {...form.register('confirmPassword')}
+        />
       </FormField>
       <FormError message={formError} />
-      <Button type="submit" disabled={register.isPending} className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md">
+      <Button
+        type="submit"
+        disabled={register.isPending}
+        className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md"
+      >
         {register.isPending ? t.auth.submitting : isDesktop ? t.auth.submitSignUp : t.auth.submitSignUpMobile}
       </Button>
       <div className="mt-8">

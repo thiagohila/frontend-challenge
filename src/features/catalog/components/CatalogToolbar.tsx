@@ -21,7 +21,10 @@ export function CatalogToolbar({ tab, sort, onTab, onSort }: CatalogToolbarProps
             type="button"
             aria-pressed={tab === option}
             onClick={() => onTab(option)}
-            className={cn('border-b-2 pb-1.5', tab === option ? 'border-primary text-text-accent' : 'border-transparent text-foreground hover:text-text-accent')}
+            className={cn(
+              'border-b-2 pb-1.5',
+              tab === option ? 'border-primary text-text-accent' : 'border-transparent text-foreground hover:text-text-accent',
+            )}
           >
             {t.catalog.tabs[option]}
           </button>
@@ -30,7 +33,10 @@ export function CatalogToolbar({ tab, sort, onTab, onSort }: CatalogToolbarProps
       <div className="flex items-center gap-2 text-[15px]">
         <span id="catalog-sort-label">{t.catalog.sortLabel}</span>
         <Select value={sort} onValueChange={(value) => onSort(catalogSortSchema.parse(value))}>
-          <SelectTrigger aria-labelledby="catalog-sort-label" className="h-auto w-auto gap-1 border-0 bg-transparent p-0 text-[15px] shadow-none">
+          <SelectTrigger
+            aria-labelledby="catalog-sort-label"
+            className="h-auto w-auto gap-1 border-0 bg-transparent p-0 text-[15px] shadow-none"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

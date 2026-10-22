@@ -7,7 +7,10 @@ import { nftDisplayName } from '../format'
 
 export function FeaturedBanner({ nft }: { nft: NftSummary | undefined }) {
   return (
-    <aside aria-labelledby="featured-title" className="hidden w-[310px] flex-col gap-4 bg-gradient-to-b from-primary/10 to-primary/[0.03] pt-6 lg:flex">
+    <aside
+      aria-labelledby="featured-title"
+      className="hidden w-[310px] flex-col gap-4 bg-gradient-to-b from-primary/10 to-primary/[0.03] pt-6 lg:flex"
+    >
       <h2 id="featured-title" className="px-5 text-2xl leading-8 font-bold text-text-accent">
         {t.catalog.featuredTitle}
       </h2>

@@ -11,7 +11,10 @@ export function useSaveWallet(userId: string) {
   return useMutation({
     mutationFn: ({ id, input }: { id?: string; input: WalletInput }) => (id ? walletsApi.update(id, input) : walletsApi.create(input)),
     onSuccess: (saved) => {
-      queryClient.setQueryData<Wallet[]>(queryKeys.wallets(userId), (current = []) => [...current.filter((wallet) => wallet.id !== saved.id), saved])
+      queryClient.setQueryData<Wallet[]>(queryKeys.wallets(userId), (current = []) => [
+        ...current.filter((wallet) => wallet.id !== saved.id),
+        saved,
+      ])
       return queryClient.invalidateQueries({ queryKey: queryKeys.wallets(userId) })
     },
   })

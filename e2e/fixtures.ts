@@ -35,18 +35,20 @@ export const test = base.extend<Fixtures>({
 
   mock: async ({ page }, use) => {
     const proxy = new Proxy({} as MockProxy, {
-      get: (_target, method: string) => async (...args: unknown[]) => {
-        await waitForMockServer(page)
-        return page.evaluate(
-          ([name, params]) => {
-            const control = window.__mock as unknown as Record<string, (...input: unknown[]) => unknown>
-            const fn = control[name]
-            if (!fn) throw new Error(`unknown mock control: ${name}`)
-            return fn(...params)
-          },
-          [method, args] as const,
-        )
-      },
+      get:
+        (_target, method: string) =>
+        async (...args: unknown[]) => {
+          await waitForMockServer(page)
+          return page.evaluate(
+            ([name, params]) => {
+              const control = window.__mock as unknown as Record<string, (...input: unknown[]) => unknown>
+              const fn = control[name]
+              if (!fn) throw new Error(`unknown mock control: ${name}`)
+              return fn(...params)
+            },
+            [method, args] as const,
+          )
+        },
     })
     await use(proxy)
   },

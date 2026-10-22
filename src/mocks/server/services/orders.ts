@@ -23,7 +23,8 @@ export const toOrderView = (order: OrderRecord): Order => ({
   receipt: order.receipt,
 })
 
-const randomHex = (bytes: number) => [...crypto.getRandomValues(new Uint8Array(bytes))].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+const randomHex = (bytes: number) =>
+  [...crypto.getRandomValues(new Uint8Array(bytes))].map((byte) => byte.toString(16).padStart(2, '0')).join('')
 
 /**
  * Idempotent order creation (ARCHITECTURE §4, ADR 14). Order of checks matters:
@@ -60,7 +61,10 @@ export async function createOrder(
     if (!connected) throw new HttpError(409, 'WALLET_DISCONNECTED', 'Conecte sua carteira antes de confirmar a compra.')
 
     const quote = state.quotes.find((candidate) => candidate.quoteId === input.quoteId && candidate.ownerKey === `user:${user.id}`)
-    if (!quote) throw new HttpError(409, 'QUOTE_STALE', 'A cotação expirou. Revise os valores.', { details: { quote: toQuoteView(buildQuote(ctx, state, owner, input.network)) } })
+    if (!quote)
+      throw new HttpError(409, 'QUOTE_STALE', 'A cotação expirou. Revise os valores.', {
+        details: { quote: toQuoteView(buildQuote(ctx, state, owner, input.network)) },
+      })
 
     simulateCheckoutRace(ctx, state, quote.lines[0])
 
@@ -75,7 +79,8 @@ export async function createOrder(
     for (const line of quote.lines) {
       const nft = state.nfts.find((candidate) => candidate.id === line.nftId)
       const edition = nft?.editions.find((candidate) => candidate.id === line.editionId)
-      if (nft && edition) applyNftPatch(ctx, state, nft.id, { editions: [{ id: edition.id, available: edition.available - line.quantity }] })
+      if (nft && edition)
+        applyNftPatch(ctx, state, nft.id, { editions: [{ id: edition.id, available: edition.available - line.quantity }] })
     }
 
     const createdAt = ctx.now()
@@ -143,7 +148,8 @@ function resolveOrder(ctx: ServerContext, state: DbState, order: OrderRecord, ou
     for (const reserved of order.reservations) {
       const nft = state.nfts.find((candidate) => candidate.id === reserved.nftId)
       const edition = nft?.editions.find((candidate) => candidate.id === reserved.editionId)
-      if (nft && edition) applyNftPatch(ctx, state, nft.id, { editions: [{ id: edition.id, available: edition.available + reserved.quantity }] })
+      if (nft && edition)
+        applyNftPatch(ctx, state, nft.id, { editions: [{ id: edition.id, available: edition.available + reserved.quantity }] })
     }
   }
   bus.publish({
@@ -202,5 +208,11 @@ export async function getTransaction(ctx: ServerContext, userId: string, hash: s
   const state = await ctx.db.read()
   const order = state.orders.find((candidate) => candidate.txHash === hash && candidate.userId === userId)
   if (!order?.txHash) throw notFound('Transação')
-  return { hash: order.txHash, network: order.receipt.network, status: order.status, totalEth: order.receipt.totalEth, confirmedAt: order.resolvedAt }
+  return {
+    hash: order.txHash,
+    network: order.receipt.network,
+    status: order.status,
+    totalEth: order.receipt.totalEth,
+    confirmedAt: order.resolvedAt,
+  }
 }

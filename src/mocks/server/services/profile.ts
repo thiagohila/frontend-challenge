@@ -26,7 +26,8 @@ export const updateProfile = (ctx: ServerContext, userId: string, input: Profile
     if (!user) throw notFound('Perfil')
     const others = state.users.filter((candidate) => candidate.id !== userId)
     const fields: Record<string, string> = {}
-    if (others.some((other) => other.username.toLowerCase() === input.username.toLowerCase())) fields.username = 'Nome de usuário já está em uso'
+    if (others.some((other) => other.username.toLowerCase() === input.username.toLowerCase()))
+      fields.username = 'Nome de usuário já está em uso'
     if (others.some((other) => other.email === input.email.toLowerCase())) fields.email = 'E-mail já cadastrado'
     if (Object.keys(fields).length) throw new HttpError(409, 'CONFLICT', 'Dados já usados por outra conta.', { fields })
     Object.assign(user, { ...input, email: input.email.toLowerCase() })

@@ -92,8 +92,4 @@ try {
 }
 
 await writeFile(`${OUT}/summary.json`, JSON.stringify(summary, null, 2))
-console.table(
-  Object.fromEntries(
-    Object.entries(summary.results).map(([k, { throttling: _t, ...v }]) => [k, v]),
-  ),
-)
+console.table(Object.fromEntries(Object.entries(summary.results).map(([k, { throttling: _t, ...v }]) => [k, v])))

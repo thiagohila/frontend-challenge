@@ -29,7 +29,12 @@ export const mockControl = {
     await db.reset()
   },
   fail(path: string, response: FailureResponse, options: { method?: string; times?: number } = {}) {
-    runtime.addFailure({ method: options.method?.toUpperCase() ?? '*', path, response, ...(options.times !== undefined && { times: options.times }) })
+    runtime.addFailure({
+      method: options.method?.toUpperCase() ?? '*',
+      path,
+      response,
+      ...(options.times !== undefined && { times: options.times }),
+    })
   },
   clearFailures: () => runtime.clearFailures(),
   setLatency: (latency: number | readonly [number, number] | null) => runtime.setLatency(latency),

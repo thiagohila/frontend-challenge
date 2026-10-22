@@ -47,7 +47,12 @@ function zodFields(error: z.ZodError) {
  * Wraps every REST handler with the network simulation (latency, injected failures),
  * auth resolution and the error envelope — handlers only express business rules.
  */
-export function route(method: Method, path: string, handler: (ctx: RouteContext) => Promise<Response | DefaultBodyType>, options: RouteOptions = {}) {
+export function route(
+  method: Method,
+  path: string,
+  handler: (ctx: RouteContext) => Promise<Response | DefaultBodyType>,
+  options: RouteOptions = {},
+) {
   return http[method](`${env.apiUrl}${path}`, async ({ request, params }) => {
     const relativePath = new URL(request.url).pathname.replace(env.apiUrl, '')
     await delay(runtime.nextDelay())

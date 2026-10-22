@@ -1,17 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "react",
-    "typescript",
-    "oxc",
-    "jsx-a11y",
-    "import",
-    "unicorn"
-  ],
-  "ignorePatterns": [
-    "src/routeTree.gen.ts",
-    "public/mockServiceWorker.js"
-  ],
+  "plugins": ["react", "typescript", "oxc", "jsx-a11y", "import", "unicorn"],
+  "ignorePatterns": ["src/routeTree.gen.ts", "public/mockServiceWorker.js"],
   "rules": {
     "react/rules-of-hooks": "error",
     "react/only-export-components": [
@@ -27,23 +17,14 @@
       {
         "patterns": [
           {
-            "group": [
-              "@/mocks",
-              "@/mocks/*",
-              "**/mocks/**"
-            ],
+            "group": ["@/mocks", "@/mocks/*", "**/mocks/**"],
             "message": "App code must not import mocks (only main.tsx boots MSW)."
           }
         ],
         "paths": [
           {
             "name": "socket.io-client",
-            "importNames": [
-              "io",
-              "default",
-              "connect",
-              "Manager"
-            ],
+            "importNames": ["io", "default", "connect", "Manager"],
             "message": "Import socket.io-client only via dynamic import in src/lib/socket.ts / src/lib/realtime (must load after MSW patches WebSocket)."
           }
         ]
@@ -61,10 +42,7 @@
     "no-console": [
       "error",
       {
-        "allow": [
-          "error",
-          "warn"
-        ]
+        "allow": ["error", "warn"]
       }
     ],
     "eqeqeq": "error",
@@ -74,47 +52,31 @@
   },
   "overrides": [
     {
-      "files": [
-        "src/routes/**",
-        "src/components/ui/**"
-      ],
+      "files": ["src/routes/**", "src/components/ui/**"],
       "rules": {
         "react/only-export-components": "off"
       }
     },
     {
-      "files": [
-        "src/main.tsx",
-        "src/mocks/**",
-        "tests/**",
-        "e2e/**"
-      ],
+      "files": ["src/main.tsx", "src/mocks/**", "tests/**", "e2e/**"],
       "rules": {
         "no-restricted-imports": "off"
       }
     },
     {
-      "files": [
-        "src/lib/socket.ts",
-        "src/lib/realtime/**"
-      ],
+      "files": ["src/lib/socket.ts", "src/lib/realtime/**"],
       "rules": {
         "no-restricted-imports": "off"
       }
     },
     {
-      "files": [
-        "scripts/**"
-      ],
+      "files": ["scripts/**"],
       "rules": {
         "no-console": "off"
       }
     },
     {
-      "files": [
-        "e2e/**",
-        "tests/**"
-      ],
+      "files": ["e2e/**", "tests/**"],
       "rules": {
         "react/rules-of-hooks": "off"
       }

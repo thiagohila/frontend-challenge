@@ -10,9 +10,7 @@ export function MobileFilters(props: Props) {
   const active = (props.search.collection?.length ?? 0) + (props.search.network?.length ?? 0) + (props.search.priceMin ? 1 : 0)
   return (
     <Sheet>
-      <SheetTrigger
-        className="relative grid size-[45px] shrink-0 place-items-center rounded-[10px] bg-[linear-gradient(137deg,rgba(210,138,76,.45)_25%,#d28a4c_100%)] text-ink lg:hidden"
-      >
+      <SheetTrigger className="relative grid size-[45px] shrink-0 place-items-center rounded-[10px] bg-[linear-gradient(137deg,rgba(210,138,76,.45)_25%,#d28a4c_100%)] text-ink lg:hidden">
         <SlidersHorizontal aria-hidden className="size-5" />
         {/* Name = visible content (WCAG 2.5.3): "Abrir filtros 2 ativos". */}
         <span className="sr-only">{t.catalog.openFilters}</span>

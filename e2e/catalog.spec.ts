@@ -6,8 +6,7 @@ const results = (page: Page) => page.getByRole('list', { name: /NFTs? encontrado
 const cardTitles = (page: Page) => results(page).getByRole('heading', { level: 3 })
 /** Waits until no background fetch is in flight (placeholder data replaced by the real result). */
 const settled = (page: Page) => expect(page.getByTestId('catalog-updating')).toBeHidden()
-const cardPrices = async (page: Page) =>
-  (await results(page).locator('article p').allInnerTexts()).map((text) => text.split(' ')[0] ?? '0')
+const cardPrices = async (page: Page) => (await results(page).locator('article p').allInnerTexts()).map((text) => text.split(' ')[0] ?? '0')
 
 /** Sidebar on desktop, drawer on mobile — same filters (U5). */
 async function filters(page: Page, isMobile: boolean) {

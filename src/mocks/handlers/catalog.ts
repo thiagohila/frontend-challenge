@@ -32,7 +32,9 @@ export const catalogHandlers = [
   route('get', '/nfts/:id/related', ({ params }) => related(ctx, String(params.id))),
 
   route('get', '/me/favorites', async ({ user }) => listFavorites(ctx, (await user()).id), { private: true }),
-  route('put', '/me/favorites/:nftId', async ({ user, params }) => setFavorite(ctx, (await user()).id, String(params.nftId), true), { private: true }),
+  route('put', '/me/favorites/:nftId', async ({ user, params }) => setFavorite(ctx, (await user()).id, String(params.nftId), true), {
+    private: true,
+  }),
   route(
     'delete',
     '/me/favorites/:nftId',

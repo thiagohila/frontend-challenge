@@ -27,8 +27,16 @@ export const pt = {
   footer: {
     features: [
       { letter: 'W', title: 'Segurança da carteira', body: 'Proteja sua carteira e colecione arte digital verificada com confiança.' },
-      { letter: 'C', title: 'Criadores em destaque', body: 'Conheça artistas, estúdios e comunidades que moldam a cultura digital na rede.' },
-      { letter: 'D', title: 'Alertas de lançamentos', body: 'Receba calendários de cunhagem, novidades de listas de acesso e análises do mercado.' },
+      {
+        letter: 'C',
+        title: 'Criadores em destaque',
+        body: 'Conheça artistas, estúdios e comunidades que moldam a cultura digital na rede.',
+      },
+      {
+        letter: 'D',
+        title: 'Alertas de lançamentos',
+        body: 'Receba calendários de cunhagem, novidades de listas de acesso e análises do mercado.',
+      },
     ],
     newsletterTitle: 'Antecipe-se ao próximo lançamento',
     newsletterLabel: 'E-mail para novidades',
@@ -40,7 +48,10 @@ export const pt = {
     phone: '+55 11 4002 8922',
     columns: {
       profile: { title: 'Meu perfil', items: ['Meu perfil', 'Minha coleção', 'Atividade', 'Estúdio do criador', 'Lista de interesse'] },
-      help: { title: 'Central de ajuda', items: ['Central de ajuda', 'Como comprar NFTs', 'Carteira e segurança', 'Política do mercado', 'Denunciar item'] },
+      help: {
+        title: 'Central de ajuda',
+        items: ['Central de ajuda', 'Como comprar NFTs', 'Carteira e segurança', 'Política do mercado', 'Denunciar item'],
+      },
       collections: {
         title: 'Coleções',
         items: [
@@ -147,7 +158,8 @@ export const pt = {
     heroEyebrow: 'Bem-vindo à Kurio',
     heroTitle: ['SEJA DONO DO FUTURO', 'DA ARTE DIGITAL'],
     heroTitleMobile: ['SEJA DONO DA', 'CULTURA DIGITAL'],
-    heroText: 'Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione arte digital rara, apoie artistas e tenha uma parte da cultura da internet.',
+    heroText:
+      'Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione arte digital rara, apoie artistas e tenha uma parte da cultura da internet.',
     heroTextMobile: 'Descubra NFTs selecionados de criadores do mundo todo.',
     explore: 'EXPLORAR',
     heroSlide: (index: number, total: number) => `Destaque ${index} de ${total}`,
@@ -186,17 +198,51 @@ export const pt = {
     view: (name: string) => `Ver ${name}`,
     quickAddToCart: (name: string) => `Adicionar ${name} ao carrinho`,
     promos: [
-      { title: ['Lançamentos gênesis', 'de edição limitada'], text: 'Colecione edições escassas diretamente dos criadores antes da revelação pública.', cta: 'Explorar', tab: 'new' },
-      { title: ['Arte digital selecionada', 'e muito mais'], text: 'Explore novos artistas, coleções verificadas e obras digitais que definem a cultura.', cta: 'Explorar', tab: 'trending' },
+      {
+        title: ['Lançamentos gênesis', 'de edição limitada'],
+        text: 'Colecione edições escassas diretamente dos criadores antes da revelação pública.',
+        cta: 'Explorar',
+        tab: 'new',
+      },
+      {
+        title: ['Arte digital selecionada', 'e muito mais'],
+        text: 'Explore novos artistas, coleções verificadas e obras digitais que definem a cultura.',
+        cta: 'Explorar',
+        tab: 'trending',
+      },
     ],
     blogTitle: 'Diário da Cunhagem',
     blogSubtitle: 'Histórias, guias e insights para colecionadores sobre o universo da propriedade digital.',
     readMore: 'Ler mais →',
     posts: [
-      { date: '12 de setembro', read: 'Leitura de 6 min', title: 'Como funciona a propriedade de NFTs', excerpt: 'Aprenda a colecionar, negociar e verificar ativos digitais.', art: 'ivory-baron' },
-      { date: '13 de setembro', read: 'Leitura de 2 min', title: '10 artistas digitais para acompanhar', excerpt: 'Conheça criadores que moldam a cultura digital.', art: 'emerald-ape' },
-      { date: '15 de setembro', read: 'Leitura de 3 min', title: 'Raridade, atributos e procedência', excerpt: 'Entenda raridade, procedência, direitos autorais e utilidade.', art: 'sage-nomad' },
-      { date: '15 de setembro', read: 'Leitura de 2 min', title: 'Como proteger sua carteira', excerpt: 'Proteja sua carteira, seus ativos e sua identidade.', art: 'golden-beat' },
+      {
+        date: '12 de setembro',
+        read: 'Leitura de 6 min',
+        title: 'Como funciona a propriedade de NFTs',
+        excerpt: 'Aprenda a colecionar, negociar e verificar ativos digitais.',
+        art: 'ivory-baron',
+      },
+      {
+        date: '13 de setembro',
+        read: 'Leitura de 2 min',
+        title: '10 artistas digitais para acompanhar',
+        excerpt: 'Conheça criadores que moldam a cultura digital.',
+        art: 'emerald-ape',
+      },
+      {
+        date: '15 de setembro',
+        read: 'Leitura de 3 min',
+        title: 'Raridade, atributos e procedência',
+        excerpt: 'Entenda raridade, procedência, direitos autorais e utilidade.',
+        art: 'sage-nomad',
+      },
+      {
+        date: '15 de setembro',
+        read: 'Leitura de 2 min',
+        title: 'Como proteger sua carteira',
+        excerpt: 'Proteja sua carteira, seus ativos e sua identidade.',
+        art: 'golden-beat',
+      },
     ],
   },
   collectionsLabel: {
@@ -242,11 +288,13 @@ export const pt = {
     reviewsTab: (count: number) => `Avaliações de colecionadores (${count})`,
     reviewsSoon: 'As avaliações detalhadas dos colecionadores estarão disponíveis em breve.',
     network: 'Rede:',
-    networkText: (network: string, storage: string) => `Cunhado na ${network} com procedência imutável e metadados armazenados no ${storage}.`,
+    networkText: (network: string, storage: string) =>
+      `Cunhado na ${network} com procedência imutável e metadados armazenados no ${storage}.`,
     contract: 'Contrato:',
     contractText: (address: string, standard: string) => `${address} • Contrato inteligente ${standard} verificado.`,
     royalties: 'Direitos autorais:',
-    royaltiesText: (pct: number) => `Direitos autorais do criador: ${pct}% nas vendas secundárias, pagos automaticamente pelos mercados compatíveis.`,
+    royaltiesText: (pct: number) =>
+      `Direitos autorais do criador: ${pct}% nas vendas secundárias, pagos automaticamente pelos mercados compatíveis.`,
     related: 'Mais desta coleção',
     zoom: 'Ampliar imagem',
     gallery: 'Galeria',

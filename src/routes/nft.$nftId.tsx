@@ -18,7 +18,9 @@ export const Route = createFileRoute('/nft/$nftId')({
       throw error
     }
   },
-  head: ({ loaderData }) => ({ meta: [{ title: loaderData ? `${nftDisplayName(loaderData)} — Kurio` : `${t.detail.notFoundTitle} — Kurio` }] }),
+  head: ({ loaderData }) => ({
+    meta: [{ title: loaderData ? `${nftDisplayName(loaderData)} — Kurio` : `${t.detail.notFoundTitle} — Kurio` }],
+  }),
   pendingComponent: NftDetailSkeleton,
   notFoundComponent: NftNotFound,
   errorComponent: NftLoadError,
@@ -29,7 +31,13 @@ function NftDetailRoute() {
   const { nftId } = Route.useParams()
   const { edition } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
-  return <NftDetailView nftId={nftId} editionId={edition} onEditionChange={(id) => void navigate({ search: { edition: id }, replace: true, resetScroll: false })} />
+  return (
+    <NftDetailView
+      nftId={nftId}
+      editionId={edition}
+      onEditionChange={(id) => void navigate({ search: { edition: id }, replace: true, resetScroll: false })}
+    />
+  )
 }
 
 function NftNotFound() {

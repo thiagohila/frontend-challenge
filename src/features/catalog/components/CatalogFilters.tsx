@@ -83,7 +83,15 @@ function FilterOption({ label, count, active, onToggle }: { label: string; count
   )
 }
 
-function PriceFilter({ search, facets, onApply }: { search: CatalogSearch; facets: CatalogFiltersProps['facets']; onApply: CatalogFiltersProps['onChange'] }) {
+function PriceFilter({
+  search,
+  facets,
+  onApply,
+}: {
+  search: CatalogSearch
+  facets: CatalogFiltersProps['facets']
+  onApply: CatalogFiltersProps['onChange']
+}) {
   // The slider is a numeric UI control; values are converted back to decimal strings (2 places) on apply.
   const bounds: [number, number] = [Number(facets?.price.min ?? '0'), Number(facets?.price.max ?? '20')]
   const [range, setRange] = useState<[number, number] | null>(null)

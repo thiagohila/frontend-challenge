@@ -30,7 +30,20 @@ const FIGMA_NFTS: { name: string; number: number; art: ArtName; price: string; c
   { name: 'Jade Monarch', number: 233, art: 'emerald-ape', price: '2.49' },
 ]
 
-const ADJECTIVES = ['Amber', 'Velvet', 'Lunar', 'Copper', 'Solar', 'Midnight', 'Crimson', 'Silent', 'Rustic', 'Electric', 'Obsidian', 'Honey']
+const ADJECTIVES = [
+  'Amber',
+  'Velvet',
+  'Lunar',
+  'Copper',
+  'Solar',
+  'Midnight',
+  'Crimson',
+  'Silent',
+  'Rustic',
+  'Electric',
+  'Obsidian',
+  'Honey',
+]
 const NOUNS = ['Ape', 'Nomad', 'Baron', 'Beat', 'Vessel', 'Signal', 'Bloom', 'Echo', 'Drifter', 'Monarch']
 const ART_BY_NOUN: Record<string, ArtName> = {
   Ape: 'emerald-ape',
@@ -44,7 +57,17 @@ const ART_BY_NOUN: Record<string, ArtName> = {
   Beat: 'golden-beat',
   Signal: 'golden-beat',
 }
-const COLLECTIONS: CollectionSlug[] = ['arte-digital', 'fotografia', 'musica', 'arte-3d', 'colecionaveis', 'generativa', 'jogos', 'assinaturas', 'utilidade']
+const COLLECTIONS: CollectionSlug[] = [
+  'arte-digital',
+  'fotografia',
+  'musica',
+  'arte-3d',
+  'colecionaveis',
+  'generativa',
+  'jogos',
+  'assinaturas',
+  'utilidade',
+]
 const NETWORKS: Network[] = ['ethereum', 'polygon', 'solana']
 const ATTRIBUTES = ['Óculos', 'Esmeralda', 'Raro', 'Chapéu', 'Fones', 'Moletom', 'Dourado', 'Jaqueta', 'Gola alta', 'Edição limitada']
 const CREATORS = ['Nova Sato', 'Iris Moreau', 'Kenji Ola', 'Lia Prado']
@@ -87,7 +110,13 @@ function buildNfts(): NftRecord[] {
     const number = random.int(1, 999)
     if (specs.some((spec) => spec.name === name && spec.number === number)) continue
     const price = (random.int(5, 1230) / 100).toFixed(2)
-    specs.push({ name, number, art: ART_BY_NOUN[noun] ?? 'emerald-ape', price, ...(random.next() < 0.12 ? { rarity: 'rare' as const } : {}) })
+    specs.push({
+      name,
+      number,
+      art: ART_BY_NOUN[noun] ?? 'emerald-ape',
+      price,
+      ...(random.next() < 0.12 ? { rarity: 'rare' as const } : {}),
+    })
   }
 
   return specs.map((spec, index) => {
@@ -111,12 +140,17 @@ function buildNfts(): NftRecord[] {
       tokenId: `#${pad(spec.number, 4)}`,
       series: 'Kurio Apes',
       creator,
-      summary: 'Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.',
+      summary:
+        'Um colecionável digital finalizado à mão da coleção Kurio Editions, verificado na Ethereum, com arte desbloqueável e acesso para colecionadores.',
       description: [
         `${spec.name} #${pad(spec.number, 3)} é uma obra digital finalizada à mão da coleção Kurio Editions. Cada atributo fica armazenado nos metadados do token e verificado na rede. A obra explora identidade, movimento e luz em um mundo digital sem fronteiras.`,
         `A propriedade inclui a arte em alta resolução, lançamentos exclusivos para colecionadores e um registro permanente de procedência registrada na rede. ${creator} recebe 5% de direitos autorais nas vendas secundárias, apoiando novos trabalhos e lançamentos da comunidade.`,
       ],
-      attributes: [ATTRIBUTES[index % ATTRIBUTES.length] ?? 'Raro', ATTRIBUTES[(index + 3) % ATTRIBUTES.length] ?? 'Dourado', spec.rarity === 'rare' ? 'Raro' : 'Comum'],
+      attributes: [
+        ATTRIBUTES[index % ATTRIBUTES.length] ?? 'Raro',
+        ATTRIBUTES[(index + 3) % ATTRIBUTES.length] ?? 'Dourado',
+        spec.rarity === 'rare' ? 'Raro' : 'Comum',
+      ],
       rating: { average: Number((3.8 + random.next() * 1.2).toFixed(1)), count: random.int(3, 60) },
       editions,
       maxPerOrder: 10,

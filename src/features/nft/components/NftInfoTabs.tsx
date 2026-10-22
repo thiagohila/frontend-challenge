@@ -10,7 +10,10 @@ const triggerClass =
 export function NftInfoTabs({ nft }: { nft: NftDetail }) {
   return (
     <Tabs defaultValue="details" className="mt-16 gap-0 lg:mt-24">
-      <TabsList aria-label={t.detail.tabsLabel} className="h-auto w-full justify-start gap-6 lg:gap-8 rounded-none border-b border-border bg-transparent p-0">
+      <TabsList
+        aria-label={t.detail.tabsLabel}
+        className="h-auto w-full justify-start gap-6 rounded-none border-b border-border bg-transparent p-0 lg:gap-8"
+      >
         <TabsTrigger value="details" className={triggerClass}>
           {t.detail.detailsTab}
         </TabsTrigger>
@@ -24,7 +27,10 @@ export function NftInfoTabs({ nft }: { nft: NftDetail }) {
         ))}
         <dl className="flex flex-col gap-4">
           <InfoRow term={t.detail.network} value={t.detail.networkText(t.networks[nft.network], nft.metadataStorage)} />
-          <InfoRow term={t.detail.contract} value={t.detail.contractText(`${nft.contract.address.slice(0, 6)}...${nft.contract.address.slice(-4)}`, nft.contract.standard)} />
+          <InfoRow
+            term={t.detail.contract}
+            value={t.detail.contractText(`${nft.contract.address.slice(0, 6)}...${nft.contract.address.slice(-4)}`, nft.contract.standard)}
+          />
           <InfoRow term={t.detail.royalties} value={t.detail.royaltiesText(nft.royaltyPct)} />
         </dl>
       </TabsContent>
