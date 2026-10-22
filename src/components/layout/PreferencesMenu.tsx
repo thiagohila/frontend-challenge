@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { type ReactNode, useEffect, useId, useRef } from 'react'
 import { t } from '@/i18n'
 import { HOUR_CYCLES, LOCALES, prefs, usePrefs, type HourCycle, type Locale } from '@/lib/prefs'
 
@@ -18,47 +19,61 @@ export function PreferencesMenu() {
     refocusLocaleSelect = false
     localeSelect.current?.focus()
   }, [])
-  const selectClass = 'h-8 rounded border border-border-soft bg-surface-dark px-2 text-xs text-foreground'
+  // Own chevron (native one hugs the border): room on its right, same look in every browser.
+  const selectClass = 'h-8 appearance-none rounded border border-border-soft bg-surface-dark pr-8 pl-2 text-xs text-foreground'
 
   return (
     <fieldset className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground">
       <legend className="sr-only">{t.prefs.label}</legend>
       <span className="flex items-center gap-2">
         <label htmlFor={`${id}-locale`}>{t.prefs.language}</label>
-        <select
-          ref={localeSelect}
-          id={`${id}-locale`}
-          value={current.locale}
-          onChange={(event) => {
-            if (!isLocale(event.target.value)) return
-            refocusLocaleSelect = true
-            prefs.set({ locale: event.target.value })
-          }}
-          className={selectClass}
-        >
-          {LOCALES.map((locale) => (
-            // Each language names itself (lang attribute so screen readers pronounce it correctly).
-            <option key={locale} value={locale} lang={locale}>
-              {t.prefs.languages[locale]}
-            </option>
-          ))}
-        </select>
+        <SelectFrame>
+          <select
+            ref={localeSelect}
+            id={`${id}-locale`}
+            value={current.locale}
+            onChange={(event) => {
+              if (!isLocale(event.target.value)) return
+              refocusLocaleSelect = true
+              prefs.set({ locale: event.target.value })
+            }}
+            className={selectClass}
+          >
+            {LOCALES.map((locale) => (
+              // Each language names itself (lang attribute so screen readers pronounce it correctly).
+              <option key={locale} value={locale} lang={locale}>
+                {t.prefs.languages[locale]}
+              </option>
+            ))}
+          </select>
+        </SelectFrame>
       </span>
       <span className="flex items-center gap-2">
         <label htmlFor={`${id}-hour`}>{t.prefs.timeFormat}</label>
-        <select
-          id={`${id}-hour`}
-          value={current.hourCycle}
-          onChange={(event) => isHourCycle(event.target.value) && prefs.set({ hourCycle: event.target.value })}
-          className={selectClass}
-        >
-          {HOUR_CYCLES.map((cycle) => (
-            <option key={cycle} value={cycle}>
-              {t.prefs.hourCycles[cycle]}
-            </option>
-          ))}
-        </select>
+        <SelectFrame>
+          <select
+            id={`${id}-hour`}
+            value={current.hourCycle}
+            onChange={(event) => isHourCycle(event.target.value) && prefs.set({ hourCycle: event.target.value })}
+            className={selectClass}
+          >
+            {HOUR_CYCLES.map((cycle) => (
+              <option key={cycle} value={cycle}>
+                {t.prefs.hourCycles[cycle]}
+              </option>
+            ))}
+          </select>
+        </SelectFrame>
       </span>
     </fieldset>
+  )
+}
+
+function SelectFrame({ children }: { children: ReactNode }) {
+  return (
+    <span className="relative inline-flex">
+      {children}
+      <ChevronDown aria-hidden className="pointer-events-none absolute top-1/2 right-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+    </span>
   )
 }

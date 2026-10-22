@@ -32,6 +32,7 @@ function RootLayout() {
   const showTabBar = !HIDE_TAB_BAR.some((path) => pathname.startsWith(path))
   const showChrome = !HIDE_CHROME.some((path) => pathname.startsWith(path))
   useRouteFocus()
+  useSameHashScroll()
   const locale = useLocale()
 
   return (
@@ -58,6 +59,28 @@ function RootLayout() {
       <DeferredShell />
     </>
   )
+}
+
+/**
+ * A link to the anchor the URL already has (e.g. "Mercado" → /#catalogo after scrolling back up) is
+ * not a navigation, so the router doesn't scroll: bring the section into view ourselves.
+ */
+function useSameHashScroll() {
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href*="#"]') : null
+      if (!link) return
+      const target = new URL(link.href)
+      const sameLocation = target.pathname === location.pathname && target.search === location.search && target.hash === location.hash
+      const section = sameLocation && target.hash ? document.getElementById(decodeURIComponent(target.hash.slice(1))) : null
+      if (!section) return
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+      section.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
 }
 
 // Mirrors the language on <html lang> and recomputes route heads (document titles).

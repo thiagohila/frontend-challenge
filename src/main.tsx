@@ -14,6 +14,8 @@ const router = createRouter({
   context: { queryClient, session },
   defaultPreload: 'intent',
   scrollRestoration: true,
+  // In-page anchors (#catalogo) glide into view, unless the user prefers reduced motion.
+  defaultHashScrollIntoView: { behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' },
 })
 
 // Guards depend on the session: re-evaluate them whenever it changes.

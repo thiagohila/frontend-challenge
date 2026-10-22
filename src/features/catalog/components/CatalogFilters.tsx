@@ -69,15 +69,15 @@ function FilterOption({ label, count, active, onToggle }: { label: string; count
         aria-pressed={active}
         onClick={onToggle}
         className={cn(
-          'flex w-full items-center justify-between gap-2 text-left text-[15px] leading-10 text-text-accent hover:text-foreground',
-          active && 'font-bold text-foreground',
+          'flex w-full items-center justify-between gap-2 text-left text-[15px] leading-10 text-muted-foreground hover:text-text-accent',
+          active && 'font-bold text-text-accent',
         )}
       >
         <span className="flex items-center gap-2">
           <Check aria-hidden className={cn('size-4', active ? 'opacity-100' : 'opacity-0')} />
           {label}
         </span>
-        <span className="font-bold text-text-accent">({count})</span>
+        <span className="font-bold">({count})</span>
       </button>
     </li>
   )

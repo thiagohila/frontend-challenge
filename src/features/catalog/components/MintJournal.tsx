@@ -13,15 +13,16 @@ export function MintJournal() {
       <ul className="mt-10 grid grid-cols-[repeat(4,268px)] gap-6">
         {t.catalog.posts.map((post) => (
           <li key={post.title}>
-            <article className="h-full overflow-hidden rounded-lg bg-card">
+            <article className="flex h-full flex-col overflow-hidden rounded-lg bg-card">
               <NftArt art={post.art} alt="" width={268} className="h-[195px] w-full object-cover" />
-              <div className="flex flex-col gap-2 p-4">
+              <div className="flex flex-1 flex-col gap-2 p-4">
                 <p className="text-xs text-muted-foreground">
                   {post.date} | {post.read}
                 </p>
                 <h3 className="text-sm font-bold">{post.title}</h3>
                 <p className="text-xs text-muted-foreground">{post.excerpt}</p>
-                <ComingSoon className="self-start text-xs font-bold text-text-accent">{t.catalog.readMore}</ComingSoon>
+                {/* Footer of the card: pinned to the bottom whatever the excerpt length. */}
+                <ComingSoon className="mt-auto self-start pt-2 text-xs font-bold text-text-accent">{t.catalog.readMore}</ComingSoon>
               </div>
             </article>
           </li>

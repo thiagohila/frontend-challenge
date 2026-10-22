@@ -67,13 +67,13 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
           {name}
         </Link>
       </h3>
-      <p className="flex items-baseline gap-2 text-lg leading-4 font-bold text-text-accent">
+      <p className="flex items-baseline gap-3 text-lg leading-4 font-bold text-text-accent">
         {formatEth(nft.priceEth)}
         {nft.compareAtPriceEth && (
-          <s className="text-base font-normal text-brand-secondary">
+          <span className="font-normal text-brand-secondary">
             <span className="sr-only">{t.catalog.compareAt(formatEth(nft.compareAtPriceEth))}</span>
             <span aria-hidden>{formatEth(nft.compareAtPriceEth)}</span>
-          </s>
+          </span>
         )}
       </p>
     </article>

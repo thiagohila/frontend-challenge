@@ -17,7 +17,7 @@ export function Header() {
   // Figma: market-flow screens use the bare Header Row; the others add the hairline divider.
   return (
     <header className={cn('mx-auto hidden w-full max-w-page pt-6 lg:block', !inMarket && 'border-b border-border')}>
-      <div className="flex h-[35px] items-start justify-between">
+      <div className="flex h-[45px] items-start justify-between">
         <Link to="/" className="w-40 pt-2 text-sm font-bold tracking-[0.1em] text-foreground">
           {t.brand}
         </Link>
@@ -84,8 +84,11 @@ function NavItem({ to, hash, label, active }: { to: '/'; hash?: string; label: s
         to={to}
         hash={hash}
         aria-current={active ? 'page' : undefined}
+        // Hash links are active only on their exact hash (else "Mercado" is also `aria-current` on "/").
+        activeOptions={{ exact: true, includeHash: true }}
         className={cn(
-          'block border-b-[3px] pb-[21px]',
+          // Figma: 21 px text + 24 px gap with the 3 px underline at the bottom of the 45 px row (on the divider).
+          'block border-b-[3px] pb-[21px] leading-[21px]',
           active ? 'border-primary font-bold text-text-accent' : 'border-transparent text-foreground hover:text-text-accent',
         )}
       >

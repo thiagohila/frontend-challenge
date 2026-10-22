@@ -47,7 +47,7 @@ export function HomeHero() {
         <Link
           to="/"
           hash="catalogo"
-          className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-text-accent lg:mt-12 lg:h-10 lg:rounded-md lg:bg-primary lg:px-7 lg:text-sm lg:text-primary-foreground"
+          className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-text-accent lg:mt-12 lg:h-10 lg:w-[140px] lg:justify-center lg:rounded-md lg:bg-primary lg:text-base lg:text-primary-foreground"
         >
           {t.catalog.explore}
           <ArrowRight aria-hidden className="size-4 lg:hidden" />

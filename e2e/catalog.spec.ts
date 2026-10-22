@@ -115,3 +115,14 @@ test.describe('empty catalog scenario', () => {
     await expect(page.getByText('Nenhum NFT encontrado com esses filtros.')).toBeVisible()
   })
 })
+
+test('"Mercado" scrolls to the catalog again when the URL already has #catalogo', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'the desktop header holds the "Mercado" link')
+  await page.goto('/#catalogo')
+  await expect(page.getByRole('list', { name: /NFTs? encontrados?/ })).toBeVisible()
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Mercado' }).click()
+  await expect(page.locator('#catalogo')).toBeInViewport()
+})

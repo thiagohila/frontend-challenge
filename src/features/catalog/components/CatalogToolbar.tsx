@@ -23,8 +23,8 @@ export function CatalogToolbar({ tab, sort, onTab, onSort }: CatalogToolbarProps
             aria-pressed={tab === option}
             onClick={() => onTab(option)}
             className={cn(
-              'border-b-2 pb-1.5',
-              tab === option ? 'border-primary text-text-accent' : 'border-transparent text-foreground hover:text-text-accent',
+              'relative pb-1.5 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-[90%]',
+              tab === option ? 'text-text-accent after:bg-primary' : 'text-foreground hover:text-text-accent',
             )}
           >
             {t.catalog.tabs[option]}
