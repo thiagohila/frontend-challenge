@@ -15,6 +15,25 @@ const commit = (() => {
   }
 })()
 
+/**
+ * The mock server chunk is imported dynamically after the app boots; preloading it from the HTML lets it
+ * download in parallel with the app instead of after it (data — and the LCP card image — arrive sooner).
+ */
+const preloadMockServer = (): Plugin => ({
+  name: 'preload-mock-server',
+  apply: 'build',
+  transformIndexHtml: {
+    order: 'post',
+    handler(_html, context) {
+      if (process.env.VITE_ENABLE_MOCKS === 'false' || !context.bundle) return []
+      const chunk = Object.values(context.bundle).find(
+        (output) => output.type === 'chunk' && output.facadeModuleId?.endsWith('src/mocks/browser.ts'),
+      )
+      return chunk ? [{ tag: 'link', attrs: { rel: 'modulepreload', href: `/${chunk.fileName}` }, injectTo: 'head' }] : []
+    },
+  },
+})
+
 const versionFile = (): Plugin => ({
   name: 'version-file',
   generateBundle() {
@@ -37,6 +56,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     versionFile(),
+    preloadMockServer(),
   ],
   define: { __APP_COMMIT__: JSON.stringify(commit) },
   resolve: {
