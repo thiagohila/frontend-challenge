@@ -58,7 +58,7 @@ O plano rodou adiantado: B1–B9 e os extras ficaram prontos na madrugada (últi
 | Item | Planejado | Real |
 |---|---|---|
 | B1b — painel "Servidor simulado (admin)" | painel isolado na demo, com seleção e reset de cenário | **feito na F1** (antes: só `window.__mock` no console e `?scenario=` na URL) |
-| B8 — Performance ≥ 90 | meta em todas as páginas/perfis | desktop 99/99; **mobile 78/66** (`cc1781c`) (MSW dentro da página), justificado em `docs/lighthouse/README.md` |
+| B8 — Performance ≥ 90 | meta em todas as páginas/perfis | desktop 99/99; **mobile 73/82** (`20b2953`) (MSW dentro da página), justificado em `docs/lighthouse/README.md` |
 | Checkpoints e push | só nos checkpoints | push a cada bloco (Vercel conectado ao GitHub desde B1b) |
 | Revisões | revisão por bloco (DoD 5) | feita, mas a **auditoria de requisitos** de 22/10 ainda achou 20+ falhas reais (sair sem reload quebrava o app, carrinho divergente, reset incompleto…) → corrigidas com teste (REVIEW-LOG "Auditoria") |
 | Fora do plano, feito | — | comparação lado a lado com os frames do Figma (15 telas) e ajuste fino; CI no GitHub Actions; cobertura de todos os cenários do mock (`scenarios.spec`) |
@@ -128,12 +128,12 @@ Mesma DoD (§3). **Congelamento às 17:30**; F7 é a última coisa antes da entr
 | F0 ✅ | 07:00–11:25 | Revisão pós-entrega: fidelidade ao Figma (15 telas), auditoria de requisitos com 5 revisores (20+ correções), todos os cenários do mock com teste, limite de quantidade do detalhe, CI | — | 218 ✓ em checkout limpo; deploy = HEAD |
 | FL ✅ | 14:00–18:00 | **Passada de layout com o usuário** (desktop + mobile, tela a tela): home (header fixo com marcador, hero, abas, filtros, âncora do mercado), conta/carteiras, login como diálogo sobre a página (`?auth=`), detalhe, carrinho, pagamento, confirmação, tab bar com o recorte do FAB. Desvios em ARCH §15, causas no REVIEW-LOG | D2, U1 | 210 e2e + 20 unit ✓; VIS Linux 8/8 |
 | F1 ✅ | 18:00–18:30 | **Painel do servidor simulado** (o que o B1b previa e os docs já citam): botão flutuante só com mocks ligados, carregado sob demanda (fora do caminho crítico); seleção e **reset** de cenário, latência, mudar preço/estoque de um NFT, derrubar o socket, resolver pedido pendente. Age **só** pela API de controle (`window.__mock`) → REST/eventos, nunca no estado do app (X5). Diálogo acessível; desvio do Figma em ARCH §15 | M4, M5, X5 | e2e: troca de cenário e reset pelo painel; axe; Lighthouse sem regressão (chunk lazy) |
-| F2 | 12:45–13:15 | **Resumo para quem avalia** no topo do README: como avaliar em 5 min, decisões e trade-offs (performance mobile, checkout com carteiras cadastradas, MSW na página), links para as evidências | D4, D6 | README revisado |
-| F3 | 13:15–14:15 | **Mensagens do servidor no idioma escolhido**: `Accept-Language` no Axios; o mock responde em pt-BR/en-US; remove a limitação documentada | EX1 | `prefs.spec` com erro de API em en-US |
-| F4 | — | **Teste manual com leitor de tela** (usuário, ~10 min): login, catálogo, checkout | U4–U6 | anotado no REVIEW-LOG |
+| F2 ✅ | 19:30 | **Resumo para quem avalia** no topo do README: como avaliar em 5 min, decisões e trade-offs (performance mobile, checkout com carteiras cadastradas, MSW na página), links para as evidências | D4, D6 | README revisado |
+| F3 → README "Melhorias possíveis" | — | **Mensagens do servidor no idioma escolhido**: `Accept-Language` no Axios; o mock responde em pt-BR/en-US; remove a limitação documentada | EX1 | `prefs.spec` com erro de API em en-US |
+| F4 → README "Melhorias possíveis" | — | **Teste manual com leitor de tela** (usuário, ~10 min): login, catálogo, checkout | U4–U6 | anotado no REVIEW-LOG |
 | F5 ✅ | 14:15–14:45 | **CI verde no GitHub** (primeira execução; GitHub estava degradado às 11:20) e ajustes se o ambiente do runner divergir do Docker local | TQ1, TQ2 | badge verde no README |
-| F6 | 14:45–15:30 | **Lighthouse final** (3×) no commit de entrega, README e `summary.json` com commit/data | L1–L5 | medianas do commit entregue |
-| F7 | 16:30–17:30 | **Verificação final**: checkout limpo, `deploy.spec` (URL = HEAD), CI verde, varredura docs × código (nada prometido que não exista), relatório do Playwright do commit final, congelamento | D1–D8, TQ4 | REQUIREMENTS sem ☐; tudo ☑ exceto L2 justificado |
+| F6 ✅ | 20:00 | **Lighthouse final** (3×) no commit de entrega, README e `summary.json` com commit/data | L1–L5 | medianas do commit entregue |
+| F7 ✅ | 19:00–20:15 | **Verificação final**: checkout limpo, `deploy.spec` (URL = HEAD), CI verde, varredura docs × código (nada prometido que não exista), relatório do Playwright do commit final, congelamento | D1–D8, TQ4 | REQUIREMENTS sem ☐; tudo ☑ exceto L2 justificado |
 
 **Linha de corte das fases finais** (nesta ordem): F3 → F2 → F6 (mantém a medição de `97f44e4`, documentada). **Nunca cortar:** F1 (ou, no mínimo, corrigir os docs que citam o painel) e F7.
 

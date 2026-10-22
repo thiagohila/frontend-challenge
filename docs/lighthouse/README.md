@@ -22,7 +22,7 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 | Navegador | Chromium headless 156 (do Playwright 1.64.1, `HeadlessChrome/156.0.0.0`) |
 | Node | v22.23.0 |
 | Máquina | macOS (Darwin 25.5.0), Intel Core i5-1038NG7 2.0 GHz ×8, 16 GB |
-| Alvo | https://kurio-gold.vercel.app, commit `cc1781c` (entrega final: passada de layout + painel do servidor simulado), medido em 2026-10-22 19:16 (BRT) |
+| Alvo | https://kurio-gold.vercel.app, commit `20b2953` (entrega final: passada de layout, painel do servidor simulado, primeira linha do catálogo com prioridade), medido em 2026-10-22 ~20:00 (BRT) |
 | Mobile | emulação 412×823, rede lenta 4G simulada (RTT 150 ms, ~1,6 Mbps), **CPU 4× mais lenta** |
 | Desktop | emulação desktop, sem throttling de CPU (config padrão desktop do Lighthouse) |
 
@@ -30,10 +30,10 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 
 | Página / perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Início · mobile | **78** | 100 | 100 | 100 | 3,64 s | 0 | 242 ms |
-| Início · desktop | **99** | 100 | 100 | 100 | 0,77 s | 0 | 10 ms |
-| Detalhe · mobile | **66** | 100 | 100 | 100 | 3,57 s | 0 | 594 ms |
-| Detalhe · desktop | **99** | 100 | 100 | 100 | 0,79 s | 0 | 19 ms |
+| Início · mobile | **73** | 100 | 100 | 100 | 3,76 s | 0 | 378 ms |
+| Início · desktop | **99** | 100 | 100 | 100 | 0,77 s | 0 | 9 ms |
+| Detalhe · mobile | **82** | 100 | 100 | 100 | 3,51 s | 0 | 185 ms |
+| Detalhe · desktop | **99** | 100 | 100 | 100 | 0,76 s | 0 | 31 ms |
 
 Metas: Performance ≥ 90 · Acessibilidade ≥ 95 · Boas práticas ≥ 95 · SEO ≥ 90. **Todas atingidas, exceto Performance no perfil mobile** (justificado abaixo).
 
@@ -47,7 +47,8 @@ Metas: Performance ≥ 90 · Acessibilidade ≥ 95 · Boas práticas ≥ 95 · S
 | Preload do chunk do servidor simulado + zod sem JIT | 83* | — | o MSW baixa em paralelo com o app; fim do aviso de CSP (Boas práticas 96 → 100) |
 | Medição de `78785fa` (3×, mediana) | 79 | 75 | — |
 | Medição de `97f44e4` (3×, mediana) | 73 | 72 | extras EX1/EX2 (+0,3 KB gzip) e ajuste de fidelidade (miniatura extra no hero mobile); `benchmarkIndex` variou de 1069 a 1707 |
-| **Medição oficial, entrega `cc1781c` (3×, mediana)** | **78** | **66** | passada de layout e painel do servidor simulado (chunk sob demanda, fora da janela medida). Detalhe mobile por execução: 66 / 71 / 65, TBT 594 / 519 / 792 ms, `benchmarkIndex` 1318–1652; o script do MSW (`browser-*.js`, ~1,5 s com CPU 4×) segue como maior custo |
+| Medição de `cc1781c` (3×, mediana) | 78 | 66 | passada de layout e painel do servidor simulado (chunk sob demanda, fora da janela medida). Detalhe mobile por execução: 66 / 71 / 65, TBT 594 / 519 / 792 ms, `benchmarkIndex` 1318–1652; o script do MSW (`browser-*.js`, ~1,5 s com CPU 4×) segue como maior custo |
+| **Medição oficial, entrega `20b2953` (3×, mediana)** | **73** | **82** | primeira linha do catálogo `eager` + `fetchpriority=high` (antes `lazy`). Por execução, início mobile 73 / 67 / 76 (TBT 378 / 540 / 287 ms) e detalhe 80 / 85 / 82; o LCP do início ficou estável (~3,76 s), porque o atraso é a lista chegar do servidor simulado, não a prioridade da imagem. A variação entre `cc1781c` e `20b2953` (78→73 no início, 66→82 no detalhe) é sobretudo TBT, ou seja, o ruído de CPU desta máquina |
 
 \* medição única; a variação entre execuções no mobile é de ±6 pontos (o `benchmarkIndex` variou de 1319 a 1767).
 

@@ -33,7 +33,7 @@ Solução do desafio frontend: descoberta, compra e conta do colecionador, deskt
 
 ### Melhorias possíveis
 
-**Performance mobile no Lighthouse** (hoje 78 no início e 66 no detalhe; Acessibilidade, Boas práticas e SEO já estão em 100, e o desktop em 99). As causas estão medidas em [`docs/lighthouse/README.md`](docs/lighthouse/README.md); o ganho vem de tirar trabalho do thread principal e pintar antes do JS:
+**Performance mobile no Lighthouse** (hoje, mediana de 3: **73** no início e **82** no detalhe; Acessibilidade, Boas práticas e SEO já estão em **100** em todas as páginas e perfis, e a Performance desktop em 99). As causas estão medidas em [`docs/lighthouse/README.md`](docs/lighthouse/README.md); o ganho vem de tirar trabalho do thread principal e pintar antes do JS:
 
 1. **Servidor simulado fora do thread principal**: rodar os handlers e o "banco" num Web Worker (ou SharedWorker) em vez de na página. O script do MSW é o maior custo medido (~1,5 s com CPU 4× mais lenta) e a maior parte do TBT; num backend real ele simplesmente não existiria. De quebra, um SharedWorker deixaria o painel admin agir em várias abas.
 2. **Pré-renderização (SSG) do shell e da primeira página do catálogo** (TanStack Start/SSR ou prerender no build): o HTML já chega com o hero e os cards, e o FCP (~2,9 s) deixa de esperar o bundle.
@@ -46,7 +46,7 @@ Solução do desafio frontend: descoberta, compra e conta do colecionador, deskt
 - Mensagens de erro do servidor simulado também em inglês (`Accept-Language`; hoje só a interface é traduzida).
 - Teste manual com leitor de tela (VoiceOver/NVDA) nos fluxos de login, catálogo e checkout; os automatizados (axe, teclado, foco) já passam.
 - Servidor Socket.IO real (com rooms/ack) no lugar do binding do MSW, e testes de componente para os formulários.
-- Teste `account.spec` (perfil) ocasionalmente instável sob carga paralela: uma requisição ao service worker pode ficar presa até o timeout de 10 s do Axios; o app se recupera no retry, mas o teste espera os mesmos 10 s. Melhoria: esperar o retry no teste e investigar a requisição presa no MSW.
+- Instabilidade rara vista 1× em 236 num checkout limpo (`account.spec`, perfil): uma requisição ao service worker ficou presa até o timeout de 10 s do Axios; o app se recupera no retry, mas o teste espera os mesmos 10 s. Melhoria: investigar a requisição presa no MSW (o clone final rodou 238/238 sem instabilidade).
 
 ## Stack
 
@@ -102,7 +102,7 @@ Cupons: **`KURIO10`** (10%, válido) · **`GENESIS20`** (expirado) · qualquer o
 | `npm run assets`                                              | regenera `public/assets` (AVIF/WebP) a partir dos exports do Figma                                     |
 | `npm run audit:deps`                                          | `npm audit`                                                                                            |
 
-Relatório HTML do Playwright: `npx playwright show-report` (traces das falhas incluídos). Relatório da entrega (218 testes aprovados num checkout limpo, macOS, 3 perfis): [`docs/playwright-report/index.html`](docs/playwright-report/index.html); visuais (8/8) aprovados no Docker Linux. Os testes visuais são pulados fora do Linux, porque a renderização de fontes difere; rode-os pelo Docker.
+Relatório HTML do Playwright: `npx playwright show-report` (traces das falhas incluídos). Relatório da entrega (238 testes aprovados, 0 instáveis, num clone limpo do GitHub de `20b2953`, macOS, 4 projetos): [`docs/playwright-report/index.html`](docs/playwright-report/index.html); visuais (8/8) aprovados no Docker Linux. Os testes visuais são pulados fora do Linux, porque a renderização de fontes difere; rode-os pelo Docker.
 
 ## Idioma e formato de hora (extras)
 

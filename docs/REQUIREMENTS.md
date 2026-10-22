@@ -12,7 +12,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☑ |
 | X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ☑ |
 | X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10), age só pela API de controle: `e2e/mock-panel.spec.ts` (preço pelo painel → página atualiza via Socket.IO; troca/reset de cenário; teclado + axe) | ☑ |
-| X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo: 218 ✓ (`b70094c`); CI no GitHub Actions | ☑ |
+| X6 | E2E executáveis | todos | `npm run test:e2e` em clone limpo do GitHub: 238 ✓, 0 instáveis (`20b2953`); CI no GitHub Actions | ☑ |
 
 ## Escopo, telas e fluxos (§1, §3)
 | ID | Requisito | Bloco | Teste/Evidência | St |
@@ -160,7 +160,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ☑ |
 | TQ2 | VIS de início, detalhe, carrinho, pagamento; baselines Linux versionadas (Docker), pulado fora do Linux; dados estáveis | B7 | ☑ |
 | TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ☑ |
-| TQ4 | Relatório HTML + traces de falha **entregues**: `docs/playwright-report/` (218 ✓, checkout limpo de `b70094c`) | B9 | ☑ |
+| TQ4 | Relatório HTML + traces de falha **entregues**: `docs/playwright-report/` (238 ✓, clone limpo de `20b2953`) | B9 | ☑ |
 | TQ5 | Asserções na UI e no resultado das operações; realtime via cliente Socket.IO, REST via MSW | todos | ☑ |
 
 ## Performance (§10)
@@ -183,7 +183,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | D5 | Docs: contratos REST/eventos, sessão, carrinho, cache, reconciliação REST × Socket | B9 | ARCHITECTURE §4, §6, §7, §9 (conferidos × código) | ☑ |
 | D6 | ARCHITECTURE: limitações, decisões de UX, desvios do Figma | B9 | ARCHITECTURE §15 | ☑ |
 | D7 | Comandos: dev com mocks, build, preview, typecheck, lint, e2e, lighthouse | B0 | package.json | ☑ |
-| D8 | Roda de checkout limpo sem serviços privados | B9 | `git clone && npm ci && typecheck && lint && format:check && CI=1 test:e2e` (build no webServer): 218 ✓ em 2026-10-22 (`b70094c`) | ☑ |
+| D8 | Roda de checkout limpo sem serviços privados | B9 | `git clone && npm ci && typecheck && lint && format:check && CI=1 test:e2e` (build no webServer): 238 ✓, 0 instáveis, em 2026-10-22 (`20b2953`, clone do GitHub) | ☑ |
 
 ## Extras (fora do enunciado, PLAN §8)
 | ID | Requisito | Bloco | Teste | St |

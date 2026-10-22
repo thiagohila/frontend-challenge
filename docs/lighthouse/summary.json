@@ -1,7 +1,7 @@
 {
   "baseUrl": "https://kurio-gold.vercel.app",
-  "commit": "cc1781c",
-  "measuredAt": "2026-10-22T22:16:07.324Z",
+  "commit": "20b2953",
+  "measuredAt": "2026-10-22T22:35:45.085Z",
   "runs": 3,
   "node": "v22.23.0",
   "os": "Darwin 25.5.0 x64",
@@ -9,13 +9,13 @@
   "memoryGb": 16,
   "results": {
     "home/mobile": {
-      "performance": 78,
+      "performance": 73,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 3639,
+      "LCP": 3760,
       "CLS": 0,
-      "TBT": 242,
+      "TBT": 378,
       "formFactor": "mobile",
       "throttling": {
         "rttMs": 150,
@@ -25,7 +25,7 @@
         "uploadThroughputKbps": 675,
         "cpuSlowdownMultiplier": 4
       },
-      "benchmarkIndex": 1765.5
+      "benchmarkIndex": 1735
     },
     "home/desktop": {
       "performance": 99,
@@ -34,7 +34,7 @@
       "seo": 100,
       "LCP": 772,
       "CLS": 0,
-      "TBT": 10,
+      "TBT": 9,
       "formFactor": "desktop",
       "throttling": {
         "rttMs": 40,
@@ -44,16 +44,16 @@
         "uploadThroughputKbps": 0,
         "cpuSlowdownMultiplier": 1
       },
-      "benchmarkIndex": 1859
+      "benchmarkIndex": 2008
     },
     "detail/mobile": {
-      "performance": 66,
+      "performance": 82,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 3570,
+      "LCP": 3506,
       "CLS": 0,
-      "TBT": 594,
+      "TBT": 185,
       "formFactor": "mobile",
       "throttling": {
         "rttMs": 150,
@@ -63,16 +63,16 @@
         "uploadThroughputKbps": 675,
         "cpuSlowdownMultiplier": 4
       },
-      "benchmarkIndex": 1649
+      "benchmarkIndex": 1907.5
     },
     "detail/desktop": {
       "performance": 99,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 785,
+      "LCP": 759,
       "CLS": 0,
-      "TBT": 19,
+      "TBT": 31,
       "formFactor": "desktop",
       "throttling": {
         "rttMs": 40,
@@ -82,7 +82,7 @@
         "uploadThroughputKbps": 0,
         "cpuSlowdownMultiplier": 1
       },
-      "benchmarkIndex": 1635
+      "benchmarkIndex": 1721
     }
   },
   "lighthouseVersion": "13.5.0",
