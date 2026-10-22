@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { Trash2 } from 'lucide-react'
 import { NftArt } from '@/components/nft/NftArt'
 import { useMutationState } from '@tanstack/react-query'
 import { QuantityStepper } from '@/components/nft/QuantityStepper'
 import type { CartItem } from '@/contracts/cart'
 import { nftDisplayName } from '@/features/catalog/format'
 import { t } from '@/i18n'
+import { iconSrc } from '@/lib/assets'
 import { formatEth } from '@/lib/money'
 import { useCartMutations } from '../queries'
 
@@ -96,9 +96,10 @@ export function CartLines({ items }: { items: CartItem[] }) {
                     aria-label={t.cart.remove(name)}
                     disabled={busyIds.has(item.id)}
                     onClick={() => remove.mutate(item.id)}
-                    className="text-brand-secondary hover:text-destructive"
+                    // Figma "Iconly/Curved/Delete", 24 px box, glyph at its exported size.
+                    className="grid size-6 place-items-center opacity-90 transition-opacity hover:opacity-100 disabled:opacity-40"
                   >
-                    <Trash2 aria-hidden className="size-5" />
+                    <img src={iconSrc('icon-delete')} alt="" className="max-h-full max-w-full" />
                   </button>
                 </td>
               </tr>
@@ -127,9 +128,9 @@ export function CartLines({ items }: { items: CartItem[] }) {
                     aria-label={t.cart.remove(name)}
                     disabled={busyIds.has(item.id)}
                     onClick={() => remove.mutate(item.id)}
-                    className="shrink-0 text-primary"
+                    className="grid size-6 shrink-0 place-items-center disabled:opacity-40"
                   >
-                    <Trash2 aria-hidden className="size-4" />
+                    <img src={iconSrc('icon-delete-primary')} alt="" className="max-h-full max-w-full" />
                   </button>
                 </div>
                 <p className="text-sm text-brand-secondary">{t.cart.edition(item.editionLabel)}</p>
