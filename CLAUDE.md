@@ -45,6 +45,8 @@ Garantido por ferramenta (`npm run typecheck` / `lint`), não por boa vontade:
 - TS `strict` + `noUncheckedIndexedAccess` + `noImplicitOverride` em **src, e2e, tests e configs** (`tsconfig.test.json`).
 - Lint bloqueia: `any`, non-null `!`, import de tipo sem `type`, `href="#"`/âncora inválida, `<img>` sem `alt`, label solta, clique sem teclado, `key` por índice, `console.log`, `==`, import cíclico, mocks no app, `socket.io-client` estático.
 
+**Fidelidade × a11y (decisão permanente)**: seguir o Figma fielmente; rótulo/texto que a acessibilidade exigir e o design não tiver entra como `sr-only`, sem mudar o visual. Desvio visual só se inevitável (ex.: contraste) e sempre registrado em ARCHITECTURE §15.
+
 Por revisão (checklist antes de cada commit):
 - **Tipos derivam de schemas zod**; `as` só para estreitar algo já validado; nunca `as never`/`as unknown as`. Configs com `satisfies`.
 - **Nada de string mágica**: ícones/arte via `iconSrc`/`artSources` (union gerada em `assets.gen.ts`), rotas via `Link`/`navigate` tipados, query keys via `lib/query-keys`.
