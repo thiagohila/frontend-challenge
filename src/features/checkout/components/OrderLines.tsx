@@ -12,10 +12,10 @@ export function OrderLines({ quote }: { quote: Quote }) {
         <caption className="sr-only">{t.checkout.yourNfts}</caption>
         <thead>
           <tr className="text-left text-base font-bold">
-            <th scope="col" className="border-b border-border pb-3">
+            <th scope="col" className="border-b border-border pb-1">
               {t.checkout.nfts}
             </th>
-            <th scope="col" className="border-b border-border pb-3 text-right">
+            <th scope="col" className="border-b border-border pb-1 text-right">
               {t.checkout.subtotalCol}
             </th>
           </tr>
