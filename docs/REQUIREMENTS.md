@@ -11,7 +11,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ☑ |
 | X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☑ |
 | X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ☑ |
-| X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ☑ |
+| X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10), age só pela API de controle: `e2e/mock-panel.spec.ts` (preço pelo painel → página atualiza via Socket.IO; troca/reset de cenário; teclado + axe) | ☑ |
 | X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo: 218 ✓ (`b70094c`); CI no GitHub Actions | ☑ |
 
 ## Escopo, telas e fluxos (§1, §3)

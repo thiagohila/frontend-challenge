@@ -75,6 +75,10 @@ No rodapé: **Idioma** (Português/English) e **Formato de hora** (padrão do id
 
 O MSW intercepta `/api/*` (service worker) e o WebSocket do Socket.IO (no navegador). O estado (catálogo, usuários, carrinhos, pedidos, carteiras…) fica num "banco" do **servidor simulado** em `localStorage` (`msw-server-db:v1`) e sobrevive a refresh. O app nunca lê esse armazenamento; ele contém todos os usuários, como o banco de um backend real.
 
+### Painel "Servidor simulado (admin)"
+
+Com os mocks ligados (inclusive na URL pública), a aba vertical **"Servidor simulado (admin)"** na borda esquerda abre um painel lateral não modal: a página continua visível para acompanhar as mudanças chegando. Ele troca e **restaura** cenários, força latência, altera **preço e estoque** de um NFT e a taxa de rede, derruba a conexão Socket.IO, expira sessões e confirma/recusa pedidos pendentes. Age **só** pela API de controle do servidor simulado (`window.__mock`): cada mudança chega ao app por REST e pelo evento Socket.IO correspondente, como num backend real. Exemplo: abra `/nft/emerald-ape-042`, mude o preço no painel e veja a página atualizar e anunciar a mudança sem recarregar. Atua na aba atual (o servidor simulado vive na página). Nos testes automatizados ele fica oculto, a não ser que o teste peça (`e2e/mock-panel.spec.ts`).
+
 ### Cenários
 
 Selecione com `?scenario=<nome>` na URL, por exemplo https://kurio-gold.vercel.app/?scenario=slow. Trocar de cenário pela URL **restaura o seed daquele cenário** (ex.: `empty` zera o catálogo), e a escolha fica na aba até ser trocada.

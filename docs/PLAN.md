@@ -57,7 +57,7 @@ O plano rodou adiantado: B1–B9 e os extras ficaram prontos na madrugada (últi
 
 | Item | Planejado | Real |
 |---|---|---|
-| B1b — painel "Servidor simulado (admin)" | painel isolado na demo, com seleção e reset de cenário | **não feito**: só `window.__mock` no console e `?scenario=` na URL. ARCH §10 e REQUIREMENTS X5 citavam o painel → **fase F1** |
+| B1b — painel "Servidor simulado (admin)" | painel isolado na demo, com seleção e reset de cenário | **feito na F1** (antes: só `window.__mock` no console e `?scenario=` na URL) |
 | B8 — Performance ≥ 90 | meta em todas as páginas/perfis | desktop 100/99; **mobile 73/72** (MSW dentro da página), justificado em `docs/lighthouse/README.md` |
 | Checkpoints e push | só nos checkpoints | push a cada bloco (Vercel conectado ao GitHub desde B1b) |
 | Revisões | revisão por bloco (DoD 5) | feita, mas a **auditoria de requisitos** de 22/10 ainda achou 20+ falhas reais (sair sem reload quebrava o app, carrinho divergente, reset incompleto…) → corrigidas com teste (REVIEW-LOG "Auditoria") |
@@ -127,7 +127,7 @@ Mesma DoD (§3). **Congelamento às 17:30**; F7 é a última coisa antes da entr
 |---|---|---|---|---|
 | F0 ✅ | 07:00–11:25 | Revisão pós-entrega: fidelidade ao Figma (15 telas), auditoria de requisitos com 5 revisores (20+ correções), todos os cenários do mock com teste, limite de quantidade do detalhe, CI | — | 218 ✓ em checkout limpo; deploy = HEAD |
 | FL ✅ | 14:00–18:00 | **Passada de layout com o usuário** (desktop + mobile, tela a tela): home (header fixo com marcador, hero, abas, filtros, âncora do mercado), conta/carteiras, login como diálogo sobre a página (`?auth=`), detalhe, carrinho, pagamento, confirmação, tab bar com o recorte do FAB. Desvios em ARCH §15, causas no REVIEW-LOG | D2, U1 | 210 e2e + 20 unit ✓; VIS Linux 8/8 |
-| F1 | 11:30–12:45 | **Painel do servidor simulado** (o que o B1b previa e os docs já citam): botão flutuante só com mocks ligados, carregado sob demanda (fora do caminho crítico); seleção e **reset** de cenário, latência, mudar preço/estoque de um NFT, derrubar o socket, resolver pedido pendente. Age **só** pela API de controle (`window.__mock`) → REST/eventos, nunca no estado do app (X5). Diálogo acessível; desvio do Figma em ARCH §15 | M4, M5, X5 | e2e: troca de cenário e reset pelo painel; axe; Lighthouse sem regressão (chunk lazy) |
+| F1 ✅ | 18:00–18:30 | **Painel do servidor simulado** (o que o B1b previa e os docs já citam): botão flutuante só com mocks ligados, carregado sob demanda (fora do caminho crítico); seleção e **reset** de cenário, latência, mudar preço/estoque de um NFT, derrubar o socket, resolver pedido pendente. Age **só** pela API de controle (`window.__mock`) → REST/eventos, nunca no estado do app (X5). Diálogo acessível; desvio do Figma em ARCH §15 | M4, M5, X5 | e2e: troca de cenário e reset pelo painel; axe; Lighthouse sem regressão (chunk lazy) |
 | F2 | 12:45–13:15 | **Resumo para quem avalia** no topo do README: como avaliar em 5 min, decisões e trade-offs (performance mobile, checkout com carteiras cadastradas, MSW na página), links para as evidências | D4, D6 | README revisado |
 | F3 | 13:15–14:15 | **Mensagens do servidor no idioma escolhido**: `Accept-Language` no Axios; o mock responde em pt-BR/en-US; remove a limitação documentada | EX1 | `prefs.spec` com erro de API em en-US |
 | F4 | — | **Teste manual com leitor de tela** (usuário, ~10 min): login, catálogo, checkout | U4–U6 | anotado no REVIEW-LOG |

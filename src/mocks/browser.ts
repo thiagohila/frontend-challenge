@@ -13,4 +13,8 @@ export async function startMockServer() {
   if (runtime.takeScenarioChange()) await db.reset()
   // Pending orders survive reloads: re-arm their resolution timers (C4).
   await rescheduleOrders(serverContext)
+  // Automated runs (Playwright) drive `window.__mock` directly; the panel only shows there when a test opts in.
+  if (!navigator.webdriver || sessionStorage.getItem('mock:panel') === '1') {
+    void import('./devtools/mount').then(({ mountMockPanel }) => mountMockPanel())
+  }
 }
