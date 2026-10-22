@@ -157,3 +157,14 @@ test('sticky header: the current section follows the scroll, with a single curre
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
   await expect(current).toHaveText('Início')
 })
+
+test('the header search goes to the catalog and focuses "Explorar coleções", also from another page', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'the desktop header holds the search link')
+  const search = page.getByRole('searchbox', { name: 'Buscar NFTs' }).filter({ visible: true })
+  await page.goto('/nft/emerald-ape-042')
+  await page.getByRole('link', { name: 'Buscar NFTs' }).click()
+  await expect(page).toHaveURL(/\/#mercado$/)
+  await expect(search).toBeFocused()
+  await page.keyboard.type('Golden')
+  await expect(page).toHaveURL(/q=Golden/)
+})

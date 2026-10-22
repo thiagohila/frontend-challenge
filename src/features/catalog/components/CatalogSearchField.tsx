@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
 import { t } from '@/i18n'
+import { CATALOG_SEARCH_ATTRIBUTE } from '@/lib/anchors'
 import { cn } from '@/lib/utils'
 
 const DEBOUNCE_MS = 300
@@ -43,6 +44,7 @@ export function CatalogSearchField({
       <input
         id={id}
         type="search"
+        {...{ [CATALOG_SEARCH_ATTRIBUTE]: '' }}
         value={draft}
         onChange={(event) => onChange(event.target.value)}
         placeholder={t.catalog.searchPlaceholder}

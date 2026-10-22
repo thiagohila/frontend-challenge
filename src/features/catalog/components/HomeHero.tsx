@@ -17,6 +17,8 @@ const SLIDES: readonly ArtName[] = ['emerald-ape', 'sage-nomad', 'golden-beat']
 
 export function HomeHero() {
   const [index, setIndex] = useState(0)
+  // The slide shown before the current one stays underneath while the new one fades in (crossfade).
+  const [previous, setPrevious] = useState<ArtName | null>(null)
   // One variant per breakpoint: a display:none <img> would still be downloaded.
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const current = SLIDES[index] ?? 'emerald-ape'
@@ -48,24 +50,25 @@ export function HomeHero() {
         <Link
           to="/"
           hash={MARKET_ANCHOR}
-          className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-text-accent lg:mt-12 lg:h-10 lg:w-[140px] lg:justify-center lg:rounded-md lg:bg-primary lg:text-base lg:text-primary-foreground"
+          className="group mt-3 inline-flex items-center gap-1 text-xs font-bold text-text-accent transition-colors duration-200 hover:text-foreground lg:mt-12 lg:h-10 lg:w-[140px] lg:justify-center lg:rounded-md lg:bg-primary lg:text-base lg:text-primary-foreground lg:hover:bg-text-accent lg:hover:text-primary-foreground"
         >
           {t.catalog.explore}
-          <ArrowRight aria-hidden className="size-4 lg:hidden" />
+          <ArrowRight
+            aria-hidden
+            className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none lg:hidden"
+          />
         </Link>
         {/* Mobile: art sits inside the hero card (Figma). */}
         {!isDesktop && (
           <div className="absolute top-3 right-3 w-[138px]">
-            <NftArt art={current} alt={t.catalog.heroArtAlt} width={138} sizes="138px" priority className="rounded-xl" />
+            <HeroArt art={current} previous={previous} width={138} className="rounded-xl" />
             {/* Decorative overlapping thumbnail (Figma mobile). */}
             <NftArt art={next} alt="" width={70} sizes="70px" className="absolute -bottom-2.5 left-0 w-[70px] rounded-xl" />
           </div>
         )}
       </div>
 
-      {isDesktop && (
-        <NftArt art={current} alt={t.catalog.heroArtAlt} width={450} sizes="450px" priority className="size-[450px] rounded-3xl" />
-      )}
+      {isDesktop && <HeroArt art={current} previous={previous} width={450} className="size-[450px] rounded-3xl" />}
 
       {slides.length > 1 && (
         // Mobile: dots sit inside the bottom of the hero card (Figma).
@@ -77,14 +80,47 @@ export function HomeHero() {
               type="button"
               aria-label={t.catalog.heroSlide(position + 1, slides.length)}
               aria-pressed={position === index}
-              onClick={() => setIndex(position)}
-              className="grid size-6 place-items-center"
+              onClick={() => {
+                if (position === index) return
+                setPrevious(current)
+                setIndex(position)
+              }}
+              className="group grid size-6 place-items-center"
             >
-              <span className={cn('block size-1.5 rounded-full bg-primary', position === index ? 'w-4' : 'opacity-60')} />
+              <span
+                className={cn(
+                  'block h-1.5 rounded-full bg-primary transition-[width,opacity] duration-300 ease-out motion-reduce:transition-none',
+                  position === index ? 'w-4' : 'w-1.5 opacity-60 group-hover:opacity-100',
+                )}
+              />
             </button>
           ))}
         </fieldset>
       )}
     </section>
+  )
+}
+
+/**
+ * Hero art with a crossfade: the previous slide stays below (already decoded) while the new one fades
+ * in on top (`key` restarts the animation). No fade with reduced motion. Only the first art is `priority`.
+ */
+function HeroArt({ art, previous, width, className }: { art: ArtName; previous: ArtName | null; width: number; className: string }) {
+  return (
+    <div className={cn('relative overflow-hidden', className)}>
+      {previous && previous !== art && (
+        <NftArt art={previous} alt="" width={width} sizes={`${width}px`} className="absolute inset-0 size-full" />
+      )}
+      <div key={art} className="relative motion-safe:animate-in motion-safe:duration-500 motion-safe:fade-in">
+        <NftArt
+          art={art}
+          alt={t.catalog.heroArtAlt}
+          width={width}
+          sizes={`${width}px`}
+          priority={previous === null}
+          className="size-full"
+        />
+      </div>
+    </div>
   )
 }

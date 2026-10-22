@@ -1,7 +1,7 @@
 import { useLocation, useRouter } from '@tanstack/react-router'
 import { type MouseEvent, type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { t } from '@/i18n'
-import { isMarketPath, MARKET_ANCHOR, type NavSection } from '@/lib/anchors'
+import { focusCatalogSearch, isMarketPath, MARKET_ANCHOR, type NavSection } from '@/lib/anchors'
 import { cn } from '@/lib/utils'
 import { ComingSoon } from './ComingSoon'
 
@@ -110,6 +110,7 @@ export function MainNav() {
 export function SectionLink({
   section,
   current = false,
+  focusSearch = false,
   register,
   className,
   children,
@@ -117,6 +118,8 @@ export function SectionLink({
 }: {
   section: NavSection
   current?: boolean
+  /** Header search: after reaching the catalog, focus its search field. */
+  focusSearch?: boolean
   register?: (node: HTMLAnchorElement | null) => void
   className?: string
   children: ReactNode
@@ -134,7 +137,9 @@ export function SectionLink({
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
       window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
     }
-    void router.navigate(target)
+    void router.navigate(target).then(() => {
+      if (focusSearch) focusCatalogSearch()
+    })
   }
 
   return (

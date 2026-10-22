@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type CatalogSort, type CatalogTab, catalogSortSchema, catalogTabSchema } from '@/contracts/nft'
 import { t } from '@/i18n'
@@ -11,25 +12,49 @@ interface CatalogToolbarProps {
 }
 
 export function CatalogToolbar({ tab, sort, onTab, onSort }: CatalogToolbarProps) {
+  const buttons = useRef<Partial<Record<CatalogTab, HTMLButtonElement | null>>>({})
+  const [marker, setMarker] = useState<{ left: number; width: number } | null>(null)
+
+  // One underline (90% of the active label, left aligned) that slides between tabs.
+  useLayoutEffect(() => {
+    const button = buttons.current[tab]
+    if (!button) return
+    const place = () => setMarker({ left: button.offsetLeft, width: button.offsetWidth * 0.9 })
+    place()
+    const observer = new ResizeObserver(place)
+    observer.observe(button)
+    return () => observer.disconnect()
+  }, [tab])
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
       {/* min-w-0: a fieldset defaults to min-inline-size: min-content and would never scroll (320 px). */}
-      <fieldset className="flex min-w-0 gap-4 overflow-x-auto text-[15px] leading-4 font-medium whitespace-nowrap lg:gap-5">
+      <fieldset className="relative flex min-w-0 gap-4 overflow-x-auto text-[15px] leading-4 font-medium whitespace-nowrap lg:gap-5">
         <legend className="sr-only">{t.catalog.tabsLabel}</legend>
         {catalogTabSchema.options.map((option) => (
           <button
             key={option}
+            ref={(node) => {
+              buttons.current[option] = node
+            }}
             type="button"
             aria-pressed={tab === option}
             onClick={() => onTab(option)}
             className={cn(
-              'relative pb-1.5 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-[90%]',
-              tab === option ? 'text-text-accent after:bg-primary' : 'text-foreground hover:text-text-accent',
+              'pb-1.5 transition-colors duration-200',
+              tab === option ? 'text-text-accent' : 'text-foreground hover:text-text-accent',
             )}
           >
             {t.catalog.tabs[option]}
           </button>
         ))}
+        {marker && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 h-0.5 bg-primary transition-[left,width] duration-300 ease-out motion-reduce:transition-none"
+            style={{ left: marker.left, width: marker.width }}
+          />
+        )}
       </fieldset>
       <div className="flex items-center gap-2 text-[15px]">
         <span id="catalog-sort-label">{t.catalog.sortLabel}</span>

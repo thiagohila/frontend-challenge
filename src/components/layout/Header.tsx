@@ -25,7 +25,7 @@ export function Header() {
         </Link>
         <MainNav />
         <div className="flex items-center gap-7">
-          <SectionLink section="market" aria-label={t.header.search} className="grid size-6 place-items-center">
+          <SectionLink section="market" focusSearch aria-label={t.header.search} className="grid size-6 place-items-center">
             <img src={iconSrc('icon-search')} alt="" width={20} height={20} />
           </SectionLink>
           <Link to="/cart" aria-label={t.header.cart(cartCount)} className="relative grid size-6 place-items-center">
