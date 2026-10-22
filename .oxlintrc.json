@@ -85,7 +85,9 @@
     {
       "files": [
         "src/main.tsx",
-        "src/mocks/**"
+        "src/mocks/**",
+        "tests/**",
+        "e2e/**"
       ],
       "rules": {
         "no-restricted-imports": "off"
@@ -106,6 +108,15 @@
       ],
       "rules": {
         "no-console": "off"
+      }
+    },
+    {
+      "files": [
+        "e2e/**",
+        "tests/**"
+      ],
+      "rules": {
+        "react/rules-of-hooks": "off"
       }
     }
   ]

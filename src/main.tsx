@@ -23,8 +23,8 @@ declare module '@tanstack/react-router' {
 
 async function enableMocks() {
   if (!env.enableMocks) return
-  const { worker } = await import('./mocks/browser')
-  await worker.start({ onUnhandledRequest: 'bypass', quiet: true })
+  const { startMockServer } = await import('./mocks/browser')
+  await startMockServer()
 }
 
 const rootElement = document.getElementById('root')

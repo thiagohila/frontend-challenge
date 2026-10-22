@@ -51,7 +51,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | K4 | Cupom aplicar/remover (persistido no carrinho do servidor); inválido e expirado | B5 | T5 (inclui refresh com cupom) | ☐ |
 | K5 | Subtotal, desconto, taxa de rede e total vindos da API | B5 | T5 | ☐ |
 | K6 | Reflete preço/disponibilidade recebidos com o carrinho aberto | B5 | `realtime.spec` (carrinho), T9 | ☐ |
-| K7 | ETH como string decimal, precisão no cálculo e na exibição; quantidade inteira | B2, B5 | unit `money.spec` + T5 (valores exatos) | ☐ |
+| K7 | ETH como string decimal, precisão no cálculo e na exibição; quantidade inteira | B2, B5 | unit `money.spec` + T5 (valores exatos) | ◐ |
 | K8 | Cotação da API é a referência para finalizar | B6 | T9 | ☐ |
 
 ## Pagamento e confirmação (§3)
@@ -78,14 +78,14 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | A5 | Logout/troca limpa cache privado e subscriptions | B3 | T3 | ☐ |
 | A6 | Validar cadastro, perfil, senha e carteiras, incluindo erros da API | B3, B6b | T3, T8, T11 | ☐ |
 | A7 | Alterações confirmadas persistem após refresh | B3, B6b | T8 | ☐ |
-| A8 | Credenciais fictícias; senha nunca em claro | B2 | SECURITY.md + inspeção do db | ☐ |
+| A8 | Credenciais fictícias; senha nunca em claro | B2 | SECURITY.md + inspeção do db | ☑ |
 
 ## Integração e estado (§4)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
 | I1 | Router em rotas, search params e proteção | B3, B4 | T1, T3 | ☐ |
 | I2 | Query em consultas, mutations e cache; REST só via Axios | todos | revisão + ARCHITECTURE §5–6 | ☐ |
-| I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ☐ |
+| I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ◐ |
 | I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ☐ |
 | I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ☐ |
 | I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☐ |
@@ -98,18 +98,18 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Contratos REST (§5)
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
-| R1 | Recursos: sessão, NFTs, favoritos, carrinho, cotação, pedidos, perfil, carteiras | B2 | ARCHITECTURE §4 | ◐ |
-| R2 | Erros: validação, sessão inválida, permissão (403 `carol`/`unauthorized`), inexistente, conflito, transitório | B2 | unit de contrato + T3 (401), checkout.spec (403) | ☐ |
-| R3 | Idempotência: mesma chave → mesmo pedido; chave + payload diferente → conflito | B2, B6 | unit de contrato + T7 | ☐ |
+| R1 | Recursos: sessão, NFTs, favoritos, carrinho, cotação, pedidos, perfil, carteiras | B2 | ARCHITECTURE §4 | ☑ |
+| R2 | Erros: validação, sessão inválida, permissão (403 `carol`/`unauthorized`), inexistente, conflito, transitório | B2 | unit de contrato + T3 (401), checkout.spec (403) | ◐ |
+| R3 | Idempotência: mesma chave → mesmo pedido; chave + payload diferente → conflito | B2, B6 | unit de contrato + T7 | ◐ |
 
 ## Mocking (§6)
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
-| M1 | Mocks só na camada de rede, reutilizados em dev/demo/testes; sem respostas fictícias no app | B2 | lint de import (`src/**` ≠ `@/mocks`) | ☐ |
-| M2 | Estado consistente entre os recursos; persistência; reset integral | B2 | T5/T8 (refresh) + `mock.reset` | ☐ |
-| M3 | Lentidão, latência variável, timeout, sem conexão, HTTP erro, configuráveis e reproduzíveis (PRNG com seed) | B2 | T1, T7, T12 | ☐ |
-| M4 | Fixtures: variedade p/ filtros+paginação, ≥2 usuários | B2 | `mocks/fixtures` | ☐ |
-| M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ☐ |
+| M1 | Mocks só na camada de rede, reutilizados em dev/demo/testes; sem respostas fictícias no app | B2 | lint de import (`src/**` ≠ `@/mocks`) | ◐ |
+| M2 | Estado consistente entre os recursos; persistência; reset integral | B2 | T5/T8 (refresh) + `mock.reset` | ☑ |
+| M3 | Lentidão, latência variável, timeout, sem conexão, HTTP erro, configuráveis e reproduzíveis (PRNG com seed) | B2 | T1, T7, T12 | ◐ |
+| M4 | Fixtures: variedade p/ filtros+paginação, ≥2 usuários | B2 | `mocks/fixtures` | ☑ |
+| M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ◐ |
 | M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ◐ |
 | M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ☐ |
 | M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ◐ |
@@ -159,7 +159,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | T12 | Skeleton em carga lenta, feedback de falha, nova tentativa | B4 | ☐ |
 | TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ◐ |
 | TQ2 | VIS de início, detalhe, carrinho, pagamento; baselines Linux versionadas (Docker), pulado fora do Linux; dados estáveis | B7 | ☐ |
-| TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ☐ |
+| TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ◐ |
 | TQ4 | Relatório HTML + traces de falha **entregues** | B9 | ☐ |
 | TQ5 | Asserções na UI e no resultado das operações; realtime via cliente Socket.IO, REST via MSW | todos | ☐ |
 

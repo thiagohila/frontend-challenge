@@ -31,6 +31,8 @@ export type Wallet = z.infer<typeof walletSchema>
 
 export const walletListSchema = z.object({ items: z.array(walletSchema) })
 
+export const walletConnectRequestSchema = z.object({ network: networkSchema })
+
 export const walletConnectionSchema = z.object({
   connectionId: id,
   walletId: id,
