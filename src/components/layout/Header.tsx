@@ -5,39 +5,29 @@ import { useCart } from '@/features/cart/queries'
 import { iconSrc } from '@/lib/assets'
 import { useSession } from '@/lib/session/store'
 import { cn } from '@/lib/utils'
-import { ComingSoon } from './ComingSoon'
-import { MARKET_ANCHOR } from '@/lib/anchors'
-
-const MARKET_PATHS = ['/nft', '/cart', '/checkout', '/orders']
+import { isMarketPath } from '@/lib/anchors'
+import { MainNav, SectionLink } from './MainNav'
 
 export function Header() {
   const { pathname } = useLocation()
   const sessionState = useSession()
   const cartCount = useCart().data?.itemCount ?? 0
-  const inMarket = MARKET_PATHS.some((path) => pathname.startsWith(path))
+  const inMarket = isMarketPath(pathname)
   // Figma: market-flow screens use the bare Header Row; the others add the hairline divider.
   return (
-    <header className={cn('mx-auto hidden w-full max-w-page pt-6 lg:block', !inMarket && 'border-b border-border')}>
-      <div className="flex h-[45px] items-start justify-between">
+    // Sticky (desktop): navigation stays reachable on the long home/detail pages; opaque so content passes under it.
+    <header className="sticky top-0 z-40 hidden bg-background lg:block">
+      <div
+        className={cn('mx-auto flex h-[70px] w-full max-w-page items-start justify-between pt-6', !inMarket && 'border-b border-border')}
+      >
         <Link to="/" className="w-40 pt-2 text-sm font-bold tracking-[0.1em] text-foreground">
           {t.brand}
         </Link>
-        <nav aria-label={t.nav.label}>
-          <ul className="flex gap-10 text-base">
-            <NavItem to="/" label={t.nav.home} active={!inMarket} />
-            <NavItem to="/" hash={MARKET_ANCHOR} label={t.nav.market} active={inMarket} />
-            <li>
-              <ComingSoon className="text-foreground">{t.nav.creators}</ComingSoon>
-            </li>
-            <li>
-              <ComingSoon className="text-foreground">{t.nav.learn}</ComingSoon>
-            </li>
-          </ul>
-        </nav>
+        <MainNav />
         <div className="flex items-center gap-7">
-          <Link to="/" hash={MARKET_ANCHOR} aria-label={t.header.search} className="grid size-6 place-items-center">
+          <SectionLink section="market" aria-label={t.header.search} className="grid size-6 place-items-center">
             <img src={iconSrc('icon-search')} alt="" width={20} height={20} />
-          </Link>
+          </SectionLink>
           <Link to="/cart" aria-label={t.header.cart(cartCount)} className="relative grid size-6 place-items-center">
             <img src={iconSrc('icon-cart')} alt="" width={24} height={24} />
             {cartCount > 0 && (
@@ -75,26 +65,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
-}
-
-function NavItem({ to, hash, label, active }: { to: '/'; hash?: string; label: string; active: boolean }) {
-  return (
-    <li>
-      <Link
-        to={to}
-        hash={hash}
-        aria-current={active ? 'page' : undefined}
-        // Hash links are active only on their exact hash (else "Mercado" is also `aria-current` on "/").
-        activeOptions={{ exact: true, includeHash: true }}
-        className={cn(
-          // Figma: 21 px text + 24 px gap with the 3 px underline at the bottom of the 45 px row (on the divider).
-          'block border-b-[3px] pb-[21px] leading-[21px]',
-          active ? 'border-primary font-bold text-text-accent' : 'border-transparent text-foreground hover:text-text-accent',
-        )}
-      >
-        {label}
-      </Link>
-    </li>
   )
 }

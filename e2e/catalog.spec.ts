@@ -118,19 +118,42 @@ test.describe('empty catalog scenario', () => {
 
 test('"Mercado" scrolls to the catalog again when the URL already has #mercado', async ({ page, isMobile }) => {
   test.skip(isMobile, 'the desktop header holds the "Mercado" link')
+  // The section lands just below the sticky header (its scroll-margin), not merely somewhere in the viewport.
   const sectionTop = () => page.evaluate(() => document.getElementById('mercado')?.getBoundingClientRect().top ?? Number.NaN)
+  const headerBottom = () => page.evaluate(() => document.querySelector('header')?.getBoundingClientRect().bottom ?? Number.NaN)
   const mercado = page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Mercado' })
   await page.goto('/')
   await expect(page.getByRole('list', { name: /NFTs? encontrados?/ })).toBeVisible()
 
   await mercado.click()
   await expect(page).toHaveURL(/#mercado$/)
-  await expect.poll(sectionTop).toBeLessThan(60) // section at the top, not merely somewhere in the viewport
+  await expect.poll(sectionTop).toBeLessThan(130)
+  expect(await sectionTop()).toBeGreaterThanOrEqual(await headerBottom())
 
   // Scroll back up like a user (wheel), then the same link again: same URL, still has to scroll.
   await page.mouse.move(700, 400)
   for (let step = 0; step < 15; step += 1) await page.mouse.wheel(0, -400)
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
   await mercado.click()
-  await expect.poll(sectionTop).toBeLessThan(60)
+  await expect.poll(sectionTop).toBeLessThan(130)
+  expect(await sectionTop()).toBeGreaterThanOrEqual(await headerBottom())
+})
+
+test('sticky header: the current section follows the scroll, with a single current item', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'the desktop header holds the main navigation')
+  const nav = page.getByRole('navigation', { name: 'Navegação principal' })
+  const current = nav.locator('[aria-current="page"]')
+  await page.goto('/')
+  await expect(page.getByRole('list', { name: /NFTs? encontrados?/ })).toBeVisible()
+  await expect(current).toHaveText('Início')
+
+  await page.mouse.move(700, 500)
+  for (let step = 0; step < 4; step += 1) await page.mouse.wheel(0, 400)
+  await expect(current).toHaveText('Mercado')
+  await expect(current).toHaveCount(1)
+  await expect(page.locator('header')).toBeInViewport() // stays on top while scrolling
+
+  await nav.getByRole('link', { name: 'Início' }).click()
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+  await expect(current).toHaveText('Início')
 })

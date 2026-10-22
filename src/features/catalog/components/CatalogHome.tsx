@@ -46,7 +46,7 @@ export function CatalogHome({ search, onSearchChange, onClearFilters }: CatalogH
       <section
         id={MARKET_ANCHOR}
         aria-labelledby="catalog-title"
-        className="mx-auto mt-10 flex max-w-page scroll-mt-6 gap-12 px-4 lg:mt-24 lg:px-0"
+        className="mx-auto mt-10 flex max-w-page scroll-mt-6 gap-12 px-4 lg:mt-24 lg:scroll-mt-[94px] lg:px-0"
       >
         <h2 id="catalog-title" className="sr-only">
           {t.catalog.sectionTitle}
