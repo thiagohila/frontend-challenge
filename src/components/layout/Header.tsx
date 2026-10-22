@@ -6,6 +6,7 @@ import { iconSrc } from '@/lib/assets'
 import { useSession } from '@/lib/session/store'
 import { cn } from '@/lib/utils'
 import { isMarketPath } from '@/lib/anchors'
+import { CartEntry } from './CartEntry'
 import { MainNav, SectionLink } from './MainNav'
 
 export function Header() {
@@ -28,7 +29,7 @@ export function Header() {
           <SectionLink section="market" focusSearch aria-label={t.header.search} className="grid size-6 place-items-center">
             <img src={iconSrc('icon-search')} alt="" width={20} height={20} />
           </SectionLink>
-          <Link to="/cart" aria-label={t.header.cart(cartCount)} className="relative grid size-6 place-items-center">
+          <CartEntry label={t.header.cart(cartCount)} className="relative grid size-6 place-items-center">
             <img src={iconSrc('icon-cart')} alt="" width={24} height={24} />
             {cartCount > 0 && (
               <span
@@ -38,7 +39,7 @@ export function Header() {
                 {cartCount}
               </span>
             )}
-          </Link>
+          </CartEntry>
           {sessionState.status === 'authenticated' ? (
             // Signed-in state is not in the Figma: derived from the account sidebar styles.
             <Link

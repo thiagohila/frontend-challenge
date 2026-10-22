@@ -74,3 +74,32 @@ test.describe('T5 — cart', () => {
     await expect(page.getByTestId('cart-total')).toHaveText('3.586 ETH') // 3 × 1.19 + 0.016, now in bruno's cart
   })
 })
+
+test.describe('empty cart entry point', () => {
+  test('clicking the empty cart explains it next to the icon instead of navigating; the empty page stays for an emptied cart', async ({
+    page,
+    isMobile,
+  }) => {
+    const entry = isMobile
+      ? page.getByRole('navigation', { name: 'Navegação' }).getByRole('button', { name: 'Carrinho' })
+      : page.locator('header').getByRole('button', { name: 'Carrinho' })
+    await page.goto('/')
+    await expect(page.getByRole('list', { name: /NFTs? encontrados?/ })).toBeVisible()
+    await entry.click()
+    await expect(page.getByTestId('empty-cart-popover')).toContainText('Seu carrinho está vazio.')
+    await expect(page).toHaveURL('/')
+    await page.keyboard.press('Escape')
+    await expect(page.getByTestId('empty-cart-popover')).toBeHidden()
+    await expect(entry).toBeFocused() // focus returns to the trigger
+
+    // With items, the same entry is a link to /cart; removing everything there shows the empty page.
+    await page.goto('/nft/emerald-ape-042')
+    await page.getByRole('button', { name: isMobile ? 'Comprar NFT' : 'COMPRAR', exact: true }).click()
+    await expect(page).toHaveURL('/cart')
+    await page
+      .getByTestId(isMobile ? 'cart-card-emerald-ape-042' : 'cart-line-emerald-ape-042')
+      .getByRole('button', { name: /Remover Emerald Ape/ })
+      .click()
+    await expect(page.getByText('Seu carrinho está vazio.')).toBeVisible()
+  })
+})

@@ -3,6 +3,7 @@ import { ScanLine } from 'lucide-react'
 import { t } from '@/i18n'
 import { iconSrc, type IconName } from '@/lib/assets'
 import { cn } from '@/lib/utils'
+import { CartEntry } from './CartEntry'
 import { ComingSoon } from './ComingSoon'
 
 // `label` is a dictionary key, resolved at render time (the locale can change).
@@ -43,6 +44,15 @@ export function MobileTabBar() {
 }
 
 function TabItem({ to, label, icon, active }: { to: string; label: (typeof items)[number]['label']; icon: IconName; active: boolean }) {
+  if (label === 'cart') {
+    return (
+      <li>
+        <CartEntry label={t.tabBar.cart} side="top" className="relative grid size-11 place-items-center">
+          <img src={iconSrc(icon)} alt="" width={24} height={24} />
+        </CartEntry>
+      </li>
+    )
+  }
   return (
     <li>
       <Link
