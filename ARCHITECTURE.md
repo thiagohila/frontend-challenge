@@ -3,21 +3,19 @@
 Guia normativo do projeto (o **como**). O que está aqui **deve** ser seguido; desvios exigem registro em §14 (ADRs).
 Enunciado: `docs/CHALLENGE.md` · O quê: `docs/REQUIREMENTS.md` · Plano: `docs/PLAN.md` · Segurança: `docs/SECURITY.md` · Design: `docs/DESIGN.md`.
 
-## 0. Avaliação do estado atual (B0)
+## 0. Estado na entrega
 
-| Item                                                                 | Situação                        | Ação                                                 |
-| -------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------- |
-| Vite + TS strict + aliases `@/`                                      | ✅ adequado                     | —                                                    |
-| Router file-based + `routeTree.gen.ts` versionado                    | ✅ typecheck funciona sem build | manter versionado                                    |
-| QueryClient global                                                   | ✅                              | ajustar retry por erro (§6)                          |
-| Axios `http`                                                         | ⚠️ sem interceptors             | adicionar auth, normalização de erro, 401 (§5)       |
-| Socket criado dentro da rota `/` (import dinâmico após `mocksReady`) | ⚠️ provisório (smoke)           | mover para `RealtimeProvider` por sessão (§9)        |
-| MSW boot lazy + shell antes do MSW                                   | ✅ feito (§13, ADR 10/12)       | —                                                    |
-| Handlers MSW em arquivo único                                        | ⚠️ não escala                   | dividir por recurso + db + cenários (§10)            |
-| Contratos                                                            | ❌ inexistentes                 | criar `src/contracts` (§4) antes de qualquer feature |
-| E2E smoke + axe                                                      | ✅                              | evoluir fixtures (§12)                               |
+A avaliação inicial (B0) apontava interceptors, contratos, socket por sessão e handlers por recurso como lacunas. Todas foram resolvidas; o histórico de problemas, causas e prevenções está em `docs/REVIEW-LOG.md`.
 
-Conclusão: a base é sólida. Os riscos estão no que ainda não existe, então a ordem é contratos → mock db → http/sessão → features.
+| Área                                                           | Onde                                                                                       | Garantia                                               |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| Contratos zod compartilhados app ↔ mocks                       | `src/contracts`                                                                            | typecheck + parse em toda resposta                     |
+| HTTP com timeout em JS, auth/guest, 401 → reauth               | `src/lib/http.ts`                                                                          | e2e T3/T7, unit                                        |
+| Servidor simulado (serviços puros + handlers MSW finos)        | `src/mocks/server`, `src/mocks/handlers`                                                   | unit de contrato + e2e via service worker              |
+| Realtime por sessão (portão de eventos, reconciliação)         | `src/lib/realtime`                                                                         | unit `realtime-gate`, e2e realtime/T9/T10              |
+| Fluxos (catálogo, detalhe, carrinho, checkout, pedidos, conta) | `src/features/*`, rotas só compõem                                                         | e2e T1–T12                                             |
+| A11y                                                           | componentes de formulário, diálogos Radix, live region                                     | axe em 12 telas × 2 perfis, T11, overflow 390/768/1440 |
+| Qualidade                                                      | strict TS (+ testes/configs), oxlint (a11y, imports, sem `any`/`!`/`zod` direto), Prettier | DoD por bloco                                          |
 
 ## 1. Princípios
 
