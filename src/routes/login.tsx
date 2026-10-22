@@ -2,13 +2,14 @@ import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { AuthDialog } from '@/features/auth/components/AuthDialog'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 import { authSearchSchema, safeRedirect } from '@/features/auth/redirect'
+import { t } from '@/i18n'
 
 export const Route = createFileRoute('/login')({
   validateSearch: authSearchSchema,
   beforeLoad: ({ context, search }) => {
     if (context.session.get().status === 'authenticated') throw redirect({ href: safeRedirect(search.redirect) })
   },
-  head: () => ({ meta: [{ title: 'Entrar — Kurio' }] }),
+  head: () => ({ meta: [{ title: t.titles.signIn }] }),
   component: LoginPage,
 })
 

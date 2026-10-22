@@ -46,4 +46,5 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B8 | `decimal.js` e o realtime no caminho crítico | bridge de realtime montado no root | `RealtimeBridge` lazy após o primeiro paint | idem |
 | B8 | Aviso de CSP (Boas práticas 96) | zod v4 sonda `new Function` na criação do 1º schema, antes do `z.config` (ordem de chunks) | `@/lib/z` configura e reexporta o zod; lint proíbe importar `z` de `zod` | verificação de issues via CDP em produção |
 | B8 | LCP mobile dependente da API | arte do hero vinha de `/nfts/featured` | hero editorial estático + preload; chunk do MSW em `modulepreload` | `docs/lighthouse/README.md` |
-
+| EX | Rótulos que não trocariam de idioma | dicionário lido em constantes de módulo (`MobileTabBar` items, `WalletForm` `fields`) | leitura no render; a constante guarda a **chave** | regra em ARCH §11 + `e2e/prefs.spec.ts` verifica a tab bar/header em en-US |
+| EX | Títulos de página e mensagem genérica fora do dicionário | strings literais em `head()` das rotas e em `applyApiErrors` | `t.titles.*`, `t.form.genericError` | busca por literais pt fora de `src/i18n` antes do commit |

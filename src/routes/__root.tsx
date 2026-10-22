@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { createRootRouteWithContext, HeadContent, Link, Outlet, useLocation, useRouter } from '@tanstack/react-router'
-import { useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { LiveRegion } from '@/components/layout/LiveRegion'
@@ -9,6 +9,7 @@ import { DeferredShell } from '@/components/layout/DeferredShell'
 import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
 import { PendingOrderBanner } from '@/features/orders/components/PendingOrderBanner'
 import { t } from '@/i18n'
+import { usePrefs } from '@/lib/prefs'
 import type { session } from '@/lib/session/store'
 
 export interface RouterContext {
@@ -28,28 +29,44 @@ function RootLayout() {
   const { pathname } = useLocation()
   const showTabBar = !HIDE_TAB_BAR.some((path) => pathname.startsWith(path))
   useRouteFocus()
+  const locale = useLocale()
 
   return (
     <>
       <HeadContent />
-      <a
-        href="#conteudo"
-        className="sr-only z-50 rounded-md bg-primary px-4 py-2 font-bold text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
-      >
-        {t.skipToContent}
-      </a>
-      <Header />
-      <PendingOrderBanner />
-      <main id="conteudo" tabIndex={-1} className="outline-none">
-        <Outlet />
-      </main>
-      <Footer />
-      {showTabBar && <MobileTabBar />}
-      <FavoriteIntentRunner />
-      <LiveRegion />
+      {/* `t` is read at render: a locale change remounts the visible shell (cached queries keep it instant). */}
+      <Fragment key={locale}>
+        <a
+          href="#conteudo"
+          className="sr-only z-50 rounded-md bg-primary px-4 py-2 font-bold text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+        >
+          {t.skipToContent}
+        </a>
+        <Header />
+        <PendingOrderBanner />
+        <main id="conteudo" tabIndex={-1} className="outline-none">
+          <Outlet />
+        </main>
+        <Footer />
+        {showTabBar && <MobileTabBar />}
+        <FavoriteIntentRunner />
+        <LiveRegion />
+      </Fragment>
       <DeferredShell />
     </>
   )
+}
+
+// Mirrors the language on <html lang> and recomputes route heads (document titles).
+function useLocale() {
+  const router = useRouter()
+  const { locale } = usePrefs()
+  useEffect(() => {
+    if (document.documentElement.lang === locale) return
+    document.documentElement.lang = locale
+    void router.invalidate()
+  }, [locale, router])
+  return locale
 }
 
 // After client-side navigation, move focus to the page heading (a11y checklist: route change).

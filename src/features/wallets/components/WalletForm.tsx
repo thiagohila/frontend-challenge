@@ -25,9 +25,8 @@ interface WalletFormProps {
   onDone: () => void
 }
 
-const { fields } = t.wallets
-
 export function WalletForm({ userId, walletRole: role, wallet, primary, defaultEmail, onDone }: WalletFormProps) {
+  const { fields } = t.wallets
   const [formError, setFormError] = useState<string | null>(null)
   const form = useZodForm(walletFormSchema, { defaultValues: toFormValues(wallet, defaultEmail) })
   const save = useSaveWallet(userId)

@@ -8,7 +8,7 @@ import type { NftDetail } from '@/contracts/nft'
 import { useAddToCart } from '@/features/cart/queries'
 import { nftDisplayName } from '@/features/catalog/format'
 import { useFavorites } from '@/features/favorites/queries'
-import { t } from '@/i18n'
+import { t, translateMessage } from '@/i18n'
 import { announce } from '@/lib/announce'
 import { isApiError } from '@/lib/api-error'
 import { formatEth } from '@/lib/money'
@@ -50,7 +50,7 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
           if (then === 'cart') void navigate({ to: '/cart' })
           else toast.success(message)
         },
-        onError: (error) => toast.error(isApiError(error) ? error.message : t.cart.addFailed),
+        onError: (error) => toast.error(isApiError(error) ? translateMessage(error.message) : t.cart.addFailed),
       },
     )
   }

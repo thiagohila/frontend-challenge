@@ -1,16 +1,8 @@
-export type Locale = 'pt-BR' | 'en-US'
-export type HourCycle = 'locale' | 'h12' | 'h23'
-
-export interface DateTimePrefs {
-  locale: Locale
-  hourCycle: HourCycle
-}
-
-export const defaultDateTimePrefs: DateTimePrefs = { locale: 'pt-BR', hourCycle: 'locale' }
+import { type Prefs, prefs } from '@/lib/prefs'
 
 const cache = new Map<string, Intl.DateTimeFormat>()
 
-function formatter({ locale, hourCycle }: DateTimePrefs, style: 'date' | 'datetime') {
+function formatter({ locale, hourCycle }: Prefs, style: 'date' | 'datetime') {
   const key = `${locale}|${hourCycle}|${style}`
   let fmt = cache.get(key)
   if (!fmt) {
@@ -24,10 +16,11 @@ function formatter({ locale, hourCycle }: DateTimePrefs, style: 'date' | 'dateti
   return fmt
 }
 
-export function formatDateTime(value: string | Date, prefs: DateTimePrefs = defaultDateTimePrefs) {
-  return formatter(prefs, 'datetime').format(new Date(value))
+/** Callers re-render on preference changes via `usePrefs()` and pass the snapshot explicitly. */
+export function formatDateTime(value: string | Date, current: Prefs = prefs.get()) {
+  return formatter(current, 'datetime').format(new Date(value))
 }
 
-export function formatDate(value: string | Date, prefs: DateTimePrefs = defaultDateTimePrefs) {
-  return formatter(prefs, 'date').format(new Date(value))
+export function formatDate(value: string | Date, current: Prefs = prefs.get()) {
+  return formatter(current, 'date').format(new Date(value))
 }

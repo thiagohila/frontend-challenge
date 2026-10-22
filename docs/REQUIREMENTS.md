@@ -188,5 +188,5 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Extras (fora do enunciado, PLAN §8)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| EX1 | Troca de idioma pt-BR/en-US (strings + `lang`), persistida | Folga | e2e `prefs.spec` | ☐ |
-| EX2 | Preferência de formato de data/hora (padrão do idioma/12h/24h), persistida | Folga | e2e `prefs.spec` | ☐ |
+| EX1 | Troca de idioma pt-BR/en-US (strings + `lang`), persistida | Folga | e2e `prefs.spec` | ☑ |
+| EX2 | Preferência de formato de data/hora (padrão do idioma/12h/24h), persistida | Folga | e2e `prefs.spec` | ☑ |

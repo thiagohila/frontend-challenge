@@ -8,7 +8,7 @@ import { t } from '@/i18n'
 import { useSessionUser } from '@/lib/session/store'
 
 export const Route = createFileRoute('/_auth/account/profile')({
-  head: () => ({ meta: [{ title: 'Perfil do colecionador — Kurio' }] }),
+  head: () => ({ meta: [{ title: t.titles.profile }] }),
   component: ProfileRoute,
 })
 

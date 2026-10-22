@@ -8,7 +8,7 @@ import { RelatedNfts } from '@/features/nft/components/RelatedNfts'
 import { t } from '@/i18n'
 
 export const Route = createFileRoute('/cart')({
-  head: () => ({ meta: [{ title: 'Carrinho de NFTs — Kurio' }] }),
+  head: () => ({ meta: [{ title: t.titles.cart }] }),
   component: CartRoute,
 })
 

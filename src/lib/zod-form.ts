@@ -8,6 +8,7 @@ import {
   type UseFormReturn,
 } from 'react-hook-form'
 import type { z } from 'zod'
+import { t } from '@/i18n'
 import { isApiError } from '@/lib/api-error'
 
 type Schema = z.ZodType<FieldValues, FieldValues>
@@ -57,7 +58,7 @@ export function applyApiErrors<T extends FieldValues, TOutput>(
   error: unknown,
   form: Pick<UseFormReturn<T, unknown, TOutput>, 'getValues' | 'setError'>,
 ): string {
-  if (!isApiError(error)) return 'Algo deu errado. Tente novamente.'
+  if (!isApiError(error)) return t.form.genericError
   const values = form.getValues()
   for (const [field, message] of Object.entries(error.fields)) {
     if (Object.hasOwn(values, field)) form.setError(field as Path<T>, { type: 'server', message })

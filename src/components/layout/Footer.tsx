@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { t } from '@/i18n'
 import { iconSrc, type IconName } from '@/lib/assets'
 import { ComingSoon } from './ComingSoon'
+import { PreferencesMenu } from './PreferencesMenu'
 
 const SOCIAL: readonly { name: string; icon: IconName }[] = [
   { name: 'Facebook', icon: 'social-facebook' },
@@ -97,6 +98,9 @@ export function Footer() {
             {footer.walletsList}
           </p>
         </div>
+      </div>
+      <div className="mt-6">
+        <PreferencesMenu />
       </div>
       <p className="mt-4 text-center text-xs text-muted-foreground">
         {footer.copyright} · <span data-testid="app-version">{footer.version(__APP_COMMIT__)}</span>

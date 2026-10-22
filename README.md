@@ -65,6 +65,10 @@ Cupons: **`KURIO10`** (10%, válido) · **`GENESIS20`** (expirado) · qualquer o
 
 Relatório HTML do Playwright: `npx playwright show-report` (traces das falhas incluídos). Os testes visuais são pulados fora do Linux, porque a renderização de fontes difere; rode-os pelo Docker.
 
+## Idioma e formato de hora (extras)
+
+No rodapé: **Idioma** (Português/English) e **Formato de hora** (padrão do idioma, 12 h, 24 h). As escolhas ficam no navegador (`kurio:prefs`), atualizam `<html lang>` e o título da página. O formato de hora aparece no explorador de transações. Mensagens geradas pelo servidor simulado continuam em pt-BR (`ARCHITECTURE.md` §15).
+
 ## Servidor simulado
 
 O MSW intercepta `/api/*` (service worker) e o WebSocket do Socket.IO (no navegador). O estado (catálogo, usuários, carrinhos, pedidos, carteiras…) fica num "banco" do **servidor simulado** em `localStorage` (`msw-server-db:v1`) e sobrevive a refresh. O app nunca lê esse armazenamento; ele contém todos os usuários, como o banco de um backend real.

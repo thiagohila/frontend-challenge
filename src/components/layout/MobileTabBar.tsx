@@ -5,12 +5,13 @@ import { iconSrc, type IconName } from '@/lib/assets'
 import { cn } from '@/lib/utils'
 import { ComingSoon } from './ComingSoon'
 
+// `label` is a dictionary key, resolved at render time (the locale can change).
 const items = [
-  { to: '/', label: t.tabBar.home, icon: 'icon-home-tabbar' },
-  { to: '/favorites', label: t.tabBar.favorites, icon: 'icon-heart-tabbar' },
-  { to: '/cart', label: t.tabBar.cart, icon: 'icon-shop-tabbar' },
-  { to: '/account/profile', label: t.tabBar.profile, icon: 'icon-user-tabbar' },
-] as const satisfies readonly { to: string; label: string; icon: IconName }[]
+  { to: '/', label: 'home', icon: 'icon-home-tabbar' },
+  { to: '/favorites', label: 'favorites', icon: 'icon-heart-tabbar' },
+  { to: '/cart', label: 'cart', icon: 'icon-shop-tabbar' },
+  { to: '/account/profile', label: 'profile', icon: 'icon-user-tabbar' },
+] as const satisfies readonly { to: string; label: keyof typeof t.tabBar; icon: IconName }[]
 
 export function MobileTabBar() {
   const { pathname } = useLocation()
@@ -41,7 +42,7 @@ export function MobileTabBar() {
   )
 }
 
-function TabItem({ to, label, icon, active }: { to: string; label: string; icon: IconName; active: boolean }) {
+function TabItem({ to, label, icon, active }: { to: string; label: (typeof items)[number]['label']; icon: IconName; active: boolean }) {
   return (
     <li>
       <Link
@@ -50,7 +51,7 @@ function TabItem({ to, label, icon, active }: { to: string; label: string; icon:
         className={cn('flex flex-col items-center gap-1 text-[11px]', active ? 'font-bold text-text-accent' : 'text-muted-foreground')}
       >
         <img src={iconSrc(icon)} alt="" width={24} height={24} />
-        {label}
+        {t.tabBar[label]}
       </Link>
     </li>
   )

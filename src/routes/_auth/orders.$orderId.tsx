@@ -2,9 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useCartOwner } from '@/features/cart/queries'
 import { OrderView } from '@/features/orders/components/OrderView'
 import { useSessionUser } from '@/lib/session/store'
+import { t } from '@/i18n'
 
 export const Route = createFileRoute('/_auth/orders/$orderId')({
-  head: () => ({ meta: [{ title: 'Confirmação de pedido — Kurio' }] }),
+  head: () => ({ meta: [{ title: t.titles.order }] }),
   component: OrderRoute,
 })
 

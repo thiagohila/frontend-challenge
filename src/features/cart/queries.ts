@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import type { NftSummary } from '@/contracts/nft'
 import { nftDetailQuery } from '@/features/catalog/queries'
 import { nftDisplayName } from '@/features/catalog/format'
-import { t } from '@/i18n'
+import { t, translateMessage } from '@/i18n'
 import { announce } from '@/lib/announce'
 import { isApiError } from '@/lib/api-error'
 import type { AddCartItem, Cart } from '@/contracts/cart'
@@ -58,7 +58,7 @@ export function useQuickAddToCart() {
           toast.success(message)
           announce(message)
         },
-        onError: (error) => toast.error(isApiError(error) ? error.message : t.cart.addFailed),
+        onError: (error) => toast.error(isApiError(error) ? translateMessage(error.message) : t.cart.addFailed),
       },
     )
   }
@@ -82,7 +82,7 @@ export function useCartMutations() {
     queryClient.setQueryData<Cart>(queryKeys.cart(owner), cart)
     await queryClient.invalidateQueries({ queryKey: queryKeys.quotes(owner) })
   }
-  const onError = (error: unknown) => toast.error(isApiError(error) ? error.message : t.cart.updateFailed)
+  const onError = (error: unknown) => toast.error(isApiError(error) ? translateMessage(error.message) : t.cart.updateFailed)
   return {
     updateQuantity: useMutation({
       mutationFn: ({ itemId, quantity }: { itemId: string; quantity: number }) => cartApi.update(itemId, quantity),

@@ -252,6 +252,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - Skeleton com shimmer (`motion-safe:` no Tailwind) e dimensões do conteúdo real.
 - `LiveRegion` global (`aria-live="polite"`) com `announce()` para mutations/realtime; erros com `role="alert"`.
 - Checklist completo em `docs/PLAN.md` §5.
+- **i18n (EX1/EX2):** `t` é um Proxy que resolve no dicionário do idioma atual (`src/lib/prefs.ts`, `localStorage` `kurio:prefs`) a cada leitura. Regra: **ler `t` só durante o render**, nunca em constante de módulo (guardar a chave, como na `MobileTabBar`). `en.ts` é checado contra `Dictionary` (forma do `pt.ts` com textos alargados para `string`; identificadores `tab`/`art`/`slug` travados). A troca de idioma atualiza `<html lang>`, invalida o router (títulos) e remonta o shell por `key`. Mensagens de validação dos contratos ficam em pt-BR e são traduzidas no render (`translateMessage` em `FormField`/`FormError`/toasts). Datas via `Intl` com o ciclo de hora escolhido (`src/lib/format.ts`).
 - **Fora do escopo** (editorial, suporte, atividade, ofertas, downloads, redes sociais): o item continua visível como no Figma, mas como `button` com `aria-disabled="true"`, badge/tooltip "Em breve" e toast informativo ao acionar. Nunca simula sucesso. Links externos reais abrem em nova aba com `rel="noopener noreferrer"` e ícone de externo.
 - **Explorador de transação**: link para `/tx/$hash`, uma página interna "Explorador simulado", **só para o dono** (404 para os demais). Mostra apenas hash, rede, status, total e data, sem itens, com o aviso de simulação. Não aponta para Etherscan com hash falso.
 
@@ -285,25 +286,26 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 
 ## 14. Decisões (ADRs curtas)
 
-| #   | Decisão                                                             | Motivo                                                                                     |
-| --- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| 1   | Sem lib de i18n; dicionário tipado + `Intl`                         | o enunciado não exige; zero custo de bundle; habilita os extras                            |
-| 2   | Resolver zod próprio                                                | `@hookform/resolvers` com conflito de peers impede `npm ci` limpo                          |
-| 3   | msw 2.x                                                             | `@mswjs/socket.io-binding` exige `msw@^2`                                                  |
-| 4   | Token em `sessionStorage`                                           | sobrevive a refresh, isolado por aba; em produção real seria cookie HttpOnly               |
-| 5   | Carrinho no servidor (também para visitante)                        | uma fonte de verdade para disponibilidade, cotação e merge                                 |
-| 6   | Lighthouse via API + script próprio                                 | `@lhci/cli` trazia 17 vulnerabilidades; script dá mediana de 3                             |
-| 7   | `routeTree.gen.ts` versionado                                       | typecheck/lint independem de build                                                         |
-| 8   | Recurso de outro usuário → 404                                      | não revela existência (X4)                                                                 |
-| 9   | Explorador de transação interno (`/tx/$hash`)                       | link externo com hash falso pareceria real (S14, P10)                                      |
-| 10  | Shell renderiza antes do MSW; rede aguarda `mocksReady`             | LCP/FCP no mobile sem burlar a auditoria (L2, L6)                                          |
-| 11  | Baselines VIS em Linux (Docker); `visual.spec` pulado fora do Linux | reprodutível na máquina de quem avalia, sem quebrar `test:e2e` no macOS (TQ2, X6)          |
-| 12  | `socket.io-client` só por import dinâmico após `mocksReady`         | engine.io captura o `WebSocket` no carregamento do módulo (C1)                             |
-| 13  | Ping manual no mock                                                 | o binding não envia ping; sem ele o socket cai a cada 30s (C2)                             |
-| 14  | Idempotência consultada antes de qualquer validação                 | reenvio após timeout recupera o pedido, nunca duplica (C3)                                 |
-| 15  | Cupom guardado no carrinho do servidor                              | aplicar/remover persiste em refresh e login (K4, K2)                                       |
-| 16  | Timeout do Axios em JS (AbortController)                            | controlável pelo `page.clock` (TQ3, T7)                                                    |
-| 17  | Sem barrel files nas features                                       | barrels puxam o módulo inteiro para o chunk de cada rota e pioram o code splitting e o HMR |
+| #   | Decisão                                                             | Motivo                                                                                                                                                    |
+| --- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Sem lib de i18n; dicionário tipado + `Intl`                         | o enunciado não exige; zero custo de bundle; habilita os extras                                                                                           |
+| 2   | Resolver zod próprio                                                | `@hookform/resolvers` com conflito de peers impede `npm ci` limpo                                                                                         |
+| 3   | msw 2.x                                                             | `@mswjs/socket.io-binding` exige `msw@^2`                                                                                                                 |
+| 4   | Token em `sessionStorage`                                           | sobrevive a refresh, isolado por aba; em produção real seria cookie HttpOnly                                                                              |
+| 5   | Carrinho no servidor (também para visitante)                        | uma fonte de verdade para disponibilidade, cotação e merge                                                                                                |
+| 6   | Lighthouse via API + script próprio                                 | `@lhci/cli` trazia 17 vulnerabilidades; script dá mediana de 3                                                                                            |
+| 7   | `routeTree.gen.ts` versionado                                       | typecheck/lint independem de build                                                                                                                        |
+| 8   | Recurso de outro usuário → 404                                      | não revela existência (X4)                                                                                                                                |
+| 9   | Explorador de transação interno (`/tx/$hash`)                       | link externo com hash falso pareceria real (S14, P10)                                                                                                     |
+| 10  | Shell renderiza antes do MSW; rede aguarda `mocksReady`             | LCP/FCP no mobile sem burlar a auditoria (L2, L6)                                                                                                         |
+| 11  | Baselines VIS em Linux (Docker); `visual.spec` pulado fora do Linux | reprodutível na máquina de quem avalia, sem quebrar `test:e2e` no macOS (TQ2, X6)                                                                         |
+| 12  | `socket.io-client` só por import dinâmico após `mocksReady`         | engine.io captura o `WebSocket` no carregamento do módulo (C1)                                                                                            |
+| 13  | Ping manual no mock                                                 | o binding não envia ping; sem ele o socket cai a cada 30s (C2)                                                                                            |
+| 14  | Idempotência consultada antes de qualquer validação                 | reenvio após timeout recupera o pedido, nunca duplica (C3)                                                                                                |
+| 15  | Cupom guardado no carrinho do servidor                              | aplicar/remover persiste em refresh e login (K4, K2)                                                                                                      |
+| 16  | Timeout do Axios em JS (AbortController)                            | controlável pelo `page.clock` (TQ3, T7)                                                                                                                   |
+| 17  | Sem barrel files nas features                                       | barrels puxam o módulo inteiro para o chunk de cada rota e pioram o code splitting e o HMR                                                                |
+| 18  | Troca de idioma remonta o shell (`key={locale}`)                    | cada leitura de `t` sem Context/hook em 60+ arquivos; queries em cache tornam a troca instantânea. Custo: rascunhos de formulário abertos são descartados |
 
 ## 15. Limitações, decisões de UX e desvios do Figma
 
@@ -313,6 +315,7 @@ Preenchido durante a implementação (obrigatório na entrega, D6).
 
 - Backend, carteiras e blockchain simulados (MSW). Limitações do binding Socket.IO em §10 (sem rooms, sem ping, sem ack, só websocket).
 - Sessão em `sessionStorage` (por aba): uma nova aba exige novo login.
+- Idioma (EX1): mensagens **escritas pelo servidor** simulado (ex.: "Cupom expirado") continuam em pt-BR; um backend real localizaria por `Accept-Language`. Valores em ETH não mudam de formato (moeda fora do escopo do extra). Trocar o idioma descarta rascunhos de formulário abertos (ADR 18).
 
 ### Decisões de UX
 
@@ -342,6 +345,7 @@ Detalhe e inventário em `docs/design/DESIGN.md`; **todo desvio fica registrado 
 | Campo de busca no topo da sidebar no desktop (o Figma desktop só tem o ícone no header)                                                                                                             | busca é requisito (S4); o ícone do header leva ao catálogo; o mobile segue o Figma ("Explorar coleções")                                    |
 | Paginação ganha "anterior" (a partir da pág. 2)                                                                                                                                                     | navegação por teclado/leitor sem depender de números; o Figma só tem números + "próxima"                                                    |
 | Preço do filtro com ponto ("0.39 - 12.11")                                                                                                                                                          | o Figma usa vírgula só ali; todos os outros preços usam ponto (consistência)                                                                |
+| Seletores de idioma e formato de hora no rodapé (`select` nativos)                                                                                                                                  | extras EX1/EX2 não existem no Figma; rodapé evita mexer no header desenhado                                                                 |
 | Aba "Avaliações" com aviso "em breve"                                                                                                                                                               | o conteúdo da aba não foi desenhado; o resumo (estrelas e contagem) continua visível                                                        |
 | Galeria com 4 miniaturas da mesma arte                                                                                                                                                              | o Figma tem uma arte por NFT, repetida 4×; mantido                                                                                          |
 | Toasts embaixo (acima da tab bar/buy bar)                                                                                                                                                           | no topo, cobriam as ações da barra superior do mobile (achado em teste)                                                                     |

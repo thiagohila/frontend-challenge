@@ -1,4 +1,5 @@
 import { type ReactElement, cloneElement, useId } from 'react'
+import { translateMessage } from '@/i18n'
 import { cn } from '@/lib/utils'
 
 interface FormFieldProps {
@@ -43,7 +44,7 @@ export function FormField({ label, hideLabel, required, error, hint, className, 
         // first invalid field (react-hook-form) and its error is read via aria-describedby.
         <p id={errorId} className="flex items-center gap-1 text-xs text-destructive">
           <span aria-hidden>⚠</span>
-          {error}
+          {translateMessage(error)}
         </p>
       )}
     </div>

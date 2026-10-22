@@ -1,4 +1,4 @@
-// UI strings (typed dictionary). Extra EX1 adds `en.ts` with the same shape.
+// UI strings, source of truth for the dictionary shape (`types.ts`). `en.ts` mirrors it (EX1).
 export const pt = {
   brand: 'KURIO',
   skipToContent: 'Pular para o conteúdo',
@@ -471,6 +471,23 @@ export const pt = {
   },
   networks: { ethereum: 'Ethereum', polygon: 'Polygon', solana: 'Solana' },
   walletTypes: { metamask: 'MetaMask', walletconnect: 'WalletConnect', coinbase: 'Coinbase Wallet' },
+  titles: {
+    home: 'Kurio — Marketplace de NFTs',
+    cart: 'Carrinho de NFTs — Kurio',
+    wallets: 'Carteiras — Kurio',
+    order: 'Confirmação de pedido — Kurio',
+    signUp: 'Criar conta — Kurio',
+    signIn: 'Entrar — Kurio',
+    tx: 'Explorador simulado — Kurio',
+    favorites: 'Favoritos — Kurio',
+    checkout: 'Pagamento — Kurio',
+    profile: 'Perfil do colecionador — Kurio',
+  },
+  prefs: {
+    label: 'Preferências',
+    language: 'Idioma',
+    languages: { 'pt-BR': 'Português (Brasil)', 'en-US': 'English (US)' },
+    timeFormat: 'Formato de hora',
+    hourCycles: { locale: 'Padrão do idioma', h12: '12 horas', h23: '24 horas' },
+  },
 } as const
-
-export type Dictionary = typeof pt

@@ -11,7 +11,7 @@ import { t } from '@/i18n'
 import { useSessionUser } from '@/lib/session/store'
 
 export const Route = createFileRoute('/_auth/checkout')({
-  head: () => ({ meta: [{ title: 'Pagamento — Kurio' }] }),
+  head: () => ({ meta: [{ title: t.titles.checkout }] }),
   component: CheckoutRoute,
 })
 

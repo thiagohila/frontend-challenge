@@ -9,7 +9,7 @@ import { t } from '@/i18n'
 import { useSessionUser } from '@/lib/session/store'
 
 export const Route = createFileRoute('/_auth/account/wallets')({
-  head: () => ({ meta: [{ title: 'Carteiras — Kurio' }] }),
+  head: () => ({ meta: [{ title: t.titles.wallets }] }),
   component: WalletsPage,
 })
 

@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CatalogHome } from '@/features/catalog/components/CatalogHome'
 import { catalogSearchSchema, withFilters } from '@/features/catalog/search'
+import { t } from '@/i18n'
 
 export const Route = createFileRoute('/')({
   validateSearch: catalogSearchSchema,
-  head: () => ({ meta: [{ title: 'Kurio — Marketplace de NFTs' }] }),
+  head: () => ({ meta: [{ title: t.titles.home }] }),
   component: HomeRoute,
 })
 
