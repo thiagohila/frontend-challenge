@@ -156,6 +156,21 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
   | login/logout          | `queryClient.clear()` (§7)                                                                                           |
 - **Estados**: todo componente com dados trata explicitamente loading (skeleton com dimensões fixas), empty, error (retry só se transitório) e `isFetching` (indicador discreto de atualização em segundo plano) — ex.: `CatalogResults`, `CartSummary`/`QuoteError`, `OrderView`.
 
+- **Resiliência (o que está aplicado)**:
+
+  | Mecanismo               | Onde                                                    | Comportamento                                                                                                                            |
+  | ----------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+  | Timeout                 | `lib/http.ts`                                           | 10 s por requisição, com timer em JS (controlável pelo relógio do Playwright); vira `ApiError` transitório `timeout`                     |
+  | Retry de consultas      | `lib/query-client.ts`                                   | até 2 novas tentativas, backoff exponencial 500 ms → 1 s → 2 s (teto 4 s), **só** rede/timeout/5xx; 4xx nunca                            |
+  | Mutations               | `lib/query-client.ts`                                   | sem retry automático (efeito colateral); a compra é refeita pelo usuário com a **mesma Idempotency-Key** (§5) e recupera o pedido        |
+  | Respostas fora de ordem | query keys por parâmetro (`lib/query-keys`)             | uma resposta atrasada de uma busca antiga cai na própria chave e não sobrescreve a tela atual (cenário `jitter`, 100–1800 ms)            |
+  | Otimista com rollback   | favoritos                                               | snapshot do cache antes da mudança; erro → volta ao snapshot; `invalidate` no fim                                                        |
+  | Snapshot do pedido      | `mocks/server/services/orders.ts`                       | o recibo copia linhas, preços e totais da cotação; mudanças posteriores no catálogo não o alteram (P9)                                   |
+  | Reconexão do socket     | `socket.io-client` (padrão) + `lib/realtime/manager.ts` | backoff exponencial com aleatorização de 50% (jitter); ao reconectar, o REST reconcilia `nfts`, `cart`, `quote` e pedidos pendentes (§9) |
+  | Indisponibilidade       | cenário `offline`                                       | toda requisição falha por rede; cada tela mostra erro + "Tentar novamente" e se recupera quando o servidor volta                         |
+
+  Fora do escopo: uso offline de verdade (PWA com cache do app e dos dados). O enunciado pede indisponibilidade **simulada**, que é o cenário `offline`. Ver README, "Melhorias possíveis".
+
 ## 7. Sessão e autenticação
 
 - `lib/session`: store externo (`useSyncExternalStore`) com `{ status: 'unknown'|'authenticated'|'anonymous'|'expired', user, token }`; token persistido em `sessionStorage`.
