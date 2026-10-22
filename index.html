@@ -7,6 +7,25 @@
     <meta name="theme-color" content="#140d0a" />
     <meta name="description" content="Kurio — marketplace de NFTs: descubra, colecione e compre arte digital." />
     <title>Kurio — Marketplace de NFTs</title>
+    <!-- LCP: the hero brand art is static (no API dependency); same srcset/sizes as the <img> so the request is reused. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      fetchpriority="high"
+      media="(max-width: 1023px)"
+      imagesrcset="/assets/nft/emerald-ape-256.avif 256w, /assets/nft/emerald-ape-512.avif 512w, /assets/nft/emerald-ape-900.avif 900w"
+      imagesizes="138px"
+    />
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      fetchpriority="high"
+      media="(min-width: 1024px)"
+      imagesrcset="/assets/nft/emerald-ape-256.avif 256w, /assets/nft/emerald-ape-512.avif 512w, /assets/nft/emerald-ape-900.avif 900w"
+      imagesizes="450px"
+    />
   </head>
   <body>
     <div id="root"></div>

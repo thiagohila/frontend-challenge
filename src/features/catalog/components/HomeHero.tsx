@@ -1,17 +1,25 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
+import { DESKTOP_QUERY, useMediaQuery } from '@/hooks/use-media-query'
 import { NftArt } from '@/components/nft/NftArt'
-import { Skeleton } from '@/components/ui/skeleton'
-import type { NftSummary } from '@/contracts/nft'
+import type { ArtName } from '@/lib/assets'
 import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
-import { nftDisplayName } from '../format'
 
-/** Hero with a manual carousel (dots). No auto-rotation: respects motion/a11y preferences. */
-export function HomeHero({ slides }: { slides: NftSummary[] | undefined }) {
+/**
+ * Editorial brand banner (Figma): static art, so the LCP never waits for the API/mock server
+ * (L2 — data-driven highlights live in "NFT EM DESTAQUE" and the catalog tabs). The first art is
+ * preloaded in index.html. Manual carousel (dots), no auto-rotation (motion/a11y preferences).
+ */
+const SLIDES: readonly ArtName[] = ['emerald-ape', 'sage-nomad', 'golden-beat']
+
+export function HomeHero() {
   const [index, setIndex] = useState(0)
-  const current = slides?.[index] ?? slides?.[0]
+  // One variant per breakpoint: a display:none <img> would still be downloaded.
+  const isDesktop = useMediaQuery(DESKTOP_QUERY)
+  const current = SLIDES[index] ?? 'emerald-ape'
+  const slides = SLIDES
 
   return (
     <section
@@ -44,31 +52,23 @@ export function HomeHero({ slides }: { slides: NftSummary[] | undefined }) {
           <ArrowRight aria-hidden className="size-4 lg:hidden" />
         </Link>
         {/* Mobile: art sits inside the hero card (Figma). */}
-        <div className="absolute top-3 right-3 w-[138px] lg:hidden">
-          {current ? (
-            <NftArt art={current.art} alt={nftDisplayName(current)} width={138} priority className="rounded-xl" />
-          ) : (
-            <Skeleton className="aspect-square rounded-xl" />
-          )}
-        </div>
-      </div>
-
-      <div className="hidden lg:block">
-        {current ? (
-          <Link to="/nft/$nftId" params={{ nftId: current.id }} className="block">
-            <NftArt art={current.art} alt={nftDisplayName(current)} width={450} priority className="size-[450px] rounded-3xl" />
-          </Link>
-        ) : (
-          <Skeleton className="size-[450px] rounded-3xl" />
+        {!isDesktop && (
+          <div className="absolute top-3 right-3 w-[138px]">
+            <NftArt art={current} alt={t.catalog.heroArtAlt} width={138} sizes="138px" priority className="rounded-xl" />
+          </div>
         )}
       </div>
 
-      {slides && slides.length > 1 && (
+      {isDesktop && (
+        <NftArt art={current} alt={t.catalog.heroArtAlt} width={450} sizes="450px" priority className="size-[450px] rounded-3xl" />
+      )}
+
+      {slides.length > 1 && (
         <fieldset className="mt-3 flex justify-center gap-2 lg:absolute lg:bottom-6 lg:left-[620px] lg:mt-0">
           <legend className="sr-only">{t.catalog.featuredTitle}</legend>
           {slides.map((slide, position) => (
             <button
-              key={slide.id}
+              key={slide}
               type="button"
               aria-label={t.catalog.heroSlide(position + 1, slides.length)}
               aria-pressed={position === index}

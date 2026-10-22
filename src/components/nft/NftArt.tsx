@@ -10,12 +10,14 @@ interface NftArtProps {
   className?: string
   /** LCP image: eager + high priority (L2). Everything else is lazy. */
   priority?: boolean
+  /** Override `sizes` (must match an HTML preload to reuse the request). */
+  sizes?: string
 }
 
 /** Responsive NFT artwork: AVIF → WebP, intrinsic size reserved to avoid CLS (U3, U7). */
-export function NftArt({ art, alt, width, className, priority = false }: NftArtProps) {
+export function NftArt({ art, alt, width, className, priority = false, sizes: sizesOverride }: NftArtProps) {
   const sources = artSources(art)
-  const sizes = `(max-width: 640px) 45vw, ${width}px`
+  const sizes = sizesOverride ?? `(max-width: 640px) 45vw, ${width}px`
   return (
     <picture>
       <source type="image/avif" srcSet={sources.avif} sizes={sizes} />

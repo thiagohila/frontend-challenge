@@ -162,6 +162,7 @@ export const pt = {
       'Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione arte digital rara, apoie artistas e tenha uma parte da cultura da internet.',
     heroTextMobile: 'Descubra NFTs selecionados de criadores do mundo todo.',
     explore: 'EXPLORAR',
+    heroArtAlt: 'Ilustração de um macaco colecionável da Kurio',
     heroSlide: (index: number, total: number) => `Destaque ${index} de ${total}`,
     featuredTitle: 'NFT EM DESTAQUE',
     featuredSubtitle: 'OFERTA LIMITADA',

@@ -6,11 +6,9 @@ import { Header } from '@/components/layout/Header'
 import { LiveRegion } from '@/components/layout/LiveRegion'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
 import { RealtimeBridge } from '@/components/layout/RealtimeBridge'
-import { Toaster } from '@/components/ui/sonner'
-import { ReauthDialog } from '@/features/auth/components/ReauthDialog'
+import { DeferredShell } from '@/components/layout/DeferredShell'
 import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
 import { PendingOrderBanner } from '@/features/orders/components/PendingOrderBanner'
-import { TooltipProvider } from '@/components/ui/tooltip'
 import { t } from '@/i18n'
 import type { session } from '@/lib/session/store'
 
@@ -33,7 +31,7 @@ function RootLayout() {
   useRouteFocus()
 
   return (
-    <TooltipProvider>
+    <>
       <HeadContent />
       <a
         href="#conteudo"
@@ -48,13 +46,11 @@ function RootLayout() {
       </main>
       <Footer />
       {showTabBar && <MobileTabBar />}
-      <ReauthDialog />
       <FavoriteIntentRunner />
       <RealtimeBridge />
       <LiveRegion />
-      {/* Bottom, above the mobile tab/buy bars: top toasts covered the mobile top-bar actions. */}
-      <Toaster position="bottom-center" mobileOffset={{ bottom: 184 }} />
-    </TooltipProvider>
+      <DeferredShell />
+    </>
   )
 }
 

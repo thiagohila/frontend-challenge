@@ -40,7 +40,7 @@ export function CatalogHome({ search, onSearchChange, onClearFilters }: CatalogH
         <MobileFilters {...filterProps} />
       </div>
 
-      <HomeHero slides={featured.data?.hero} />
+      <HomeHero />
 
       <section
         id="catalogo"
