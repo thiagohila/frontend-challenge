@@ -303,3 +303,8 @@ Detalhe e inventário em `docs/design/DESIGN.md`; **todo desvio fica registrado 
 | Header logado, tablet (768), mobile de Confirmação/Perfil/Carteiras, skeleton, toast, vazio/erro/404 | não desenhados; derivados dos padrões existentes (DESIGN.md §7) |
 | Conteúdo inconsistente do Figma (token IDs, somas do carrinho, "Contrato"/"Direitos autorais" trocados) não copiado | os valores vêm da API simulada (DESIGN.md §9.3) |
 | 4 artes para todos os NFTs, reutilizadas nas fixtures; servidas em AVIF/WebP com `srcset` | só existem 4 artes no Figma (PNG ~2 MB) |
+| Logo do Google inline (SVG oficial) | o export do Figma veio fatiado em 7 partes |
+| "Código de indicação" opcional (Figma marca `*`) | indicação é opcional por natureza; obrigá-lo bloquearia o cadastro de carteira |
+| Header logado (avatar + nome → Minha conta) | estado logado não desenhado; derivado do estilo da sidebar da conta |
+| Login/cadastro com labels só para leitores de tela | Figma usa apenas placeholder; label visível mudaria o layout, então fica `sr-only` (WCAG 1.3.1/4.1.2 atendidos) |
+| ENS: ".eth" como afixo fixo (não um select) | só existe a opção ".eth"; um select de uma opção não faz sentido |

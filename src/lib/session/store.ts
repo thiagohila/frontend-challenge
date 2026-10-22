@@ -58,3 +58,9 @@ export const session = {
 }
 
 export const useSession = () => useSyncExternalStore(session.subscribe, session.get, session.get)
+
+/** User of the current (or expired-but-resumable) session — what private screens render for. */
+export function useSessionUser(): User | null {
+  const state = useSession()
+  return state.status === 'authenticated' || state.status === 'expired' ? state.user : null
+}

@@ -5,15 +5,19 @@ import { createRoot } from 'react-dom/client'
 import { env } from '@/env'
 import { markMocksReady } from '@/lib/mocks-ready'
 import { queryClient } from '@/lib/query-client'
+import { session } from '@/lib/session/store'
 import { routeTree } from './routeTree.gen'
 import './index.css'
 
 const router = createRouter({
   routeTree,
-  context: { queryClient },
+  context: { queryClient, session },
   defaultPreload: 'intent',
   scrollRestoration: true,
 })
+
+// Guards depend on the session: re-evaluate them whenever it changes.
+session.subscribe(() => void router.invalidate())
 
 declare module '@tanstack/react-router' {
   interface Register {

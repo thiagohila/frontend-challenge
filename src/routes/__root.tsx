@@ -6,10 +6,17 @@ import { Header } from '@/components/layout/Header'
 import { LiveRegion } from '@/components/layout/LiveRegion'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
 import { Toaster } from '@/components/ui/sonner'
+import { ReauthDialog } from '@/features/auth/components/ReauthDialog'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { t } from '@/i18n'
+import type { session } from '@/lib/session/store'
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export interface RouterContext {
+  queryClient: QueryClient
+  session: typeof session
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
   notFoundComponent: NotFound,
 })
@@ -37,6 +44,7 @@ function RootLayout() {
       </main>
       <Footer />
       {showTabBar && <MobileTabBar />}
+      <ReauthDialog />
       <LiveRegion />
       <Toaster position="top-center" />
     </TooltipProvider>

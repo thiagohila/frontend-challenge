@@ -8,9 +8,9 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | ID | Requisito | Bloco | Teste/Evidência | St |
 |---|---|---|---|---|
 | X1 | Uso efetivo de toda a stack (§2) | todos | SMK + ARCHITECTURE §2 | ◐ |
-| X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ☐ |
+| X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ◐ |
 | X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☐ |
-| X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ☐ |
+| X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ◐ |
 | X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ☐ |
 | X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo (B9) | ◐ |
 
@@ -25,10 +25,10 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S6 | Carrinho: quantidades, remoção, cupom, resumo | B5 | T5 | ☐ |
 | S7 | Pagamento: dados, carteira+rede, revisão, envio | B6 | T6 | ☐ |
 | S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☐ |
-| S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ☐ |
-| S10 | Cadastro: criação, validação, conflito | B3 | T3 | ☐ |
+| S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ◐ |
+| S10 | Cadastro: criação, validação, conflito | B3 | T3 | ☑ |
 | S11 | Perfil: dados, avatar, senha | B6b | T8 | ☐ |
-| S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☐ |
+| S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☑ |
 | S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ☐ |
 | S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ◐ |
 
@@ -71,25 +71,25 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Conta e sessão (§3)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| A1 | Cadastro, login, logout e sessão integrados à API | B3 | T3 | ☐ |
-| A2 | Checkout, perfil, carteiras, favoritos e pedidos exigem auth | B3 | T3 (guards) | ☐ |
-| A3 | Sessão recuperável após refresh | B3 | T3 | ☐ |
-| A4 | Expiração durante navegação **e durante checkout**, preservando o contexto | B3, B6 | T3, T7 | ☐ |
-| A5 | Logout/troca limpa cache privado e subscriptions | B3 | T3 | ☐ |
-| A6 | Validar cadastro, perfil, senha e carteiras, incluindo erros da API | B3, B6b | T3, T8, T11 | ☐ |
-| A7 | Alterações confirmadas persistem após refresh | B3, B6b | T8 | ☐ |
+| A1 | Cadastro, login, logout e sessão integrados à API | B3 | T3 | ☑ |
+| A2 | Checkout, perfil, carteiras, favoritos e pedidos exigem auth | B3 | T3 (guards) | ☑ |
+| A3 | Sessão recuperável após refresh | B3 | T3 | ☑ |
+| A4 | Expiração durante navegação **e durante checkout**, preservando o contexto | B3, B6 | T3, T7 | ◐ |
+| A5 | Logout/troca limpa cache privado e subscriptions | B3 | T3 | ☑ |
+| A6 | Validar cadastro, perfil, senha e carteiras, incluindo erros da API | B3, B6b | T3, T8, T11 | ◐ |
+| A7 | Alterações confirmadas persistem após refresh | B3, B6b | T8 | ◐ |
 | A8 | Credenciais fictícias; senha nunca em claro | B2 | SECURITY.md + inspeção do db | ☑ |
 
 ## Integração e estado (§4)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| I1 | Router em rotas, search params e proteção | B3, B4 | T1, T3 | ☐ |
+| I1 | Router em rotas, search params e proteção | B3, B4 | T1, T3 | ◐ |
 | I2 | Query em consultas, mutations e cache; REST só via Axios | todos | revisão + ARCHITECTURE §5–6 | ☐ |
 | I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ◐ |
 | I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ☐ |
 | I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ☐ |
 | I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☐ |
-| I7 | Isolamento por usuário e por parâmetros | B3 | T3 | ☐ |
+| I7 | Isolamento por usuário e por parâmetros | B3 | T3 | ☑ |
 | I8 | Recuperar falhas sem duplicar operações | B6 | T7 | ☐ |
 | I9 | Rota inexistente; acesso direto a qualquer tela (inclui `/checkout` vazio, pedido alheio = 404) | B3–B6 | T2, SMK | ☐ |
 | I10 | Update otimista com rollback (≥1) | B4 | T4 | ☐ |
@@ -122,7 +122,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | RT2 | `order.updated` atualiza o pedido; mostra confirmação/recusa | B6 | T6, T7 | ☐ |
 | RT3 | Eventos com id estável, recurso e versão; dedupe; não regridem nem reaplicam | B5 | unit `apply.spec` + T10 | ☐ |
 | RT4 | Reconexão → reconciliação com REST | B5, B6 | `realtime.spec`, T10 | ☐ |
-| RT5 | Evento de sessão anterior não afeta outro usuário | B3, B5 | T10 | ☐ |
+| RT5 | Evento de sessão anterior não afeta outro usuário | B3, B5 | T10 | ◐ |
 | RT6 | Listeners liberados ao fim do ciclo de vida | B5 | T3 (logout) + revisão | ☐ |
 | RT7 | Cenário: item no carrinho → muda preço/estoque → UI avisa e atualiza o resumo → checkout bloqueia cotação velha | B5, B6 | T9 | ☐ |
 | RT8 | Queda de conexão com pedido pendente → reconectar/recarregar recupera sem nova compra; terminais | B6 | T10 | ☐ |
@@ -134,8 +134,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ☐ |
 | U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ☐ |
 | U4 | Teclado e foco visível | todos | T11, AXE | ☐ |
-| U5 | Foco em diálogos e drawers | B4–B6 | T11 | ☐ |
-| U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ☐ |
+| U5 | Foco em diálogos e drawers | B4–B6 | T11 | ◐ |
+| U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ◐ |
 | U7 | Texto alternativo | B4 | AXE | ☐ |
 | U8 | Contraste; estado não só por cor | B7 | AXE | ☐ |
 | U9 | Feedback acessível de mutations e realtime | B4–B6 | T11 (`aria-live`) | ☐ |
@@ -147,7 +147,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 |---|---|---|---|
 | T1 | Busca, filtros, ordem, paginação, histórico | B4 | ☐ |
 | T2 | Acesso direto ao detalhe + inexistente | B4 | ☐ |
-| T3 | Cadastro, login, expiração, logout, troca de usuário | B3 | ☐ |
+| T3 | Cadastro, login, expiração, logout, troca de usuário | B3 | ☑ |
 | T4 | Favoritos + falha de mutation + recuperação | B4 | ☐ |
 | T5 | Carrinho, quantidades, remoção, cupom, persistência refresh/login | B5 | ☐ |
 | T6 | Compra completa até o recibo confirmado | B6 | ☐ |
