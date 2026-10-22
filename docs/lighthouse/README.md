@@ -22,7 +22,7 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 | Navegador | Chromium headless 156 (do Playwright 1.64.1, `HeadlessChrome/156.0.0.0`) |
 | Node | v22.23.0 |
 | Máquina | macOS (Darwin 25.5.0), Intel Core i5-1038NG7 2.0 GHz ×8, 16 GB |
-| Alvo | https://kurio-gold.vercel.app, commit `78785fa`, medido em 2026-10-22 ~04:37 UTC. Depois disso, os extras EX1/EX2 somaram +1,4 KB ao chunk de entrada (289,95 → 291,30 KB; +0,3 KB gzip), sem nova medição |
+| Alvo | https://kurio-gold.vercel.app, commit `97f44e4` (entrega, com extras EX1/EX2 e o ajuste de fidelidade ao Figma), medido em 2026-10-22 |
 | Mobile | emulação 412×823, rede lenta 4G simulada (RTT 150 ms, ~1,6 Mbps), **CPU 4× mais lenta** |
 | Desktop | emulação desktop, sem throttling de CPU (config padrão desktop do Lighthouse) |
 
@@ -30,10 +30,10 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 
 | Página / perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Início · mobile | **79** | 100 | 100 | 100 | 3,52 s | 0 | 218 ms |
-| Início · desktop | **100** | 100 | 100 | 100 | 0,72 s | 0 | 21 ms |
-| Detalhe · mobile | **75** | 100 | 100 | 100 | 3,06 s | 0 | 545 ms |
-| Detalhe · desktop | **99** | 100 | 100 | 100 | 0,71 s | 0 | 77 ms |
+| Início · mobile | **73** | 100 | 100 | 100 | 3,62 s | 0 | 455 ms |
+| Início · desktop | **100** | 100 | 100 | 100 | 0,71 s | 0 | 21 ms |
+| Detalhe · mobile | **72** | 100 | 100 | 100 | 3,23 s | 0 | 639 ms |
+| Detalhe · desktop | **99** | 100 | 100 | 100 | 0,75 s | 0 | 50 ms |
 
 Metas: Performance ≥ 90 · Acessibilidade ≥ 95 · Boas práticas ≥ 95 · SEO ≥ 90. **Todas atingidas, exceto Performance no perfil mobile** (justificado abaixo).
 
@@ -45,7 +45,8 @@ Metas: Performance ≥ 90 · Acessibilidade ≥ 95 · Boas práticas ≥ 95 · S
 | Hero editorial estático + preload da arte LCP | 62 | 69 | o LCP do hero deixou de depender da API e do servidor simulado |
 | Split de `pending/error/notFound` + realtime lazy | 76 | 78 | entrada 364 → 283 KB: a view de detalhe, Radix e `decimal.js` saíram do caminho crítico |
 | Preload do chunk do servidor simulado + zod sem JIT | 83* | — | o MSW baixa em paralelo com o app; fim do aviso de CSP (Boas práticas 96 → 100) |
-| **Medição oficial (3×, mediana)** | **79** | **75** | — |
+| Medição de `78785fa` (3×, mediana) | 79 | 75 | — |
+| **Medição oficial, entrega `97f44e4` (3×, mediana)** | **73** | **72** | extras EX1/EX2 (+0,3 KB gzip) e ajuste de fidelidade (miniatura extra no hero mobile); `benchmarkIndex` desta rodada variou de 1069 a 1707 |
 
 \* medição única; a variação entre execuções no mobile é de ±6 pontos (o `benchmarkIndex` variou de 1319 a 1767).
 

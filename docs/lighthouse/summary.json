@@ -7,13 +7,13 @@
   "memoryGb": 16,
   "results": {
     "home/mobile": {
-      "performance": 79,
+      "performance": 73,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 3516,
+      "LCP": 3615,
       "CLS": 0,
-      "TBT": 218,
+      "TBT": 455,
       "formFactor": "mobile",
       "throttling": {
         "rttMs": 150,
@@ -23,14 +23,14 @@
         "uploadThroughputKbps": 675,
         "cpuSlowdownMultiplier": 4
       },
-      "benchmarkIndex": 1767.5
+      "benchmarkIndex": 1707
     },
     "home/desktop": {
       "performance": 100,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 715,
+      "LCP": 708,
       "CLS": 0,
       "TBT": 21,
       "formFactor": "desktop",
@@ -42,16 +42,16 @@
         "uploadThroughputKbps": 0,
         "cpuSlowdownMultiplier": 1
       },
-      "benchmarkIndex": 1529.5
+      "benchmarkIndex": 1420
     },
     "detail/mobile": {
-      "performance": 75,
+      "performance": 72,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 3059,
+      "LCP": 3229,
       "CLS": 0,
-      "TBT": 545,
+      "TBT": 639,
       "formFactor": "mobile",
       "throttling": {
         "rttMs": 150,
@@ -61,16 +61,16 @@
         "uploadThroughputKbps": 675,
         "cpuSlowdownMultiplier": 4
       },
-      "benchmarkIndex": 1380.5
+      "benchmarkIndex": 1069
     },
     "detail/desktop": {
       "performance": 99,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 714,
+      "LCP": 753,
       "CLS": 0,
-      "TBT": 77,
+      "TBT": 50,
       "formFactor": "desktop",
       "throttling": {
         "rttMs": 40,
@@ -80,7 +80,7 @@
         "uploadThroughputKbps": 0,
         "cpuSlowdownMultiplier": 1
       },
-      "benchmarkIndex": 1319
+      "benchmarkIndex": 1526
     }
   },
   "lighthouseVersion": "13.5.0",
