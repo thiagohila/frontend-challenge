@@ -63,7 +63,7 @@ Cupons: **`KURIO10`** (10%, válido) · **`GENESIS20`** (expirado) · qualquer o
 | `npm run assets`                                              | regenera `public/assets` (AVIF/WebP) a partir dos exports do Figma                                     |
 | `npm run audit:deps`                                          | `npm audit`                                                                                            |
 
-Relatório HTML do Playwright: `npx playwright show-report` (traces das falhas incluídos). Os testes visuais são pulados fora do Linux, porque a renderização de fontes difere; rode-os pelo Docker.
+Relatório HTML do Playwright: `npx playwright show-report` (traces das falhas incluídos). Relatório da entrega (173 testes aprovados, macOS, 3 perfis): [`docs/playwright-report/index.html`](docs/playwright-report/index.html); visuais (8/8) aprovados no Docker Linux. Os testes visuais são pulados fora do Linux, porque a renderização de fontes difere; rode-os pelo Docker.
 
 ## Idioma e formato de hora (extras)
 
