@@ -81,14 +81,12 @@ export function Footer() {
         </FooterColumn>
         <div className="col-span-2 lg:col-span-1">
           <h2 className="text-lg font-bold">{footer.social}</h2>
-          <ul className="mt-4 flex gap-2">
+          <ul className="mt-4 flex gap-2.5">
             {SOCIAL.map(({ name, icon }) => (
               <li key={name}>
-                <ComingSoon
-                  aria-label={`${name} (${t.comingSoon})`}
-                  className="grid size-7 place-items-center rounded border border-primary"
-                >
-                  <img src={iconSrc(icon)} alt="" width={16} height={16} />
+                <ComingSoon aria-label={`${name} (${t.comingSoon})`} className="block size-[30px] rounded-[5px]">
+                  {/* The exported icon already carries its bordered frame (Figma 30 px). */}
+                  <img src={iconSrc(icon)} alt="" width={30} height={30} />
                 </ComingSoon>
               </li>
             ))}

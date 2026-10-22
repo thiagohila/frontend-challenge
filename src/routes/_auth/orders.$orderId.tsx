@@ -14,7 +14,7 @@ function OrderRoute() {
   const user = useSessionUser()
   const owner = useCartOwner()
   return (
-    <div className="mx-auto max-w-page px-4 py-10 lg:px-0">
+    <div className="mx-auto grid min-h-dvh max-w-page place-items-center px-4 py-10 lg:px-0">
       {user && <OrderView userId={user.id} orderId={orderId} cartOwner={owner} />}
     </div>
   )

@@ -48,10 +48,14 @@ function TabItem({ to, label, icon, active }: { to: string; label: (typeof items
       <Link
         to={to}
         aria-current={active ? 'page' : undefined}
-        className={cn('flex flex-col items-center gap-1 text-[11px]', active ? 'font-bold text-text-accent' : 'text-muted-foreground')}
+        // Figma: icons only — the name is sr-only; the active tab gets a dot besides the color (WCAG 1.4.1).
+        className={cn(
+          'relative grid size-11 place-items-center',
+          active && 'after:absolute after:bottom-0.5 after:size-1 after:rounded-full after:bg-primary',
+        )}
       >
         <img src={iconSrc(icon)} alt="" width={24} height={24} />
-        {t.tabBar[label]}
+        <span className="sr-only">{t.tabBar[label]}</span>
       </Link>
     </li>
   )

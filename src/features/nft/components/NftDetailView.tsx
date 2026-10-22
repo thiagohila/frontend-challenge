@@ -60,9 +60,9 @@ export function NftDetailView({ nftId, editionId, onEditionChange }: NftDetailVi
         </ol>
       </nav>
 
-      <div className="flex flex-col gap-8 lg:flex-row lg:justify-between">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         <NftGallery art={nft.art} name={name} />
-        <div className="mx-auto w-full max-w-[640px] rounded-t-[31px] bg-card px-6 pt-6 lg:mx-0 lg:w-[530px] lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0">
+        <div className="mx-auto w-full max-w-[640px] rounded-t-[31px] bg-card px-6 pt-6 lg:mx-0 lg:w-[595px] lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0">
           <PurchasePanel nft={nft} editionId={editionId} onEditionChange={onEditionChange} />
         </div>
       </div>

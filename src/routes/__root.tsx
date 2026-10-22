@@ -23,11 +23,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 })
 
 // Mobile screens with their own bottom bar (buy bar / checkout CTA) hide the tab bar (Figma).
-const HIDE_TAB_BAR = ['/nft/', '/cart', '/checkout']
+const HIDE_TAB_BAR = ['/nft/', '/cart', '/checkout', '/orders/']
+// The order confirmation is a modal over an opaque scrim in the Figma: no site chrome around it.
+const HIDE_CHROME = ['/orders/']
 
 function RootLayout() {
   const { pathname } = useLocation()
   const showTabBar = !HIDE_TAB_BAR.some((path) => pathname.startsWith(path))
+  const showChrome = !HIDE_CHROME.some((path) => pathname.startsWith(path))
   useRouteFocus()
   const locale = useLocale()
 
@@ -42,12 +45,12 @@ function RootLayout() {
         >
           {t.skipToContent}
         </a>
-        <Header />
+        {showChrome && <Header />}
         <PendingOrderBanner />
         <main id="conteudo" tabIndex={-1} className="outline-none">
           <Outlet />
         </main>
-        <Footer />
+        {showChrome && <Footer />}
         {showTabBar && <MobileTabBar />}
         <FavoriteIntentRunner />
         <LiveRegion />

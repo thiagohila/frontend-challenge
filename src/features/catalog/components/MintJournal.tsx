@@ -10,12 +10,12 @@ export function MintJournal() {
         {t.catalog.blogTitle}
       </h2>
       <p className="mt-3 text-center text-sm text-muted-foreground">{t.catalog.blogSubtitle}</p>
-      <ul className="mt-10 grid grid-cols-4 gap-6">
+      <ul className="mt-10 grid grid-cols-[repeat(4,268px)] gap-6">
         {t.catalog.posts.map((post) => (
           <li key={post.title}>
             <article className="h-full overflow-hidden rounded-lg bg-card">
-              <NftArt art={post.art} alt="" width={268} className="h-[180px] w-full object-cover" />
-              <div className="flex flex-col gap-2 p-3">
+              <NftArt art={post.art} alt="" width={268} className="h-[195px] w-full object-cover" />
+              <div className="flex flex-col gap-2 p-4">
                 <p className="text-xs text-muted-foreground">
                   {post.date} | {post.read}
                 </p>

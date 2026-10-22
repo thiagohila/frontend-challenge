@@ -13,7 +13,7 @@ import type { Intent } from '../redirect'
 import { completeSignIn } from '../session-actions'
 import { SocialSignIn } from './SocialSignIn'
 
-const inputClass = 'h-[50px] lg:h-10'
+const inputClass = 'h-[50px] rounded-[10px] lg:h-10 lg:rounded-[5px]'
 
 export function RegisterForm({ intent, onSuccess }: { intent?: Intent | undefined; onSuccess: () => void }) {
   const isDesktop = useMediaQuery(DESKTOP_QUERY)

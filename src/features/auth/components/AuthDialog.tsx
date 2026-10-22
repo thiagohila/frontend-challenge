@@ -54,7 +54,7 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
           </button>
 
           <div className="mx-auto flex w-full max-w-[358px] flex-1 flex-col lg:max-w-[340px] lg:py-14">
-            <p className="mt-16 mb-14 text-center text-[32px] font-bold tracking-[0.1em] lg:hidden">{t.brand}</p>
+            <p className="mt-24 mb-20 text-center text-[32px] font-bold tracking-[0.1em] lg:hidden">{t.brand}</p>
 
             <DialogTitle className="sr-only">{title}</DialogTitle>
             <p aria-hidden className="text-center text-xl font-bold lg:hidden">

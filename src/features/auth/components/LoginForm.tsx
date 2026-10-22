@@ -48,7 +48,7 @@ export function LoginForm({ defaultEmail = '', intent, onSuccess, compact }: Log
           type="email"
           autoComplete="email"
           placeholder={t.auth.emailPlaceholder}
-          className="h-[50px] lg:h-10"
+          className="h-[50px] rounded-[10px] lg:h-10 lg:rounded-[5px]"
           {...form.register('email')}
         />
       </FormField>
@@ -56,7 +56,7 @@ export function LoginForm({ defaultEmail = '', intent, onSuccess, compact }: Log
         <PasswordInput
           autoComplete="current-password"
           placeholder={t.auth.passwordPlaceholder}
-          className="h-[50px] lg:h-10"
+          className="h-[50px] rounded-[10px] lg:h-10 lg:rounded-[5px]"
           {...form.register('password')}
         />
       </FormField>

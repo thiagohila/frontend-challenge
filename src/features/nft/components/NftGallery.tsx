@@ -13,7 +13,7 @@ export function NftGallery({ art, name }: { art: ArtName; name: string }) {
   const [active, setActive] = useState(0)
   return (
     // Tablet: keep the artwork at a readable size instead of stretching to 736 px.
-    <div className="mx-auto flex w-full max-w-[520px] flex-col-reverse gap-4 lg:mx-0 lg:max-w-none lg:flex-row lg:gap-7">
+    <div className="mx-auto flex w-full max-w-[520px] flex-col-reverse gap-4 lg:mx-0 lg:w-auto lg:max-w-none lg:flex-row lg:gap-7">
       <ul aria-label={t.detail.gallery} className="hidden gap-4 lg:flex lg:flex-col">
         {Array.from({ length: VIEWS }, (_, view) => `view-${view}`).map((key, view) => (
           <li key={key}>
@@ -30,11 +30,11 @@ export function NftGallery({ art, name }: { art: ArtName; name: string }) {
         ))}
       </ul>
       <div className="relative lg:bg-card lg:p-5">
-        <NftArt art={art} alt={name} width={444} priority className="w-full rounded-3xl lg:size-[444px]" />
+        <NftArt art={art} alt={name} width={444} priority className="w-full rounded-3xl lg:size-[404px]" />
         <Dialog>
           <DialogTrigger
             aria-label={t.detail.zoom}
-            className="absolute top-7 right-7 hidden size-[30px] place-items-center rounded-full bg-ink/80 text-foreground hover:text-text-accent lg:grid"
+            className="absolute top-[13px] right-3 hidden size-[30px] place-items-center rounded-full bg-ink/80 text-foreground hover:text-text-accent lg:grid"
           >
             <Search aria-hidden className="size-4" />
           </DialogTrigger>

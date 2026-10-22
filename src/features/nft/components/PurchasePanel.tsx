@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils'
 import { EditionPicker } from './EditionPicker'
 import { MobileBuyBar } from './MobileBuyBar'
 import { NftFacts, ShareLinks } from './NftFacts'
-import { RatingStars } from './RatingStars'
+import { RatingPill, RatingStars } from './RatingStars'
 
 interface PurchasePanelProps {
   nft: NftDetail
@@ -57,16 +57,20 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 border-b border-border pb-4">
-        <h1 className="text-[28px] leading-8 font-bold">{name}</h1>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="hidden text-[22px] font-bold text-text-accent lg:block">{formatEth(nft.priceEth)}</p>
+      <div className="flex flex-col gap-3 lg:border-b lg:border-border lg:pb-4">
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="text-xl leading-8 font-bold lg:text-[28px]">{name}</h1>
+          <RatingPill average={nft.rating.average} count={nft.rating.count} className="lg:hidden" />
+        </div>
+        <div className="hidden flex-wrap items-center justify-between gap-3 lg:flex">
+          <p className="text-[22px] font-bold text-text-accent">{formatEth(nft.priceEth)}</p>
           <RatingStars average={nft.rating.average} count={nft.rating.count} />
         </div>
       </div>
 
       <section aria-labelledby="about-title" className="flex flex-col gap-3">
-        <h2 id="about-title" className="text-[15px] font-bold">
+        {/* The mobile frame shows the summary without a heading: kept for screen readers. */}
+        <h2 id="about-title" className="text-[15px] font-bold max-lg:sr-only">
           {t.detail.about}
         </h2>
         <p className="text-sm leading-6 text-muted-foreground">{nft.summary}</p>
@@ -87,7 +91,7 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
           <Button
             onClick={() => add('cart')}
             disabled={unavailable || addToCart.isPending}
-            className="h-10 w-[115px] rounded-md text-sm font-bold"
+            className="h-10 w-[130px] rounded-md text-sm font-bold"
           >
             {addToCart.isPending ? t.detail.adding : t.detail.buy}
           </Button>
@@ -95,7 +99,7 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
             variant="outline"
             aria-pressed={isFavorite}
             onClick={() => favorites.toggle(nft)}
-            className="h-10 gap-2 rounded-md border-primary bg-transparent text-sm text-text-accent hover:bg-surface-raised"
+            className="h-10 w-[130px] gap-2 rounded-md border-primary bg-transparent text-sm text-text-accent hover:bg-surface-raised"
           >
             <Heart aria-hidden className={cn('size-4', isFavorite && 'fill-primary')} />
             {isFavorite ? t.detail.favorited : t.detail.favorite}

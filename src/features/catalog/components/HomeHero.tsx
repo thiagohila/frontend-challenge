@@ -19,6 +19,7 @@ export function HomeHero() {
   // One variant per breakpoint: a display:none <img> would still be downloaded.
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const current = SLIDES[index] ?? 'emerald-ape'
+  const next = SLIDES[(index + 1) % SLIDES.length] ?? 'sage-nomad'
   const slides = SLIDES
 
   return (
@@ -26,7 +27,7 @@ export function HomeHero() {
       aria-labelledby="hero-title"
       className="relative mx-auto mt-6 max-w-page px-4 lg:mt-8 lg:flex lg:items-center lg:justify-between lg:px-0"
     >
-      <div className="relative z-10 overflow-hidden rounded-xl bg-[linear-gradient(139.5deg,#241612_12%,#2f1d15_106.6%)] p-4 lg:w-[600px] lg:rounded-none lg:bg-none lg:p-0 lg:pl-12">
+      <div className="relative z-10 overflow-hidden rounded-xl bg-[linear-gradient(139.5deg,#241612_12%,#2f1d15_106.6%)] p-4 pb-8 lg:w-[600px] lg:rounded-none lg:bg-none lg:p-0 lg:pl-12">
         <p className="text-xs tracking-[0.1em] lg:text-sm">{t.catalog.heroEyebrow}</p>
         <h1
           id="hero-title"
@@ -55,6 +56,8 @@ export function HomeHero() {
         {!isDesktop && (
           <div className="absolute top-3 right-3 w-[138px]">
             <NftArt art={current} alt={t.catalog.heroArtAlt} width={138} sizes="138px" priority className="rounded-xl" />
+            {/* Decorative overlapping thumbnail (Figma mobile). */}
+            <NftArt art={next} alt="" width={70} sizes="70px" className="absolute -bottom-2.5 left-0 w-[70px] rounded-xl" />
           </div>
         )}
       </div>
@@ -64,7 +67,8 @@ export function HomeHero() {
       )}
 
       {slides.length > 1 && (
-        <fieldset className="mt-3 flex justify-center gap-2 lg:absolute lg:bottom-6 lg:left-[620px] lg:mt-0">
+        // Mobile: dots sit inside the bottom of the hero card (Figma).
+        <fieldset className="absolute bottom-0 left-1/2 z-10 flex -translate-x-1/2 justify-center gap-2 lg:bottom-6 lg:left-[620px] lg:translate-x-0">
           <legend className="sr-only">{t.catalog.featuredTitle}</legend>
           {slides.map((slide, position) => (
             <button

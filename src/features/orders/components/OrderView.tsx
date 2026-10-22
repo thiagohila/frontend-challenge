@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { Loader2 } from 'lucide-react'
+import { Loader2, X } from 'lucide-react'
 import { useEffect } from 'react'
 import { NftArt } from '@/components/nft/NftArt'
 import { Button } from '@/components/ui/button'
@@ -60,13 +60,27 @@ export function OrderView({ userId, orderId, cartOwner }: { userId: string; orde
   return <Receipt order={order.data} />
 }
 
+/** The confirmation has no site chrome (Figma modal): the X is the way back to the catalog. */
+function CloseLink() {
+  return (
+    <Link
+      to="/"
+      aria-label={t.auth.close}
+      className="absolute top-4 right-4 grid size-8 place-items-center text-text-accent hover:text-foreground"
+    >
+      <X aria-hidden className="size-4" />
+    </Link>
+  )
+}
+
 function PendingOrder() {
   return (
     <section
       aria-labelledby="order-title"
-      className="mx-auto flex max-w-[578px] flex-col items-center gap-4 rounded-lg bg-card p-10 text-center"
+      className="relative mx-auto flex max-w-[578px] flex-col items-center gap-4 rounded-lg bg-card p-10 text-center"
       data-testid="order-pending"
     >
+      <CloseLink />
       <Loader2 aria-hidden className="size-10 animate-spin text-primary motion-reduce:animate-none" />
       <h1 id="order-title" className="text-xl font-bold">
         {t.order.pendingTitle}
@@ -81,9 +95,10 @@ function DeclinedOrder({ order }: { order: Order }) {
     <section
       role="alert"
       aria-labelledby="order-title"
-      className="mx-auto flex max-w-[578px] flex-col items-center gap-4 rounded-lg border border-destructive/60 bg-card p-10 text-center"
+      className="relative mx-auto flex max-w-[578px] flex-col items-center gap-4 rounded-lg border border-destructive/60 bg-card p-10 text-center"
       data-testid="order-declined"
     >
+      <CloseLink />
       <h1 id="order-title" className="text-xl font-bold text-destructive">
         ✕ {t.order.declinedTitle}
       </h1>
@@ -104,6 +119,7 @@ function Receipt({ order }: { order: Order }) {
       className="relative mx-auto w-full max-w-[578px] bg-card pb-2.5 after:absolute after:inset-x-0 after:bottom-0 after:h-2.5 after:bg-primary"
       data-testid="order-confirmed"
     >
+      <CloseLink />
       <div className="flex flex-col items-center gap-4 px-6 pt-6 pb-5">
         <img src={iconSrc('illustration-thank-you')} alt="" width={66} height={80} />
         <h1 id="order-title" className="text-center text-base font-bold text-muted-foreground">
