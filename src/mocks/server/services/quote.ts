@@ -58,7 +58,14 @@ export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner,
   for (const line of previous?.lines ?? []) {
     const current = lines.find((candidate) => candidate.nftId === line.nftId && candidate.editionId === line.editionId)
     if (current && !money.equals(current.unitPriceEth, line.unitPriceEth))
-      changes.push({ nftId: line.nftId, editionId: line.editionId, name: line.name, kind: 'price', from: line.unitPriceEth, to: current.unitPriceEth })
+      changes.push({
+        nftId: line.nftId,
+        editionId: line.editionId,
+        name: line.name,
+        kind: 'price',
+        from: line.unitPriceEth,
+        to: current.unitPriceEth,
+      })
   }
 
   const quote: QuoteRecord = {
