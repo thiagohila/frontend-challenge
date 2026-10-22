@@ -4,6 +4,7 @@ import { t } from '@/i18n'
 import { iconSrc, type IconName } from '@/lib/assets'
 import { ComingSoon } from './ComingSoon'
 import { PreferencesMenu } from './PreferencesMenu'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 const SOCIAL: readonly { name: string; icon: IconName }[] = [
   { name: 'Facebook', icon: 'social-facebook' },
@@ -73,7 +74,7 @@ export function Footer() {
         <FooterColumn title={footer.columns.collections.title}>
           {footer.columns.collections.items.map(({ label, slug }) => (
             <li key={slug}>
-              <Link to="/" search={{ collection: [slug] }} hash="catalogo">
+              <Link to="/" search={{ collection: [slug] }} hash={MARKET_ANCHOR}>
                 {label}
               </Link>
             </li>

@@ -62,13 +62,14 @@ function RootLayout() {
 }
 
 /**
- * A link to the anchor the URL already has (e.g. "Mercado" → /#catalogo after scrolling back up) is
+ * A link to the anchor the URL already has (e.g. "Mercado" → /#mercado after scrolling back up) is
  * not a navigation, so the router doesn't scroll: bring the section into view ourselves.
  */
 function useSameHashScroll() {
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
-      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+      // No `defaultPrevented` check: the router's <Link> always prevents the default to navigate itself.
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href*="#"]') : null
       if (!link) return
       const target = new URL(link.href)
@@ -76,7 +77,8 @@ function useSameHashScroll() {
       const section = sameLocation && target.hash ? document.getElementById(decodeURIComponent(target.hash.slice(1))) : null
       if (!section) return
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
-      section.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+      // Next frame: after the router has handled the (same-location) click.
+      requestAnimationFrame(() => section.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }))
     }
     document.addEventListener('click', onClick)
     return () => document.removeEventListener('click', onClick)

@@ -13,6 +13,7 @@ import { formatEth, money } from '@/lib/money'
 import { type Owner, queryKeys } from '@/lib/query-keys'
 import { orderQuery } from '../queries'
 import { CloseLink, DeclinedOrder, PendingOrder } from './OrderStates'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 const short = (hash: string) => `${hash.slice(0, 6)}…${hash.slice(-4)}`
 
@@ -143,7 +144,7 @@ function Receipt({ order }: { order: Order }) {
               </Link>
             </Button>
           )}
-          <Link to="/" hash="catalogo" className="text-sm text-text-accent hover:underline">
+          <Link to="/" hash={MARKET_ANCHOR} className="text-sm text-text-accent hover:underline">
             {t.order.continue}
           </Link>
         </div>

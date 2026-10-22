@@ -6,6 +6,7 @@ import { formatDateTime } from '@/lib/format'
 import { usePrefs } from '@/lib/prefs'
 import { formatEth } from '@/lib/money'
 import { transactionQuery } from '../queries'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 /** Simulated explorer: owner-only, transaction facts only — no purchased items (X4, C5 of the audit). */
 export function TransactionView({ userId, hash }: { userId: string; hash: string }) {
@@ -38,7 +39,7 @@ export function TransactionView({ userId, hash }: { userId: string; hash: string
           ))}
         </dl>
       )}
-      <Link to="/" hash="catalogo" className="text-sm text-text-accent hover:underline">
+      <Link to="/" hash={MARKET_ANCHOR} className="text-sm text-text-accent hover:underline">
         {t.order.continue}
       </Link>
     </section>

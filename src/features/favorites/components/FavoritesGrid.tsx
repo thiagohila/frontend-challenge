@@ -4,6 +4,7 @@ import { NftCard, NftCardSkeleton } from '@/components/nft/NftCard'
 import { Button } from '@/components/ui/button'
 import { t } from '@/i18n'
 import { favoritesQuery, useFavorites } from '../queries'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 export function FavoritesGrid({ userId }: { userId: string }) {
   const favorites = useQuery(favoritesQuery(userId))
@@ -34,7 +35,7 @@ export function FavoritesGrid({ userId }: { userId: string }) {
     return (
       <div className="flex flex-col items-start gap-4 rounded bg-card p-6">
         <p>{t.favorites.empty}</p>
-        <Link to="/" hash="catalogo" className="text-text-accent underline">
+        <Link to="/" hash={MARKET_ANCHOR} className="text-text-accent underline">
           {t.favorites.explore}
         </Link>
       </div>

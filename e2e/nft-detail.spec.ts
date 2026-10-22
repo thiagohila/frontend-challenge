@@ -48,6 +48,6 @@ test.describe('T2 — NFT detail', () => {
     await page.goto('/nft/nao-existe-999')
     await expect(page.getByRole('heading', { name: 'NFT não encontrado' })).toBeVisible()
     await page.getByRole('link', { name: 'Voltar ao catálogo' }).click()
-    await expect(page).toHaveURL(/#catalogo/)
+    await expect(page).toHaveURL(/#mercado/)
   })
 })

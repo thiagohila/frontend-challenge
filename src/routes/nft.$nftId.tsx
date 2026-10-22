@@ -7,6 +7,7 @@ import { NftDetailSkeleton } from '@/features/nft/components/NftDetailSkeleton'
 import { NftDetailView } from '@/features/nft/components/NftDetailView'
 import { t } from '@/i18n'
 import { isApiError } from '@/lib/api-error'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 export const Route = createFileRoute('/nft/$nftId')({
   validateSearch: z.object({ edition: z.string().max(40).optional().catch(undefined) }),
@@ -47,7 +48,7 @@ function NftNotFound() {
       <div>
         <h1 className="text-2xl font-bold">{t.detail.notFoundTitle}</h1>
         <p className="mt-2 text-muted-foreground">{t.detail.notFoundBody}</p>
-        <Link to="/" hash="catalogo" className="mt-6 inline-block text-text-accent underline">
+        <Link to="/" hash={MARKET_ANCHOR} className="mt-6 inline-block text-text-accent underline">
           {t.detail.backToCatalog}
         </Link>
       </div>

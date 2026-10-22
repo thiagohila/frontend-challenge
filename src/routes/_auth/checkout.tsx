@@ -9,6 +9,7 @@ import { profileQuery } from '@/features/profile/queries'
 import { walletsQuery } from '@/features/wallets/queries'
 import { t } from '@/i18n'
 import { useSessionUser } from '@/lib/session/store'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 export const Route = createFileRoute('/_auth/checkout')({
   head: () => ({ meta: [{ title: t.titles.checkout }] }),
@@ -43,7 +44,7 @@ function CheckoutRoute() {
             <Link to="/">{t.detail.home}</Link> /
           </li>
           <li>
-            <Link to="/" hash="catalogo">
+            <Link to="/" hash={MARKET_ANCHOR}>
               {t.detail.market}
             </Link>{' '}
             /

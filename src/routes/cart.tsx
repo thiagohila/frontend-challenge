@@ -6,6 +6,7 @@ import { CartSummary } from '@/features/cart/components/CartSummary'
 import { useCart, useCartOwner } from '@/features/cart/queries'
 import { RelatedNfts } from '@/features/nft/components/RelatedNfts'
 import { t } from '@/i18n'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 export const Route = createFileRoute('/cart')({
   head: () => ({ meta: [{ title: t.titles.cart }] }),
@@ -36,7 +37,7 @@ function CartRoute() {
             <Link to="/">{t.detail.home}</Link> /
           </li>
           <li>
-            <Link to="/" hash="catalogo">
+            <Link to="/" hash={MARKET_ANCHOR}>
               {t.detail.market}
             </Link>{' '}
             /
@@ -57,7 +58,7 @@ function CartRoute() {
       ) : cart.data.items.length === 0 ? (
         <div className="flex flex-col items-start gap-4 rounded bg-card p-6">
           <p>{t.cart.empty}</p>
-          <Link to="/" hash="catalogo" className="text-text-accent underline">
+          <Link to="/" hash={MARKET_ANCHOR} className="text-text-accent underline">
             {t.cart.explore}
           </Link>
         </div>

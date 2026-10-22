@@ -10,6 +10,7 @@ import type { Owner } from '@/lib/query-keys'
 import { quoteQuery } from '../queries'
 import { QuoteError } from './QuoteError'
 import { CouponForm } from './CouponForm'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 /** Totals come from the server quote (K5); realtime price/stock changes re-price and are listed (RT7). */
 export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
@@ -42,7 +43,7 @@ export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
       >
         <Link to="/checkout">{t.cart.checkout}</Link>
       </Button>
-      <Link to="/" hash="catalogo" className="hidden text-center text-base text-text-accent hover:underline lg:block">
+      <Link to="/" hash={MARKET_ANCHOR} className="hidden text-center text-base text-text-accent hover:underline lg:block">
         {t.cart.continue}
       </Link>
     </aside>

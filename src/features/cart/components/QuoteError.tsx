@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { t, translateMessage } from '@/i18n'
 import { isApiError } from '@/lib/api-error'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 /**
  * Failed pricing. A definitive answer (sold out, empty cart) is shown as the server phrased it, with
@@ -13,7 +14,7 @@ export function QuoteError({ error, onRetry }: { error: unknown; onRetry: () => 
     <div role="alert" className="flex flex-col gap-3 text-sm" data-testid="quote-error">
       {definitive ? translateMessage(error.message) : t.cart.summaryError}
       {definitive ? (
-        <Link to="/" hash="catalogo" className="font-bold text-text-accent underline">
+        <Link to="/" hash={MARKET_ANCHOR} className="font-bold text-text-accent underline">
           {t.cart.explore}
         </Link>
       ) : (

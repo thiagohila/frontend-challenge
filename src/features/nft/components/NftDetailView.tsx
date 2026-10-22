@@ -10,6 +10,7 @@ import { NftGallery } from './NftGallery'
 import { NftInfoTabs } from './NftInfoTabs'
 import { PurchasePanel } from './PurchasePanel'
 import { RelatedNfts } from './RelatedNfts'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 interface NftDetailViewProps {
   nftId: string
@@ -53,7 +54,7 @@ export function NftDetailView({ nftId, editionId, onEditionChange }: NftDetailVi
             <Link to="/">{t.detail.home}</Link> /
           </li>
           <li>
-            <Link to="/" hash="catalogo">
+            <Link to="/" hash={MARKET_ANCHOR}>
               {t.detail.market}
             </Link>
           </li>

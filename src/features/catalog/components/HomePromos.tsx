@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { NftArt } from '@/components/nft/NftArt'
 import { t } from '@/i18n'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 /** Promo CTAs lead to real catalog views (tab filters), not to out-of-scope pages. */
 export function HomePromos() {
@@ -21,7 +22,7 @@ export function HomePromos() {
             <Link
               to="/"
               search={{ tab: promo.tab }}
-              hash="catalogo"
+              hash={MARKET_ANCHOR}
               className="mt-3 inline-flex h-10 w-[140px] items-center justify-center gap-1 rounded bg-primary text-sm font-bold text-primary-foreground hover:bg-text-accent"
             >
               {promo.cta}

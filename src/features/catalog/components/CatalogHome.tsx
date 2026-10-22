@@ -13,6 +13,7 @@ import { HomeHero } from './HomeHero'
 import { HomePromos } from './HomePromos'
 import { MintJournal } from './MintJournal'
 import { MobileFilters } from './MobileFilters'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 interface CatalogHomeProps {
   search: CatalogSearch
@@ -43,7 +44,7 @@ export function CatalogHome({ search, onSearchChange, onClearFilters }: CatalogH
       <HomeHero />
 
       <section
-        id="catalogo"
+        id={MARKET_ANCHOR}
         aria-labelledby="catalog-title"
         className="mx-auto mt-10 flex max-w-page scroll-mt-6 gap-12 px-4 lg:mt-24 lg:px-0"
       >

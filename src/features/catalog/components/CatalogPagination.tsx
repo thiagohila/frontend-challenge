@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
 import type { CatalogSearch } from '../search'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 const itemClass = 'grid size-[35px] place-items-center rounded border border-control-border text-lg hover:border-primary'
 
@@ -19,7 +20,7 @@ export function CatalogPagination({ page, totalPages }: { page: number; totalPag
       <ul className="flex gap-2">
         {page > 1 && (
           <li>
-            <Link to="/" search={to(page - 1)} hash="catalogo" aria-label={t.catalog.previousPage} className={itemClass}>
+            <Link to="/" search={to(page - 1)} hash={MARKET_ANCHOR} aria-label={t.catalog.previousPage} className={itemClass}>
               <ChevronLeft aria-hidden className="size-4" />
             </Link>
           </li>
@@ -29,7 +30,7 @@ export function CatalogPagination({ page, totalPages }: { page: number; totalPag
             <Link
               to="/"
               search={to(number)}
-              hash="catalogo"
+              hash={MARKET_ANCHOR}
               aria-label={t.catalog.page(number)}
               aria-current={number === page ? 'page' : undefined}
               className={cn(itemClass, number === page && 'border-primary bg-primary font-bold text-primary-foreground')}
@@ -40,7 +41,7 @@ export function CatalogPagination({ page, totalPages }: { page: number; totalPag
         ))}
         {page < totalPages && (
           <li>
-            <Link to="/" search={to(page + 1)} hash="catalogo" aria-label={t.catalog.nextPage} className={itemClass}>
+            <Link to="/" search={to(page + 1)} hash={MARKET_ANCHOR} aria-label={t.catalog.nextPage} className={itemClass}>
               <ChevronRight aria-hidden className="size-4" />
             </Link>
           </li>

@@ -22,7 +22,7 @@ async function closeFilters(page: Page, isMobile: boolean) {
 /** Sidebar on desktop, drawer on mobile — same filters (U5). */
 async function filters(page: Page, isMobile: boolean) {
   if (isMobile) await page.getByRole('button', { name: /Abrir filtros/ }).click()
-  return isMobile ? page.getByRole('dialog', { name: 'Filtros' }) : page.locator('#catalogo')
+  return isMobile ? page.getByRole('dialog', { name: 'Filtros' }) : page.locator('#mercado')
 }
 
 test.describe('T1 — search, filters, sort, pagination and history', () => {
@@ -116,13 +116,21 @@ test.describe('empty catalog scenario', () => {
   })
 })
 
-test('"Mercado" scrolls to the catalog again when the URL already has #catalogo', async ({ page, isMobile }) => {
+test('"Mercado" scrolls to the catalog again when the URL already has #mercado', async ({ page, isMobile }) => {
   test.skip(isMobile, 'the desktop header holds the "Mercado" link')
-  await page.goto('/#catalogo')
+  const sectionTop = () => page.evaluate(() => document.getElementById('mercado')?.getBoundingClientRect().top ?? Number.NaN)
+  const mercado = page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Mercado' })
+  await page.goto('/')
   await expect(page.getByRole('list', { name: /NFTs? encontrados?/ })).toBeVisible()
-  await page.evaluate(() => window.scrollTo(0, 0))
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
 
-  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: 'Mercado' }).click()
-  await expect(page.locator('#catalogo')).toBeInViewport()
+  await mercado.click()
+  await expect(page).toHaveURL(/#mercado$/)
+  await expect.poll(sectionTop).toBeLessThan(60) // section at the top, not merely somewhere in the viewport
+
+  // Scroll back up like a user (wheel), then the same link again: same URL, still has to scroll.
+  await page.mouse.move(700, 400)
+  for (let step = 0; step < 15; step += 1) await page.mouse.wheel(0, -400)
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+  await mercado.click()
+  await expect.poll(sectionTop).toBeLessThan(60)
 })

@@ -6,6 +6,7 @@ import { NftArt } from '@/components/nft/NftArt'
 import type { ArtName } from '@/lib/assets'
 import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 /**
  * Editorial brand banner (Figma): static art, so the LCP never waits for the API/mock server
@@ -46,7 +47,7 @@ export function HomeHero() {
         </p>
         <Link
           to="/"
-          hash="catalogo"
+          hash={MARKET_ANCHOR}
           className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-text-accent lg:mt-12 lg:h-10 lg:w-[140px] lg:justify-center lg:rounded-md lg:bg-primary lg:text-base lg:text-primary-foreground"
         >
           {t.catalog.explore}

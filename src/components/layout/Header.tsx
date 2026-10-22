@@ -6,6 +6,7 @@ import { iconSrc } from '@/lib/assets'
 import { useSession } from '@/lib/session/store'
 import { cn } from '@/lib/utils'
 import { ComingSoon } from './ComingSoon'
+import { MARKET_ANCHOR } from '@/lib/anchors'
 
 const MARKET_PATHS = ['/nft', '/cart', '/checkout', '/orders']
 
@@ -24,7 +25,7 @@ export function Header() {
         <nav aria-label={t.nav.label}>
           <ul className="flex gap-10 text-base">
             <NavItem to="/" label={t.nav.home} active={!inMarket} />
-            <NavItem to="/" hash="catalogo" label={t.nav.market} active={inMarket} />
+            <NavItem to="/" hash={MARKET_ANCHOR} label={t.nav.market} active={inMarket} />
             <li>
               <ComingSoon className="text-foreground">{t.nav.creators}</ComingSoon>
             </li>
@@ -34,7 +35,7 @@ export function Header() {
           </ul>
         </nav>
         <div className="flex items-center gap-7">
-          <Link to="/" hash="catalogo" aria-label={t.header.search} className="grid size-6 place-items-center">
+          <Link to="/" hash={MARKET_ANCHOR} aria-label={t.header.search} className="grid size-6 place-items-center">
             <img src={iconSrc('icon-search')} alt="" width={20} height={20} />
           </Link>
           <Link to="/cart" aria-label={t.header.cart(cartCount)} className="relative grid size-6 place-items-center">
