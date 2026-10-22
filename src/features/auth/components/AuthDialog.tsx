@@ -2,11 +2,13 @@ import { Link } from '@tanstack/react-router'
 import { X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import { HomePage } from '@/features/catalog/HomePage'
+import { CatalogHome } from '@/features/catalog/components/CatalogHome'
 import { DESKTOP_QUERY, useMediaQuery } from '@/hooks/use-media-query'
 import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
 import type { AuthSearch } from '../redirect'
+
+const noop = () => undefined
 
 interface AuthDialogProps {
   mode: 'signIn' | 'signUp'
@@ -28,7 +30,7 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
     <>
       {isDesktop && (
         <div inert aria-hidden>
-          <HomePage />
+          <CatalogHome search={{}} onSearchChange={noop} onClearFilters={noop} />
         </div>
       )}
       <Dialog open onOpenChange={(open) => !open && onClose()}>

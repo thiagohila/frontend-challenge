@@ -1,6 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { t } from '@/i18n'
 import { UserAvatar } from '@/components/account/UserAvatar'
+import { useCart } from '@/features/cart/queries'
 import { iconSrc } from '@/lib/assets'
 import { useSession } from '@/lib/session/store'
 import { cn } from '@/lib/utils'
@@ -8,9 +9,10 @@ import { ComingSoon } from './ComingSoon'
 
 const MARKET_PATHS = ['/nft', '/cart', '/checkout', '/orders']
 
-export function Header({ cartCount = 0 }: { cartCount?: number }) {
+export function Header() {
   const { pathname } = useLocation()
   const sessionState = useSession()
+  const cartCount = useCart().data?.itemCount ?? 0
   const inMarket = MARKET_PATHS.some((path) => pathname.startsWith(path))
   // Figma: market-flow screens use the bare Header Row; the others add the hairline divider.
   return (

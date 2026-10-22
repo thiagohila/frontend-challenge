@@ -7,6 +7,7 @@ import { LiveRegion } from '@/components/layout/LiveRegion'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
 import { Toaster } from '@/components/ui/sonner'
 import { ReauthDialog } from '@/features/auth/components/ReauthDialog'
+import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { t } from '@/i18n'
 import type { session } from '@/lib/session/store'
@@ -45,8 +46,10 @@ function RootLayout() {
       <Footer />
       {showTabBar && <MobileTabBar />}
       <ReauthDialog />
+      <FavoriteIntentRunner />
       <LiveRegion />
-      <Toaster position="top-center" />
+      {/* Bottom, above the mobile tab/buy bars: top toasts covered the mobile top-bar actions. */}
+      <Toaster position="bottom-center" mobileOffset={{ bottom: 184 }} />
     </TooltipProvider>
   )
 }

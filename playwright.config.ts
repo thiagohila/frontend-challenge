@@ -14,7 +14,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     reducedMotion: 'reduce',
   },
-  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
+  // Simulated latency (120–400 ms) + boot of the mock server: 10 s keeps assertions stable under parallel load.
+  expect: { timeout: 10_000, toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: 'disabled' } },
   projects: [
     // Pure Node tests (money, mock contracts, realtime apply) — no browser.
     { name: 'unit', testDir: './tests/unit' },

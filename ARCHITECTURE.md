@@ -310,3 +310,11 @@ Detalhe e inventário em `docs/design/DESIGN.md`; **todo desvio fica registrado 
 | Header logado (avatar + nome → Minha conta) | estado logado não desenhado; derivado do estilo da sidebar da conta |
 | Login/cadastro com labels só para leitores de tela | Figma usa apenas placeholder; label visível mudaria o layout, então fica `sr-only` (WCAG 1.3.1/4.1.2 atendidos) |
 | ENS: ".eth" como afixo fixo (não um select) | só existe a opção ".eth"; um select de uma opção não faz sentido |
+| Campo de busca no topo da sidebar no desktop (o Figma desktop só tem o ícone no header) | busca é requisito (S4); o ícone do header leva ao catálogo; o mobile segue o Figma ("Explorar coleções") |
+| Paginação ganha "anterior" (a partir da pág. 2) | navegação por teclado/leitor sem depender de números; o Figma só tem números + "próxima" |
+| Preço do filtro com ponto ("0.39 - 12.11") | o Figma usa vírgula só ali; todos os outros preços usam ponto (consistência) |
+| Aba "Avaliações" com aviso "em breve" | o conteúdo da aba não foi desenhado; o resumo (estrelas e contagem) continua visível |
+| Galeria com 4 miniaturas da mesma arte | o Figma tem uma arte por NFT, repetida 4×; mantido |
+| Toasts embaixo (acima da tab bar/buy bar) | no topo, cobriam as ações da barra superior do mobile (achado em teste) |
+| "Ordenar por" também no mobile | ordenação é requisito (S4); o frame mobile não a mostra |
+| Card no mobile: favoritar no topo direito; desktop: 3 ações no hover **e no foco do teclado** | Figma; o foco revela as ações para quem navega por teclado |

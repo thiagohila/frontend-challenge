@@ -1,11 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { FavoritesGrid } from '@/features/favorites/components/FavoritesGrid'
+import { t } from '@/i18n'
+import { useSessionUser } from '@/lib/session/store'
 
-// Scaffold — implemented in its PLAN block.
 export const Route = createFileRoute('/_auth/favorites')({
   head: () => ({ meta: [{ title: 'Favoritos — Kurio' }] }),
-  component: () => (
-    <div className="mx-auto max-w-page px-4 py-8 lg:px-0">
-      <h1 className="text-2xl font-bold">Favoritos</h1>
-    </div>
-  ),
+  component: FavoritesRoute,
 })
+
+function FavoritesRoute() {
+  const user = useSessionUser()
+  return (
+    <div className="mx-auto max-w-page px-4 py-8 lg:px-0">
+      <h1 className="mb-8 text-2xl font-bold">{t.favorites.title}</h1>
+      {user && <FavoritesGrid userId={user.id} />}
+    </div>
+  )
+}

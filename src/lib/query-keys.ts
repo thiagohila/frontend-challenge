@@ -19,6 +19,7 @@ export const queryKeys = {
     related: (id: string) => ['nfts', 'related', id] as const,
   },
   cart: (owner: Owner) => [...ownerKey(owner), 'cart'] as const,
+  quotes: (owner: Owner) => [...ownerKey(owner), 'quote'] as const,
   quote: (owner: Owner, network: Network) => [...ownerKey(owner), 'quote', { network }] as const,
   favorites: (userId: string) => ['user', userId, 'favorites'] as const,
   profile: (userId: string) => ['user', userId, 'profile'] as const,

@@ -1,7 +1,6 @@
 import type { Network } from '@/contracts/common'
 import type { ArtName } from '@/lib/assets.gen'
 import type { CollectionSlug, Edition } from '@/contracts/nft'
-import { hashPassword } from './crypto'
 import type { CouponRecord, DbState, NftRecord, UserRecord, WalletRecord } from './db'
 import { createRandom } from './random'
 
@@ -186,22 +185,30 @@ function buildWallets(): WalletRecord[] {
   ]
 }
 
-async function buildUsers(): Promise<UserRecord[]> {
-  const entries = Object.values(DEMO_USERS)
-  return Promise.all(
-    entries.map(async (user, index) => {
-      const salt = `seed-salt-${index}`
-      return {
-        ...user,
-        avatarUrl: null,
-        status: user.id === DEMO_USERS.carol.id ? 'restricted' : 'active',
-        passwordSalt: salt,
-        passwordHash: await hashPassword(DEMO_PASSWORD, salt),
-        ensName: null,
-        walletAlias: null,
-      } satisfies UserRecord
-    }),
-  )
+/**
+ * PBKDF2-SHA256 (100k) of DEMO_PASSWORD with each salt, precomputed so a fresh seed does not burn
+ * ~300 ms of CPU on every first load. Verified by the unit test "seed hashes match DEMO_PASSWORD".
+ */
+export const SEED_PASSWORD_HASHES = {
+  'seed-salt-0': '1e1f81b84dc69041cca6a8b3f319a1054017400cd750a98d31c6330b1dee34d3',
+  'seed-salt-1': 'cac36a356d4e4283a266b3a330fab5efd1d96ce106dd150b3f533fbc49bbb725',
+  'seed-salt-2': 'c12de941eba81cbe20b5231182544e63120911c2f3999f494f60ad5ecce425b8',
+} as const
+
+function buildUsers(): UserRecord[] {
+  const salts = Object.keys(SEED_PASSWORD_HASHES) as (keyof typeof SEED_PASSWORD_HASHES)[]
+  return Object.values(DEMO_USERS).map((user, index) => {
+    const salt = salts[index] ?? 'seed-salt-0'
+    return {
+      ...user,
+      avatarUrl: null,
+      status: user.id === DEMO_USERS.carol.id ? 'restricted' : 'active',
+      passwordSalt: salt,
+      passwordHash: SEED_PASSWORD_HASHES[salt],
+      ensName: null,
+      walletAlias: null,
+    } satisfies UserRecord
+  })
 }
 
 export interface SeedOptions {
@@ -212,7 +219,7 @@ export interface SeedOptions {
 export async function createSeed({ emptyCatalog = false }: SeedOptions = {}): Promise<DbState> {
   return {
     schemaVersion: 1,
-    users: await buildUsers(),
+    users: buildUsers(),
     sessions: [],
     nfts: emptyCatalog ? [] : buildNfts(),
     favorites: { [DEMO_USERS.ana.id]: ['sage-nomad-009', 'ivory-baron-088'] },

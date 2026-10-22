@@ -20,12 +20,12 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S1 | Frames desktop e mobile do Figma | B1a, B7 | VIS desktop+mobile | ◐ |
 | S2 | Estados não desenhados no mesmo padrão visual | B1a (lista), B7 | DESIGN.md "estados derivados" | ◐ |
 | S3 | Blockchain/carteira/pagamento só simulados | B2 | ARCHITECTURE §10 | ☐ |
-| S4 | Início: destaques, catálogo, busca, filtros, ordenação, navegação ao NFT | B4 | T1 | ☐ |
-| S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ☐ |
+| S4 | Início: destaques, catálogo, busca, filtros, ordenação, navegação ao NFT | B4 | T1 | ☑ |
+| S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ◐ |
 | S6 | Carrinho: quantidades, remoção, cupom, resumo | B5 | T5 | ☐ |
 | S7 | Pagamento: dados, carteira+rede, revisão, envio | B6 | T6 | ☐ |
 | S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☐ |
-| S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ◐ |
+| S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ☑ |
 | S10 | Cadastro: criação, validação, conflito | B3 | T3 | ☑ |
 | S11 | Perfil: dados, avatar, senha | B6b | T8 | ☐ |
 | S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☑ |
@@ -35,12 +35,12 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Catálogo e detalhe (§3)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| C1 | Busca/filtros/ordem/página na URL, sobrevivem a refresh e histórico | B4 | T1 | ☐ |
-| C2 | Filtros combináveis; mudança de filtro → página 1 | B4 | T1 | ☐ |
-| C3 | Query reflete os params enviados à API | B4 | T1 (asserção no request/resultado) | ☐ |
-| C4 | Resultado vazio, falha, respostas fora de ordem | B4 | T1 (cenário `jitter`), T12 (falha com `times` > retries) | ☐ |
-| C5 | Detalhe: acesso direto, inexistente (404), edição indisponível, limite de quantidade | B4 | T2 | ☐ |
-| C6 | Favoritos persistem para o usuário autenticado; visitante → login → volta e conclui | B4 | T4 | ☐ |
+| C1 | Busca/filtros/ordem/página na URL, sobrevivem a refresh e histórico | B4 | T1 | ☑ |
+| C2 | Filtros combináveis; mudança de filtro → página 1 | B4 | T1 | ☑ |
+| C3 | Query reflete os params enviados à API | B4 | T1 (asserção no request/resultado) | ☑ |
+| C4 | Resultado vazio, falha, respostas fora de ordem | B4 | T1 (cenário `jitter`), T12 (falha com `times` > retries) | ☑ |
+| C5 | Detalhe: acesso direto, inexistente (404), edição indisponível, limite de quantidade | B4 | T2 | ☑ |
+| C6 | Favoritos persistem para o usuário autenticado; visitante → login → volta e conclui | B4 | T4 | ☑ |
 
 ## Carrinho (§3)
 | ID | Requisito | Bloco | Teste | St |
@@ -86,13 +86,13 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | I1 | Router em rotas, search params e proteção | B3, B4 | T1, T3 | ◐ |
 | I2 | Query em consultas, mutations e cache; REST só via Axios | todos | revisão + ARCHITECTURE §5–6 | ☐ |
 | I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ◐ |
-| I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ☐ |
-| I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ☐ |
-| I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☐ |
+| I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ◐ |
+| I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ◐ |
+| I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☑ |
 | I7 | Isolamento por usuário e por parâmetros | B3 | T3 | ☑ |
 | I8 | Recuperar falhas sem duplicar operações | B6 | T7 | ☐ |
-| I9 | Rota inexistente; acesso direto a qualquer tela (inclui `/checkout` vazio, pedido alheio = 404) | B3–B6 | T2, SMK | ☐ |
-| I10 | Update otimista com rollback (≥1) | B4 | T4 | ☐ |
+| I9 | Rota inexistente; acesso direto a qualquer tela (inclui `/checkout` vazio, pedido alheio = 404) | B3–B6 | T2, SMK | ◐ |
+| I10 | Update otimista com rollback (≥1) | B4 | T4 | ☑ |
 | I11 | Política de cache/retry/sync documentada | B9 | ARCHITECTURE §6 | ◐ |
 
 ## Contratos REST (§5)
@@ -131,24 +131,24 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
 | U1 | Fidelidade: tipografia, cores, espaçamentos, hierarquia, imagens, proporções; shadcn adaptado | B1b, B7 | VIS | ☐ |
-| U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ☐ |
-| U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ☐ |
+| U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ◐ |
+| U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ◐ |
 | U4 | Teclado e foco visível | todos | T11, AXE | ☐ |
 | U5 | Foco em diálogos e drawers | B4–B6 | T11 | ◐ |
 | U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ◐ |
-| U7 | Texto alternativo | B4 | AXE | ☐ |
+| U7 | Texto alternativo | B4 | AXE | ◐ |
 | U8 | Contraste; estado não só por cor | B7 | AXE | ☐ |
 | U9 | Feedback acessível de mutations e realtime | B4–B6 | T11 (`aria-live`) | ☐ |
-| U10 | Sem overflow horizontal; zoom sem perda | B7 | `layout.spec` (320px ≈ zoom 400%) | ☐ |
+| U10 | Sem overflow horizontal; zoom sem perda | B7 | `layout.spec` (320px ≈ zoom 400%) | ◐ |
 | U11 | Assets do Figma locais; substituições documentadas | B1a, B1b | DESIGN.md + ARCHITECTURE §15 | ◐ |
 
 ## Testes (§9)
 | ID | Requisito | Bloco | St |
 |---|---|---|---|
-| T1 | Busca, filtros, ordem, paginação, histórico | B4 | ☐ |
-| T2 | Acesso direto ao detalhe + inexistente | B4 | ☐ |
+| T1 | Busca, filtros, ordem, paginação, histórico | B4 | ☑ |
+| T2 | Acesso direto ao detalhe + inexistente | B4 | ☑ |
 | T3 | Cadastro, login, expiração, logout, troca de usuário | B3 | ☑ |
-| T4 | Favoritos + falha de mutation + recuperação | B4 | ☐ |
+| T4 | Favoritos + falha de mutation + recuperação | B4 | ☑ |
 | T5 | Carrinho, quantidades, remoção, cupom, persistência refresh/login | B5 | ☐ |
 | T6 | Compra completa até o recibo confirmado | B6 | ☐ |
 | T7 | Falha de pagamento, clique repetido, timeout → mesmo pedido | B6 | ☐ |
@@ -156,7 +156,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | T9 | Preço/disponibilidade via Socket.IO durante o checkout | B6 | ☐ |
 | T10 | Eventos duplicados/antigos, desconexão, retomada de pendente | B6 | ☐ |
 | T11 | Teclado, foco em diálogos, validação de formulários | B3–B7 | ☐ |
-| T12 | Skeleton em carga lenta, feedback de falha, nova tentativa | B4 | ☐ |
+| T12 | Skeleton em carga lenta, feedback de falha, nova tentativa | B4 | ☑ |
 | TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ◐ |
 | TQ2 | VIS de início, detalhe, carrinho, pagamento; baselines Linux versionadas (Docker), pulado fora do Linux; dados estáveis | B7 | ☐ |
 | TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ◐ |

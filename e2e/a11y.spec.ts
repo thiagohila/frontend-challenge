@@ -9,12 +9,19 @@ async function expectNoSeriousViolations(page: Page) {
   expect(blocking.map((violation) => `${violation.id}: ${violation.help} (${violation.nodes.length})`)).toEqual([])
 }
 
-for (const path of ['/', '/rota-inexistente', '/login', '/register']) {
+for (const path of ['/', '/?collection=%5B%22arte-digital%22%5D&sort=price-asc', '/nft/emerald-ape-042', '/nft/nao-existe', '/rota-inexistente', '/login', '/register']) {
   test(`no serious a11y violations on ${path}`, async ({ page }) => {
     await page.goto(path)
     await expectNoSeriousViolations(page)
   })
 }
+
+test('no serious a11y violations on /favorites (signed in)', async ({ page, loginAs }) => {
+  await page.goto('/favorites')
+  await loginAs('ana')
+  await expect(page.getByRole('heading', { name: 'Favoritos' })).toBeVisible()
+  await expectNoSeriousViolations(page)
+})
 
 test('no serious a11y violations on /account/wallets (signed in)', async ({ page, loginAs }) => {
   await page.goto('/account/wallets')

@@ -43,9 +43,10 @@ test('private routes need a session; data is scoped to the token owner', async (
 })
 
 test('injected failures are one-shot and the mock state persists across reloads', async ({ page, mock }) => {
-  await mock.fail('/nfts/featured', { status: 503 }, { times: 1 })
-  expect((await api(page, '/nfts/featured')).status).toBe(503)
-  expect((await api(page, '/nfts/featured')).status).toBe(200)
+  // An endpoint the page itself never calls, so only this test consumes the one-shot failure.
+  await mock.fail('/nfts/sage-nomad-009/related', { status: 503 }, { times: 1 })
+  expect((await api(page, '/nfts/sage-nomad-009/related')).status).toBe(503)
+  expect((await api(page, '/nfts/sage-nomad-009/related')).status).toBe(200)
 
   await mock.updateNft('emerald-ape-042', { priceEth: '2.50' })
   await page.reload()

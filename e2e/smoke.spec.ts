@@ -1,10 +1,10 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './fixtures'
 
-test('app boots with MSW REST and Socket.IO mocks', async ({ page }) => {
+test('app boots: shell, catalog from the MSW API and the version stamp', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'NFT Marketplace' })).toBeVisible()
-  await expect(page.getByTestId('api-status')).toHaveText('API: ok')
-  await expect(page.getByTestId('socket-status')).toHaveText('Realtime: ok')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('SEJA DONO')
+  await expect(page.getByRole('list', { name: /NFTs encontrados/ })).toBeVisible()
+  await expect(page.getByTestId('app-version')).toContainText('Versão')
 })
 
 test('unknown route renders not found', async ({ page }) => {

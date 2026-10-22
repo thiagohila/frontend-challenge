@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test'
 import type { CreateOrder } from '../../src/contracts/order'
 import { money } from '../../src/lib/money'
 import { HttpError } from '../../src/mocks/server/errors'
-import { DEMO_PASSWORD, DEMO_USERS } from '../../src/mocks/server/seed'
+import { hashPassword } from '../../src/mocks/server/crypto'
+import { DEMO_PASSWORD, DEMO_USERS, SEED_PASSWORD_HASHES } from '../../src/mocks/server/seed'
 import { login, register } from '../../src/mocks/server/services/auth'
 import { addItem, getCart, mergeGuestCart } from '../../src/mocks/server/services/cart'
 import { listNfts } from '../../src/mocks/server/services/catalog'
@@ -118,6 +119,10 @@ test.describe('cart and catalog rules', () => {
 })
 
 test.describe('auth', () => {
+  test('seed hashes match DEMO_PASSWORD (precomputed PBKDF2)', async () => {
+    for (const [salt, hash] of Object.entries(SEED_PASSWORD_HASHES)) expect(await hashPassword(DEMO_PASSWORD, salt)).toBe(hash)
+  })
+
   test('passwords are hashed; wrong password and duplicate account are rejected (A8, S10)', async () => {
     const server = createTestServer()
     const state = await server.ctx.db.read()

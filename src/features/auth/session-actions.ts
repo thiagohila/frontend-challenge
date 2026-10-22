@@ -27,6 +27,8 @@ export async function completeSignIn(response: SessionResponse, intent?: Intent)
   const previousUserId = session.userId()
   // Different user (or re-auth as someone else): nothing from the previous account may survive.
   if (previousUserId && previousUserId !== response.user.id) await clearPrivateState(previousUserId)
+  // Persist the intent BEFORE signing in: intent runners react to the session change synchronously.
+  if (intent) writeStorage('session', `${privateKeyPrefix(response.user.id)}intent`, intent)
   session.signIn(response)
   if (previousUserId === response.user.id) await queryClient.invalidateQueries()
 
@@ -40,7 +42,6 @@ export async function completeSignIn(response: SessionResponse, intent?: Intent)
       // keep the guest id: the merge is retried on the next sign-in
     }
   }
-  if (intent) writeStorage('session', `${privateKeyPrefix(response.user.id)}intent`, intent)
   announce(t.auth.signedIn(response.user.displayName))
 }
 
