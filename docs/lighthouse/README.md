@@ -22,7 +22,7 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 | Navegador | Chromium headless 156 (do Playwright 1.64.1, `HeadlessChrome/156.0.0.0`) |
 | Node | v22.23.0 |
 | Máquina | macOS (Darwin 25.5.0), Intel Core i5-1038NG7 2.0 GHz ×8, 16 GB |
-| Alvo | https://kurio-gold.vercel.app, commit `97f44e4` (entrega, com extras EX1/EX2 e o ajuste de fidelidade ao Figma), medido em 2026-10-22 |
+| Alvo | https://kurio-gold.vercel.app, commit `cc1781c` (entrega final: passada de layout + painel do servidor simulado), medido em 2026-10-22 19:16 (BRT) |
 | Mobile | emulação 412×823, rede lenta 4G simulada (RTT 150 ms, ~1,6 Mbps), **CPU 4× mais lenta** |
 | Desktop | emulação desktop, sem throttling de CPU (config padrão desktop do Lighthouse) |
 
@@ -30,10 +30,10 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 
 | Página / perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Início · mobile | **73** | 100 | 100 | 100 | 3,62 s | 0 | 455 ms |
-| Início · desktop | **100** | 100 | 100 | 100 | 0,71 s | 0 | 21 ms |
-| Detalhe · mobile | **72** | 100 | 100 | 100 | 3,23 s | 0 | 639 ms |
-| Detalhe · desktop | **99** | 100 | 100 | 100 | 0,75 s | 0 | 50 ms |
+| Início · mobile | **78** | 100 | 100 | 100 | 3,64 s | 0 | 242 ms |
+| Início · desktop | **99** | 100 | 100 | 100 | 0,77 s | 0 | 10 ms |
+| Detalhe · mobile | **66** | 100 | 100 | 100 | 3,57 s | 0 | 594 ms |
+| Detalhe · desktop | **99** | 100 | 100 | 100 | 0,79 s | 0 | 19 ms |
 
 Metas: Performance ≥ 90 · Acessibilidade ≥ 95 · Boas práticas ≥ 95 · SEO ≥ 90. **Todas atingidas, exceto Performance no perfil mobile** (justificado abaixo).
 
@@ -46,7 +46,8 @@ Metas: Performance ≥ 90 · Acessibilidade ≥ 95 · Boas práticas ≥ 95 · S
 | Split de `pending/error/notFound` + realtime lazy | 76 | 78 | entrada 364 → 283 KB: a view de detalhe, Radix e `decimal.js` saíram do caminho crítico |
 | Preload do chunk do servidor simulado + zod sem JIT | 83* | — | o MSW baixa em paralelo com o app; fim do aviso de CSP (Boas práticas 96 → 100) |
 | Medição de `78785fa` (3×, mediana) | 79 | 75 | — |
-| **Medição oficial, entrega `97f44e4` (3×, mediana)** | **73** | **72** | extras EX1/EX2 (+0,3 KB gzip) e ajuste de fidelidade (miniatura extra no hero mobile); `benchmarkIndex` desta rodada variou de 1069 a 1707 |
+| Medição de `97f44e4` (3×, mediana) | 73 | 72 | extras EX1/EX2 (+0,3 KB gzip) e ajuste de fidelidade (miniatura extra no hero mobile); `benchmarkIndex` variou de 1069 a 1707 |
+| **Medição oficial, entrega `cc1781c` (3×, mediana)** | **78** | **66** | passada de layout e painel do servidor simulado (chunk sob demanda, fora da janela medida). Detalhe mobile por execução: 66 / 71 / 65, TBT 594 / 519 / 792 ms, `benchmarkIndex` 1318–1652; o script do MSW (`browser-*.js`, ~1,5 s com CPU 4×) segue como maior custo |
 
 \* medição única; a variação entre execuções no mobile é de ±6 pontos (o `benchmarkIndex` variou de 1319 a 1767).
 

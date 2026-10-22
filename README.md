@@ -11,6 +11,43 @@ Solução do desafio frontend: descoberta, compra e conta do colecionador, deskt
 - **Segurança:** [`docs/SECURITY.md`](docs/SECURITY.md) · **Design (extração do Figma):** [`docs/design/DESIGN.md`](docs/design/DESIGN.md)
 - **Lighthouse:** [`docs/lighthouse/`](docs/lighthouse/)
 
+## Entrega
+
+| Item                                                           | Onde                                                                     |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Repositório                                                    | https://github.com/thiagohila/frontend-challenge (branch `main`)         |
+| Aplicação publicada                                            | https://kurio-gold.vercel.app (`/version.json` = commit publicado)       |
+| Relatório Playwright (checkout limpo)                          | [`docs/playwright-report/index.html`](docs/playwright-report/index.html) |
+| Lighthouse (3× por página/perfil, mediana)                     | [`docs/lighthouse/README.md`](docs/lighthouse/README.md)                 |
+| Contratos, sessão, carrinho, cache, realtime, desvios do Figma | [`ARCHITECTURE.md`](ARCHITECTURE.md) (§4–§10, §15)                       |
+
+### Como avaliar em 5 minutos
+
+1. Abra https://kurio-gold.vercel.app e entre com `ana@kurio.test` / `Kurio2026!` (botão **Entrar**; o login abre sobre a página atual).
+2. Busque, filtre e ordene no **Mercado**; tudo fica na URL (voltar/avançar restauram).
+3. Abra um NFT, adicione ao carrinho, aplique o cupom `KURIO10` e finalize: conectar carteira → **Confirmar compra** → revisão → recibo (pendente → confirmado).
+4. Abra a aba **"Servidor simulado (admin)"** na borda esquerda e mude o preço do NFT aberto: a página atualiza via Socket.IO, sem recarregar. No mesmo painel, troque para `payment-declined`, `order-timeout`, `slow` ou `offline` e refaça o fluxo para ver falha e recuperação (trocar de cenário restaura o seed: entre de novo).
+5. Repita no celular (ou DevTools em 390 px): layout mobile do Figma.
+
+**Decisões e trade-offs principais:** backend 100% simulado na página (MSW + binding Socket.IO), então a **performance mobile fica abaixo de 90** (causas medidas e justificadas em `docs/lighthouse/README.md`); o checkout usa as carteiras cadastradas no perfil; todo estado de busca, filtro, página e login (`?auth=`) fica na URL.
+
+### Melhorias possíveis
+
+**Performance mobile no Lighthouse** (hoje 78 no início e 66 no detalhe; Acessibilidade, Boas práticas e SEO já estão em 100, e o desktop em 99). As causas estão medidas em [`docs/lighthouse/README.md`](docs/lighthouse/README.md); o ganho vem de tirar trabalho do thread principal e pintar antes do JS:
+
+1. **Servidor simulado fora do thread principal**: rodar os handlers e o "banco" num Web Worker (ou SharedWorker) em vez de na página. O script do MSW é o maior custo medido (~1,5 s com CPU 4× mais lenta) e a maior parte do TBT; num backend real ele simplesmente não existiria. De quebra, um SharedWorker deixaria o painel admin agir em várias abas.
+2. **Pré-renderização (SSG) do shell e da primeira página do catálogo** (TanStack Start/SSR ou prerender no build): o HTML já chega com o hero e os cards, e o FCP (~2,9 s) deixa de esperar o bundle.
+3. **LCP do primeiro card**: a imagem só é pedida quando a lista chega da API (servidor simulado na página). Já aplicado na entrega: a primeira linha do catálogo usa `loading="eager"` + `fetchpriority="high"` (antes saía `lazy`), e a arte do detalhe também. Com o item 2, ela entraria direto no HTML.
+4. **Imagens**: já são AVIF/WebP com `srcset` e dimensões fixas (CLS 0). O próximo passo é um tamanho dedicado ao card mobile de 175 px (menos bytes no 4G simulado) e um placeholder de baixa resolução (blur-up) no lugar do shimmer, que melhora a percepção de carregamento. Imagem "progressiva" ajuda a percepção, mas não o LCP, porque o Lighthouse conta a imagem final.
+5. **Menos JS na entrada**: dividir mais o Radix e o zod por rota e adiar o `socket.io-client` até a primeira interação que precise de tempo real.
+
+**Produto e qualidade**
+
+- Mensagens de erro do servidor simulado também em inglês (`Accept-Language`; hoje só a interface é traduzida).
+- Teste manual com leitor de tela (VoiceOver/NVDA) nos fluxos de login, catálogo e checkout; os automatizados (axe, teclado, foco) já passam.
+- Servidor Socket.IO real (com rooms/ack) no lugar do binding do MSW, e testes de componente para os formulários.
+- Teste `account.spec` (perfil) ocasionalmente instável sob carga paralela: uma requisição ao service worker pode ficar presa até o timeout de 10 s do Axios; o app se recupera no retry, mas o teste espera os mesmos 10 s. Melhoria: esperar o retry no teste e investigar a requisição presa no MSW.
+
 ## Stack
 
 React 19 + TypeScript (strict) · Vite · TanStack Router · TanStack Query · Axios · Socket.IO (`socket.io-client`) · Tailwind CSS v4 · shadcn/ui · MSW 2 + `@mswjs/socket.io-binding` · Playwright · Lighthouse. Formulários: react-hook-form + zod. Valores em ETH: `decimal.js` (strings decimais, nunca `number`).

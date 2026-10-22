@@ -180,3 +180,15 @@ test('a URL with catalog search/filters lands on the market with the result (sha
   await expect(results(page)).toBeVisible()
   expect(await page.evaluate(() => window.scrollY)).toBe(0)
 })
+
+test('the sign-in dialog params stay out of the catalog request and do not jump to the market', async ({ page }) => {
+  const listRequests: string[] = []
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/nfts') listRequests.push(request.url())
+  })
+  await page.goto('/?auth=login&redirect=%2Faccount%2Fprofile')
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect.poll(() => listRequests.length).toBeGreaterThan(0)
+  expect(listRequests.filter((url) => /[?&](auth|redirect|intent)=/.test(url))).toEqual([])
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+})

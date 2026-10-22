@@ -69,7 +69,14 @@ export function CatalogResults({ list, isFavorite, onToggleFavorite, onQuickAdd,
         <ul className={gridClass} aria-label={t.catalog.results(total)}>
           {items.map((nft, index) => (
             <li key={nft.id} className={cn(index % 2 === 1 && 'mt-8 md:mt-0')}>
-              <NftCard nft={nft} isFavorite={isFavorite(nft.id)} onToggleFavorite={onToggleFavorite} onQuickAdd={onQuickAdd} />
+              {/* First row (2 cards on mobile) is above the fold and is the mobile LCP: eager + high priority. */}
+              <NftCard
+                nft={nft}
+                isFavorite={isFavorite(nft.id)}
+                onToggleFavorite={onToggleFavorite}
+                onQuickAdd={onQuickAdd}
+                priority={index < 2}
+              />
             </li>
           ))}
         </ul>

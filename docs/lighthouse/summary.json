@@ -1,8 +1,7 @@
 {
   "baseUrl": "https://kurio-gold.vercel.app",
-  "commit": "97f44e4",
-  "measuredAt": "2026-10-22",
-  "note": "commit e data anotados à mão nesta rodada; o script grava os dois automaticamente a partir de então",
+  "commit": "cc1781c",
+  "measuredAt": "2026-10-22T22:16:07.324Z",
   "runs": 3,
   "node": "v22.23.0",
   "os": "Darwin 25.5.0 x64",
@@ -10,13 +9,13 @@
   "memoryGb": 16,
   "results": {
     "home/mobile": {
-      "performance": 73,
+      "performance": 78,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 3615,
+      "LCP": 3639,
       "CLS": 0,
-      "TBT": 455,
+      "TBT": 242,
       "formFactor": "mobile",
       "throttling": {
         "rttMs": 150,
@@ -26,16 +25,16 @@
         "uploadThroughputKbps": 675,
         "cpuSlowdownMultiplier": 4
       },
-      "benchmarkIndex": 1707
+      "benchmarkIndex": 1765.5
     },
     "home/desktop": {
-      "performance": 100,
+      "performance": 99,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 708,
+      "LCP": 772,
       "CLS": 0,
-      "TBT": 21,
+      "TBT": 10,
       "formFactor": "desktop",
       "throttling": {
         "rttMs": 40,
@@ -45,16 +44,16 @@
         "uploadThroughputKbps": 0,
         "cpuSlowdownMultiplier": 1
       },
-      "benchmarkIndex": 1420
+      "benchmarkIndex": 1859
     },
     "detail/mobile": {
-      "performance": 72,
+      "performance": 66,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 3229,
+      "LCP": 3570,
       "CLS": 0,
-      "TBT": 639,
+      "TBT": 594,
       "formFactor": "mobile",
       "throttling": {
         "rttMs": 150,
@@ -64,16 +63,16 @@
         "uploadThroughputKbps": 675,
         "cpuSlowdownMultiplier": 4
       },
-      "benchmarkIndex": 1069
+      "benchmarkIndex": 1649
     },
     "detail/desktop": {
       "performance": 99,
       "accessibility": 100,
       "best-practices": 100,
       "seo": 100,
-      "LCP": 753,
+      "LCP": 785,
       "CLS": 0,
-      "TBT": 50,
+      "TBT": 19,
       "formFactor": "desktop",
       "throttling": {
         "rttMs": 40,
@@ -83,7 +82,7 @@
         "uploadThroughputKbps": 0,
         "cpuSlowdownMultiplier": 1
       },
-      "benchmarkIndex": 1526
+      "benchmarkIndex": 1635
     }
   },
   "lighthouseVersion": "13.5.0",

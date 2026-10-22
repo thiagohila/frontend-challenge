@@ -58,7 +58,7 @@ O plano rodou adiantado: B1–B9 e os extras ficaram prontos na madrugada (últi
 | Item | Planejado | Real |
 |---|---|---|
 | B1b — painel "Servidor simulado (admin)" | painel isolado na demo, com seleção e reset de cenário | **feito na F1** (antes: só `window.__mock` no console e `?scenario=` na URL) |
-| B8 — Performance ≥ 90 | meta em todas as páginas/perfis | desktop 100/99; **mobile 73/72** (MSW dentro da página), justificado em `docs/lighthouse/README.md` |
+| B8 — Performance ≥ 90 | meta em todas as páginas/perfis | desktop 99/99; **mobile 78/66** (`cc1781c`) (MSW dentro da página), justificado em `docs/lighthouse/README.md` |
 | Checkpoints e push | só nos checkpoints | push a cada bloco (Vercel conectado ao GitHub desde B1b) |
 | Revisões | revisão por bloco (DoD 5) | feita, mas a **auditoria de requisitos** de 22/10 ainda achou 20+ falhas reais (sair sem reload quebrava o app, carrinho divergente, reset incompleto…) → corrigidas com teste (REVIEW-LOG "Auditoria") |
 | Fora do plano, feito | — | comparação lado a lado com os frames do Figma (15 telas) e ajuste fino; CI no GitHub Actions; cobertura de todos os cenários do mock (`scenarios.spec`) |

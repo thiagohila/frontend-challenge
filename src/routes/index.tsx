@@ -10,7 +10,9 @@ export const Route = createFileRoute('/')({
 })
 
 function HomeRoute() {
-  const search = Route.useSearch()
+  // The route search also carries the root's auth-dialog params (`auth`, `redirect`, `intent`): the
+  // catalog sees only its own keys, so they never reach the API, the query key or "arrived with state".
+  const search = catalogSearchSchema.parse(Route.useSearch())
   const navigate = useNavigate({ from: '/' })
   return (
     <CatalogHome
