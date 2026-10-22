@@ -42,4 +42,8 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B7 | Baselines visuais instáveis (±1 px de altura) | imagens `lazy` carregando durante a captura de página inteira | testes carregam e decodificam todas as imagens antes da captura; Docker Linux | `visual.spec` verificado 2× sem retry |
 | B7 | T1 mobile intermitente: lista "vazia" | Radix marca a página como `aria-hidden` enquanto o drawer fecha; `getByRole` ignora | esperar o drawer sumir (`closeFilters`) | catalog.spec repetido 4× |
 | B7 | Tablet herdava o layout mobile esticado (cards e arte gigantes) | só havia breakpoint `lg` | catálogo em 3 colunas a partir de `md`; arte/painel do detalhe limitados | revisão em 768 px |
+| B8 | Detalhe do NFT inteiro (Radix Dialog/Tabs) no chunk de entrada | `autoCodeSplitting` só separa `component`; o `pendingComponent` importava a view | `codeSplittingOptions` separa pending/error/notFound; skeleton em módulo próprio | análise de sourcemap do chunk de entrada |
+| B8 | `decimal.js` e o realtime no caminho crítico | bridge de realtime montado no root | `RealtimeBridge` lazy após o primeiro paint | idem |
+| B8 | Aviso de CSP (Boas práticas 96) | zod v4 sonda `new Function` na criação do 1º schema, antes do `z.config` (ordem de chunks) | `@/lib/z` configura e reexporta o zod; lint proíbe importar `z` de `zod` | verificação de issues via CDP em produção |
+| B8 | LCP mobile dependente da API | arte do hero vinha de `/nfts/featured` | hero editorial estático + preload; chunk do MSW em `modulepreload` | `docs/lighthouse/README.md` |
 

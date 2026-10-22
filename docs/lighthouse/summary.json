@@ -1,0 +1,88 @@
+{
+  "baseUrl": "https://kurio-gold.vercel.app",
+  "runs": 3,
+  "node": "v22.23.0",
+  "os": "Darwin 25.5.0 x64",
+  "cpu": "Intel(R) Core(TM) i5-1038NG7 CPU @ 2.00GHz x8",
+  "memoryGb": 16,
+  "results": {
+    "home/mobile": {
+      "performance": 79,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "LCP": 3516,
+      "CLS": 0,
+      "TBT": 218,
+      "formFactor": "mobile",
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "benchmarkIndex": 1767.5
+    },
+    "home/desktop": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "LCP": 715,
+      "CLS": 0,
+      "TBT": 21,
+      "formFactor": "desktop",
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "benchmarkIndex": 1529.5
+    },
+    "detail/mobile": {
+      "performance": 75,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "LCP": 3059,
+      "CLS": 0,
+      "TBT": 545,
+      "formFactor": "mobile",
+      "throttling": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 562.5,
+        "downloadThroughputKbps": 1474.5600000000002,
+        "uploadThroughputKbps": 675,
+        "cpuSlowdownMultiplier": 4
+      },
+      "benchmarkIndex": 1380.5
+    },
+    "detail/desktop": {
+      "performance": 99,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "LCP": 714,
+      "CLS": 0,
+      "TBT": 77,
+      "formFactor": "desktop",
+      "throttling": {
+        "rttMs": 40,
+        "throughputKbps": 10240,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 1
+      },
+      "benchmarkIndex": 1319
+    }
+  },
+  "lighthouseVersion": "13.5.0",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36"
+}

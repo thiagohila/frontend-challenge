@@ -166,12 +166,12 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Performance (§10)
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
-| L1 | Início e detalhe × mobile e desktop, build otimizado, cenário padrão | B8 | `docs/lighthouse/` | ☐ |
-| L2 | Perf ≥90, A11y ≥95, BP ≥95, SEO ≥90 | B1b (baseline), B8 | `summary.json` | ☐ |
-| L3 | 3 medições, mediana por categoria | B8 | `scripts/lighthouse.mjs` (sobe e derruba o preview sozinho) | ◐ |
-| L4 | Config versionada; HTML/JSON; versões, ambiente e condições | B8 | `docs/lighthouse/README.md` | ◐ |
-| L5 | LCP, CLS, TBT registrados; justificar abaixo da meta | B8 | `docs/lighthouse/README.md` | ☐ |
-| L6 | Sem simplificação só para a auditoria | B8 | revisão | ☐ |
+| L1 | Início e detalhe × mobile e desktop, build otimizado, cenário padrão | B8 | `docs/lighthouse/` | ☑ |
+| L2 | Perf ≥90, A11y ≥95, BP ≥95, SEO ≥90 | B1b (baseline), B8 | `summary.json` | ◐ |
+| L3 | 3 medições, mediana por categoria | B8 | `scripts/lighthouse.mjs` (sobe e derruba o preview sozinho) | ☑ |
+| L4 | Config versionada; HTML/JSON; versões, ambiente e condições | B8 | `docs/lighthouse/README.md` | ☑ |
+| L5 | LCP, CLS, TBT registrados; justificar abaixo da meta | B8 | `docs/lighthouse/README.md` | ☑ |
+| L6 | Sem simplificação só para a auditoria | B8 | revisão | ☑ |
 
 ## Entrega (§12)
 | ID | Requisito | Bloco | Evidência | St |
