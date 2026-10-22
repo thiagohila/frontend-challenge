@@ -1,5 +1,7 @@
 # Kurio — Marketplace de NFTs
 
+[![CI](https://github.com/thiagohila/frontend-challenge/actions/workflows/ci.yml/badge.svg)](https://github.com/thiagohila/frontend-challenge/actions/workflows/ci.yml)
+
 Solução do desafio frontend: descoberta, compra e conta do colecionador, desktop e mobile, com **backend 100% simulado** (MSW + Socket.IO simulado). Enunciado: [`docs/CHALLENGE.md`](docs/CHALLENGE.md).
 
 - **Aplicação publicada:** https://kurio-gold.vercel.app (o rodapé e `/version.json` mostram o commit publicado)
@@ -142,6 +144,10 @@ await __mock.snapshot() // estado do servidor (leitura)
 - **Visual** (`e2e/visual.spec.ts`): início, detalhe, carrinho e pagamento × desktop/mobile, baselines Linux versionadas.
 
 Mapa completo de specs e requisitos: `ARCHITECTURE.md` §12 e `docs/REQUIREMENTS.md`.
+
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) em todo push na `main` e em pull requests: `npm ci`, typecheck, lint, Prettier, `npm audit --omit=dev` e a suíte Playwright completa (unit, E2E em desktop/mobile/tablet **e regressão visual**), dentro da imagem `mcr.microsoft.com/playwright:v1.64.1-noble`, a mesma que gerou as baselines Linux. O relatório HTML fica como artefato de cada execução; os traces das falhas também.
 
 ## Deploy
 

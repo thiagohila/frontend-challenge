@@ -110,7 +110,7 @@ Evidência: `e2e/a11y.spec.ts` (axe WCAG 2.1 A/AA, falha em `serious`/`critical`
 
 Do que falta para 10/10, os de melhor custo-benefício:
 
-1. **CI no GitHub Actions** (~1h): typecheck, lint, format, E2E e VIS (Linux) a cada push.
+1. ~~**CI no GitHub Actions**~~ — feito: `.github/workflows/ci.yml` (typecheck, lint, format, audit, Playwright completo incluindo VIS, na imagem das baselines).
 2. **Resumo de decisões no topo do README** (~30 min): trade-offs, performance mobile < 90 e desvios do Figma em uma página para quem avalia.
 3. **Mensagens do servidor no idioma escolhido** (~1h): `Accept-Language` no Axios e mensagens localizadas no mock.
 4. **Teste manual com VoiceOver/NVDA** (~10 min): login e checkout.
