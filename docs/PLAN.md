@@ -126,11 +126,12 @@ Mesma DoD (§3). **Congelamento às 17:30**; F7 é a última coisa antes da entr
 | Fase | Horário | Entregas | Requisitos | Pronto quando |
 |---|---|---|---|---|
 | F0 ✅ | 07:00–11:25 | Revisão pós-entrega: fidelidade ao Figma (15 telas), auditoria de requisitos com 5 revisores (20+ correções), todos os cenários do mock com teste, limite de quantidade do detalhe, CI | — | 218 ✓ em checkout limpo; deploy = HEAD |
+| FL ✅ | 14:00–18:00 | **Passada de layout com o usuário** (desktop + mobile, tela a tela): home (header fixo com marcador, hero, abas, filtros, âncora do mercado), conta/carteiras, login como diálogo sobre a página (`?auth=`), detalhe, carrinho, pagamento, confirmação, tab bar com o recorte do FAB. Desvios em ARCH §15, causas no REVIEW-LOG | D2, U1 | 210 e2e + 20 unit ✓; VIS Linux 8/8 |
 | F1 | 11:30–12:45 | **Painel do servidor simulado** (o que o B1b previa e os docs já citam): botão flutuante só com mocks ligados, carregado sob demanda (fora do caminho crítico); seleção e **reset** de cenário, latência, mudar preço/estoque de um NFT, derrubar o socket, resolver pedido pendente. Age **só** pela API de controle (`window.__mock`) → REST/eventos, nunca no estado do app (X5). Diálogo acessível; desvio do Figma em ARCH §15 | M4, M5, X5 | e2e: troca de cenário e reset pelo painel; axe; Lighthouse sem regressão (chunk lazy) |
 | F2 | 12:45–13:15 | **Resumo para quem avalia** no topo do README: como avaliar em 5 min, decisões e trade-offs (performance mobile, checkout com carteiras cadastradas, MSW na página), links para as evidências | D4, D6 | README revisado |
 | F3 | 13:15–14:15 | **Mensagens do servidor no idioma escolhido**: `Accept-Language` no Axios; o mock responde em pt-BR/en-US; remove a limitação documentada | EX1 | `prefs.spec` com erro de API em en-US |
 | F4 | — | **Teste manual com leitor de tela** (usuário, ~10 min): login, catálogo, checkout | U4–U6 | anotado no REVIEW-LOG |
-| F5 | 14:15–14:45 | **CI verde no GitHub** (primeira execução; GitHub estava degradado às 11:20) e ajustes se o ambiente do runner divergir do Docker local | TQ1, TQ2 | badge verde no README |
+| F5 ✅ | 14:15–14:45 | **CI verde no GitHub** (primeira execução; GitHub estava degradado às 11:20) e ajustes se o ambiente do runner divergir do Docker local | TQ1, TQ2 | badge verde no README |
 | F6 | 14:45–15:30 | **Lighthouse final** (3×) no commit de entrega, README e `summary.json` com commit/data | L1–L5 | medianas do commit entregue |
 | F7 | 16:30–17:30 | **Verificação final**: checkout limpo, `deploy.spec` (URL = HEAD), CI verde, varredura docs × código (nada prometido que não exista), relatório do Playwright do commit final, congelamento | D1–D8, TQ4 | REQUIREMENTS sem ☐; tudo ☑ exceto L2 justificado |
 
