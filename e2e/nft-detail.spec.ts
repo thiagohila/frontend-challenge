@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures'
+import { addToCart, expect, test } from './fixtures'
 
 test.describe('T2 — NFT detail', () => {
   test('direct access renders the NFT, editions and the quantity limit', async ({ page }) => {
@@ -20,6 +20,23 @@ test.describe('T2 — NFT detail', () => {
     await expect(stepper.locator('output')).toHaveText('3')
     await expect(increase).toBeDisabled()
     await expect(page.getByText('Limite de 3 por pedido nesta edição.')).toBeVisible()
+  })
+
+  test('the quantity limit counts what is already in the cart (K1)', async ({ page, isMobile }) => {
+    const buy = page.getByRole('button', { name: isMobile ? 'Comprar NFT' : 'COMPRAR', exact: true })
+    const stepper = page.getByRole('group', { name: 'Quantidade' })
+    await page.goto('/')
+    await addToCart(page, [['emerald-ape-042', 'ed-1-10', 2]]) // 3 in stock
+    await page.goto('/nft/emerald-ape-042?edition=ed-1-10')
+    await expect(page.getByText('Limite de 3 por pedido nesta edição; 2 já no seu carrinho.')).toBeVisible()
+    await expect(stepper.getByRole('button', { name: 'Aumentar quantidade' })).toBeDisabled()
+    await expect(buy).toBeEnabled()
+
+    await buy.click()
+    await expect(page).toHaveURL('/cart')
+    await page.goto('/nft/emerald-ape-042?edition=ed-1-10')
+    await expect(page.getByTestId('cart-limit')).toHaveText('Você já tem o limite desta edição no carrinho (3).')
+    await expect(buy).toBeDisabled()
   })
 
   test('a sold-out edition from the URL is explained', async ({ page }) => {

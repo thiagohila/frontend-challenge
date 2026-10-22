@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { QuantityStepper } from '@/components/nft/QuantityStepper'
 import { Button } from '@/components/ui/button'
 import type { NftDetail } from '@/contracts/nft'
-import { useAddToCart } from '@/features/cart/queries'
+import { useAddToCart, useCart } from '@/features/cart/queries'
 import { nftDisplayName } from '@/features/catalog/format'
 import { useFavorites } from '@/features/favorites/queries'
 import { t, translateMessage } from '@/i18n'
@@ -30,13 +30,18 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
   const navigate = useNavigate()
   const favorites = useFavorites()
   const addToCart = useAddToCart()
+  const cart = useCart()
   const firstAvailable = nft.editions.find((edition) => edition.available > 0)
   const requested = nft.editions.find((edition) => edition.id === editionId)
   const edition = requested ?? firstAvailable
-  const max = edition ? Math.min(edition.available, nft.maxPerOrder) : 0
+  const limit = edition ? Math.min(edition.available, nft.maxPerOrder) : 0
+  // The server caps the cart's total per edition, so what is already in the cart counts (K1).
+  const inCart = cart.data?.items.find((item) => item.nftId === nft.id && item.editionId === edition?.id)?.quantity ?? 0
+  const max = Math.max(limit - inCart, 0)
   const [quantity, setQuantity] = useState(1)
   const clamped = Math.max(1, Math.min(quantity, max))
-  const unavailable = !edition || edition.available === 0
+  const cartFull = limit > 0 && max === 0
+  const unavailable = !edition || edition.available === 0 || cartFull
   const isFavorite = favorites.isFavorite(nft.id)
 
   const add = (then: 'cart' | 'stay') => {
@@ -106,7 +111,16 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
           </Button>
         </div>
       </div>
-      {max > 0 && clamped >= max && <p className="text-xs text-muted-foreground">{t.detail.limit(max)}</p>}
+      {cartFull ? (
+        <p className="text-sm text-muted-foreground" data-testid="cart-limit">
+          {t.detail.cartFull(limit)}
+        </p>
+      ) : (
+        max > 0 &&
+        clamped >= max && (
+          <p className="text-xs text-muted-foreground">{inCart > 0 ? t.detail.limitWithCart(limit, inCart) : t.detail.limit(limit)}</p>
+        )
+      )}
       <NftFacts nft={nft} />
       <ShareLinks />
       <MobileBuyBar

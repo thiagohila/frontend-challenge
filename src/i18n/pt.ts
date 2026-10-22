@@ -277,6 +277,8 @@ export const pt = {
     decrease: 'Diminuir quantidade',
     increase: 'Aumentar quantidade',
     limit: (max: number) => `Limite de ${max} por pedido nesta edição.`,
+    limitWithCart: (max: number, inCart: number) => `Limite de ${max} por pedido nesta edição; ${inCart} já no seu carrinho.`,
+    cartFull: (max: number) => `Você já tem o limite desta edição no carrinho (${max}).`,
     buy: 'COMPRAR',
     buyMobile: 'Comprar NFT',
     adding: 'Adicionando…',
