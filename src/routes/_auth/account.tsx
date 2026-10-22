@@ -74,7 +74,11 @@ function AccountLink({
 }) {
   return (
     <li>
-      <Link to={to} className={itemClass} activeProps={{ className: 'border-l-[6px] border-primary gap-4', 'aria-current': 'page' }}>
+      <Link
+        to={to}
+        className={itemClass}
+        activeProps={{ className: 'border-primary max-lg:border-b-2 lg:border-l-[6px] lg:gap-4', 'aria-current': 'page' }}
+      >
         <Icon name={icon} size={size} />
         {label}
       </Link>

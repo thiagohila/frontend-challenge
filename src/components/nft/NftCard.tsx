@@ -34,7 +34,7 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
   }
   return (
     <article className="group relative flex flex-col gap-3" aria-labelledby={`nft-${nft.id}`}>
-      <div className="relative border-t border-transparent bg-card pt-6 pb-1 transition-[border-color] group-focus-within:border-primary group-hover:border-primary">
+      <div className="relative overflow-hidden rounded-[20px] border-t border-transparent bg-card pt-6 pb-1 transition-[border-color] group-focus-within:border-primary group-hover:border-primary lg:overflow-visible lg:rounded-none">
         <NftArt art={nft.art} alt={name} width={250} priority={priority} className="mx-auto w-[calc(100%-8px)] rounded-[15px]" />
         {nft.rarity === 'rare' && (
           <span className="absolute top-0 left-0 z-10 bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground">

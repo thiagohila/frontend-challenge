@@ -91,10 +91,10 @@ function Receipt({ order }: { order: Order }) {
               <th scope="col" className="pb-2">
                 {t.checkout.nfts}
               </th>
-              <th scope="col" className="pb-2 text-center">
+              <th scope="col" className="px-3 pb-2 text-center">
                 {t.order.editions}
               </th>
-              <th scope="col" className="pb-2 text-right">
+              <th scope="col" className="pb-2 pl-3 text-right whitespace-nowrap">
                 {t.checkout.subtotalCol}
               </th>
             </tr>

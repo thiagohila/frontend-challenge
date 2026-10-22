@@ -50,15 +50,16 @@ export function WalletSection({
   return (
     <section aria-labelledby={headingId}>
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <h2 id={headingId} className="text-lg leading-5 font-bold">
             {title}
           </h2>
           {role === 'primary' && <p className="mt-1 text-sm text-muted-foreground">{t.wallets.description}</p>}
         </div>
-        <div className="flex items-center gap-6">
+        {/* Mobile: "Editar/Adicionar" on top, the checkbox under it (right-aligned); desktop: one row (Figma). */}
+        <div className="flex shrink-0 flex-col-reverse items-end gap-2 sm:flex-row sm:items-center sm:gap-6">
           {sameAsPrimary?.available && (
-            <label htmlFor={checkboxId} className="flex cursor-pointer items-center gap-2 text-sm">
+            <label htmlFor={checkboxId} className="flex cursor-pointer items-center gap-2 text-sm whitespace-nowrap">
               <input
                 id={checkboxId}
                 type="checkbox"
