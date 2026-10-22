@@ -35,4 +35,7 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B6 | Reconfirmação exigida sem mudança real (intermitente) | revisão comparava `quoteId`; o evento após o 409 gerava nova cotação com os mesmos valores | comparar o **conteúdo** da cotação (linhas, preços, taxas, total) | e2e T9 repetido 3× |
 | B6 | `<details open>` controlado não deixava abrir no mobile | React reverte o atributo no próximo render | estado do usuário via `onToggle` | revisão |
 | B6 | Casts em `error.details` | dado de servidor não confiável tratado com `as` | `safeParse` com zod | checklist "sem cast" |
+| B6b | Clique em "Salvar" perdido após erro no blur | `mode: 'onTouched'`: a mensagem aparece no blur, desloca o botão sob o ponteiro e o mouseup cai fora | `mode: 'onSubmit'` + `reValidateMode: 'onChange'` em todos os formulários | e2e T8 (desktop/mobile) |
+| B6b | Formulário de perfil remontado ao trocar o avatar | `key={dataUpdatedAt}` apagaria o que foi digitado | removido; `form.reset` só após salvar | revisão |
+| B6b | Processo: commit seguiu após falha de script | comandos encadeados com `;` | `set -e` em comandos que terminam em commit | prática |
 

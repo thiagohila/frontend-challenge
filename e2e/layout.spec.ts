@@ -40,6 +40,12 @@ test('no horizontal overflow on the signed-in account area', async ({ page, logi
   await page.goto('/account/wallets')
   await loginAs('ana')
   await page.getByRole('button', { name: 'Editar' }).first().click()
+  for (const path of ['/account/wallets', '/account/profile']) {
+    await page.goto(path)
+    await page.waitForLoadState('networkidle')
+    const [scroll, client] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth])
+    expect(scroll, path).toBeLessThanOrEqual(client ?? 0)
+  }
   const widths = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth])
   expect(widths[0]).toBeLessThanOrEqual(widths[1] ?? 0)
 })

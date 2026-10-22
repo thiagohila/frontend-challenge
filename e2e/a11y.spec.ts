@@ -35,6 +35,7 @@ test('no serious a11y violations on /cart (with items and coupon error)', async 
 })
 
 test('no serious a11y violations on /checkout, the review dialog and the receipt', async ({ page, loginAs }) => {
+  test.setTimeout(60_000) // full purchase + 3 axe runs; slow under parallel load
   await page.goto('/')
   await loginAs('ana')
   await addToCart(page, [['emerald-ape-042', 'ed-1-50', 1]])
@@ -51,6 +52,15 @@ test('no serious a11y violations on /checkout, the review dialog and the receipt
 
   await review.getByRole('button', { name: 'Enviar pedido' }).click()
   await expect(page.getByTestId('order-confirmed')).toBeVisible({ timeout: 15_000 })
+  await expectNoSeriousViolations(page)
+})
+
+test('no serious a11y violations on /account/profile with errors', async ({ page, loginAs }) => {
+  await page.goto('/account/profile')
+  await loginAs('ana')
+  await page.getByLabel('Nova senha', { exact: true }).fill('x')
+  await page.getByRole('button', { name: 'Salvar' }).click()
+  await expect(page.getByLabel('Senha atual')).toHaveAttribute('aria-invalid', 'true')
   await expectNoSeriousViolations(page)
 })
 

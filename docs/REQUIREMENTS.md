@@ -27,9 +27,9 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☑ |
 | S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ☑ |
 | S10 | Cadastro: criação, validação, conflito | B3 | T3 | ☑ |
-| S11 | Perfil: dados, avatar, senha | B6b | T8 | ☐ |
+| S11 | Perfil: dados, avatar, senha | B6b | T8 | ☑ |
 | S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☑ |
-| S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ◐ |
+| S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ☑ |
 | S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ◐ |
 
 ## Catálogo e detalhe (§3)
@@ -76,8 +76,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | A3 | Sessão recuperável após refresh | B3 | T3 | ☑ |
 | A4 | Expiração durante navegação **e durante checkout**, preservando o contexto | B3, B6 | T3, T7 | ☑ |
 | A5 | Logout/troca limpa cache privado e subscriptions | B3 | T3 | ☑ |
-| A6 | Validar cadastro, perfil, senha e carteiras, incluindo erros da API | B3, B6b | T3, T8, T11 | ◐ |
-| A7 | Alterações confirmadas persistem após refresh | B3, B6b | T8 | ◐ |
+| A6 | Validar cadastro, perfil, senha e carteiras, incluindo erros da API | B3, B6b | T3, T8, T11 | ☑ |
+| A7 | Alterações confirmadas persistem após refresh | B3, B6b | T8 | ☑ |
 | A8 | Credenciais fictícias; senha nunca em claro | B2 | SECURITY.md + inspeção do db | ☑ |
 
 ## Integração e estado (§4)
@@ -135,10 +135,10 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ☑ |
 | U4 | Teclado e foco visível | todos | T11, AXE | ☐ |
 | U5 | Foco em diálogos e drawers | B4–B6 | T11 | ◐ |
-| U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ◐ |
+| U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ☑ |
 | U7 | Texto alternativo | B4 | AXE | ◐ |
 | U8 | Contraste; estado não só por cor | B7 | AXE | ☐ |
-| U9 | Feedback acessível de mutations e realtime | B4–B6 | T11 (`aria-live`) | ☐ |
+| U9 | Feedback acessível de mutations e realtime | B4–B6 | T11 (`aria-live`) | ☑ |
 | U10 | Sem overflow horizontal; zoom sem perda | B7 | `layout.spec` (320px ≈ zoom 400%) | ◐ |
 | U11 | Assets do Figma locais; substituições documentadas | B1a, B1b | DESIGN.md + ARCHITECTURE §15 | ◐ |
 
@@ -152,7 +152,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | T5 | Carrinho, quantidades, remoção, cupom, persistência refresh/login | B5 | ☑ |
 | T6 | Compra completa até o recibo confirmado | B6 | ☑ |
 | T7 | Falha de pagamento, clique repetido, timeout → mesmo pedido | B6 | ☑ |
-| T8 | Perfil, avatar, senha, carteiras + erros de validação | B3 | ☐ |
+| T8 | Perfil, avatar, senha, carteiras + erros de validação | B3 | ☑ |
 | T9 | Preço/disponibilidade via Socket.IO durante o checkout | B6 | ☑ |
 | T10 | Eventos duplicados/antigos, desconexão, retomada de pendente | B6 | ☑ |
 | T11 | Teclado, foco em diálogos, validação de formulários | B3–B7 | ☐ |

@@ -39,7 +39,14 @@ export function useZodForm<TSchema extends Schema>(
   schema: TSchema,
   options: Omit<UseFormProps<z.input<TSchema>, unknown, z.output<TSchema>>, 'resolver'> = {},
 ) {
-  return useForm<z.input<TSchema>, unknown, z.output<TSchema>>({ mode: 'onTouched', ...options, resolver: zodResolver(schema) })
+  // Validate on submit, then live while typing. Not on blur: a message appearing on blur shifts the layout
+  // under the pointer and the click on "Salvar" lands elsewhere (found in e2e — REVIEW-LOG B6b).
+  return useForm<z.input<TSchema>, unknown, z.output<TSchema>>({
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+    ...options,
+    resolver: zodResolver(schema),
+  })
 }
 
 /**
