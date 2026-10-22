@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import type { Network } from '@/contracts/common'
@@ -17,13 +18,32 @@ interface ReviewDialogProps {
   error: string | null
   onSubmit: () => void
   onClose: () => void
+  /** Receives focus on close: the dialog is opened programmatically (no Radix trigger to restore to). */
+  returnFocusTo: RefObject<HTMLButtonElement | null>
 }
 
 /** Review before sending (P1). The submit button is disabled while in flight: no double orders (P5). */
-export function ReviewDialog({ open, quote, walletLabel, network, changed, submitting, error, onSubmit, onClose }: ReviewDialogProps) {
+export function ReviewDialog({
+  open,
+  quote,
+  walletLabel,
+  network,
+  changed,
+  submitting,
+  error,
+  onSubmit,
+  onClose,
+  returnFocusTo,
+}: ReviewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(next) => !next && !submitting && onClose()}>
-      <DialogContent className="max-h-[90dvh] w-[min(560px,calc(100vw-2rem))] max-w-none overflow-y-auto rounded-lg border border-border bg-card p-6 sm:max-w-none">
+      <DialogContent
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          returnFocusTo.current?.focus()
+        }}
+        className="max-h-[90dvh] w-[min(560px,calc(100vw-2rem))] max-w-none overflow-y-auto rounded-lg border border-border bg-card p-6 sm:max-w-none"
+      >
         <DialogTitle className="text-xl font-bold">{t.checkout.review.title}</DialogTitle>
         <DialogDescription className="text-sm text-muted-foreground">{t.checkout.review.description}</DialogDescription>
         <dl className="grid grid-cols-2 gap-3 rounded bg-surface-raised p-3 text-sm">

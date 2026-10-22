@@ -14,11 +14,13 @@
     "test:e2e:update": "playwright test --update-snapshots",
     "lighthouse": "node scripts/lighthouse.mjs",
     "audit:deps": "npm audit",
-    "test:e2e:docker": "docker run --rm --ipc=host -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash -c \"npm ci && npx playwright test\"",
-    "test:e2e:docker:update": "docker run --rm --ipc=host -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash -c \"npm ci && npx playwright test --update-snapshots\"",
+    "test:e2e:docker": "docker run --rm --ipc=host -e CI=1 -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash -c \"npm ci && npx playwright test\"",
+    "test:e2e:docker:update": "docker run --rm --ipc=host -e CI=1 -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash -c \"npm ci && npx playwright test --update-snapshots\"",
     "assets": "node scripts/optimize-assets.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:visual:docker": "docker run --rm --ipc=host -e CI=1 -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash -c \"npm ci && npx playwright test e2e/visual.spec.ts --project=desktop --project=mobile\"",
+    "test:visual:docker:update": "docker run --rm --ipc=host -e CI=1 -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash -c \"npm ci && npx playwright test e2e/visual.spec.ts --project=desktop --project=mobile --update-snapshots\""
   },
   "dependencies": {
     "@fontsource-variable/roboto-mono": "^5.3.0",

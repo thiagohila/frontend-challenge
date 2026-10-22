@@ -5,8 +5,19 @@ import { expect, test } from './fixtures'
 const results = (page: Page) => page.getByRole('list', { name: /NFTs? encontrados?/ })
 const cardTitles = (page: Page) => results(page).getByRole('heading', { level: 3 })
 /** Waits until no background fetch is in flight (placeholder data replaced by the real result). */
-const settled = (page: Page) => expect(page.getByTestId('catalog-updating')).toBeHidden()
+const settled = async (page: Page) => {
+  // The refetch may not have started yet when this runs: wait for the network to go idle first.
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByTestId('catalog-updating')).toBeHidden()
+}
 const cardPrices = async (page: Page) => (await results(page).locator('article p').allInnerTexts()).map((text) => text.split(' ')[0] ?? '0')
+
+/** Closes the mobile drawer and waits until it is gone: while open/closing, Radix aria-hides the page. */
+async function closeFilters(page: Page, isMobile: boolean) {
+  if (!isMobile) return
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog', { name: 'Filtros' })).toBeHidden()
+}
 
 /** Sidebar on desktop, drawer on mobile — same filters (U5). */
 async function filters(page: Page, isMobile: boolean) {
@@ -24,13 +35,13 @@ test.describe('T1 — search, filters, sort, pagination and history', () => {
     await panel.getByRole('button', { name: /Arte digital/ }).click()
     await expect(page).toHaveURL(/collection=/)
     await expect(page).not.toHaveURL(/page=2/) // filter change → page 1 (C2)
-    if (isMobile) await page.keyboard.press('Escape')
+    await closeFilters(page, isMobile)
 
     panel = await filters(page, isMobile)
     await panel.getByRole('button', { name: /Ethereum/ }).click()
     await expect(panel.getByRole('button', { name: /Arte digital/ })).toHaveAttribute('aria-pressed', 'true')
     await expect(panel.getByRole('button', { name: /Ethereum/ })).toHaveAttribute('aria-pressed', 'true')
-    if (isMobile) await page.keyboard.press('Escape')
+    await closeFilters(page, isMobile)
     await expect(page).toHaveURL(/network=/)
     await settled(page)
     const filtered = await cardTitles(page).allInnerTexts()
@@ -82,7 +93,7 @@ test.describe('T1 — search, filters, sort, pagination and history', () => {
       await panel.getByRole('button', { name: /Polygon/ }).click()
       await panel.getByRole('button', { name: /Polygon/ }).click()
       await panel.getByRole('button', { name: /Solana/ }).click()
-      if (isMobile) await page.keyboard.press('Escape')
+      await closeFilters(page, isMobile)
       await expect(page).toHaveURL(/network=/)
       await expect(page.getByTestId('catalog-updating')).toBeHidden({ timeout: 10_000 })
       await expect(page).toHaveURL(/solana/)

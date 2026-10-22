@@ -15,7 +15,8 @@ interface CatalogResultsProps {
   onClearFilters: () => void
 }
 
-const gridClass = 'grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-3 lg:gap-x-[34px] lg:gap-y-[72px]'
+// Tablet (not in the Figma): 3 columns from md; mobile masonry offset only below md.
+const gridClass = 'grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 lg:gap-x-[34px] lg:gap-y-[72px]'
 
 /** Loading (skeleton, same footprint), error + retry, empty, success, background update (I4). */
 export function CatalogResults({ list, isFavorite, onToggleFavorite, onQuickAdd, onClearFilters }: CatalogResultsProps) {
@@ -64,7 +65,7 @@ export function CatalogResults({ list, isFavorite, onToggleFavorite, onQuickAdd,
       ) : (
         <ul className={cn(gridClass, updating && 'opacity-70 transition-opacity')} aria-label={t.catalog.results(total)}>
           {items.map((nft, index) => (
-            <li key={nft.id} className={cn(index % 2 === 1 && 'mt-8 lg:mt-0')}>
+            <li key={nft.id} className={cn(index % 2 === 1 && 'mt-8 md:mt-0')}>
               <NftCard nft={nft} isFavorite={isFavorite(nft.id)} onToggleFavorite={onToggleFavorite} onQuickAdd={onQuickAdd} />
             </li>
           ))}

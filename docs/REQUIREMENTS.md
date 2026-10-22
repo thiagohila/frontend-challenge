@@ -7,8 +7,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Eliminatórios (§11)
 | ID | Requisito | Bloco | Teste/Evidência | St |
 |---|---|---|---|---|
-| X1 | Uso efetivo de toda a stack (§2) | todos | SMK + ARCHITECTURE §2 | ◐ |
-| X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ◐ |
+| X1 | Uso efetivo de toda a stack (§2) | todos | SMK + ARCHITECTURE §2 | ☑ |
+| X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ☑ |
 | X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☑ |
 | X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ☑ |
 | X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ☑ |
@@ -17,11 +17,11 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Escopo, telas e fluxos (§1, §3)
 | ID | Requisito | Bloco | Teste/Evidência | St |
 |---|---|---|---|---|
-| S1 | Frames desktop e mobile do Figma | B1a, B7 | VIS desktop+mobile | ◐ |
-| S2 | Estados não desenhados no mesmo padrão visual | B1a (lista), B7 | DESIGN.md "estados derivados" | ◐ |
-| S3 | Blockchain/carteira/pagamento só simulados | B2 | ARCHITECTURE §10 | ☐ |
+| S1 | Frames desktop e mobile do Figma | B1a, B7 | VIS desktop+mobile | ☑ |
+| S2 | Estados não desenhados no mesmo padrão visual | B1a (lista), B7 | DESIGN.md "estados derivados" | ☑ |
+| S3 | Blockchain/carteira/pagamento só simulados | B2 | ARCHITECTURE §10 | ☑ |
 | S4 | Início: destaques, catálogo, busca, filtros, ordenação, navegação ao NFT | B4 | T1 | ☑ |
-| S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ◐ |
+| S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ☑ |
 | S6 | Carrinho: quantidades, remoção, cupom, resumo | B5 | T5 | ☑ |
 | S7 | Pagamento: dados, carteira+rede, revisão, envio | B6 | T6 | ☑ |
 | S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☑ |
@@ -30,7 +30,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S11 | Perfil: dados, avatar, senha | B6b | T8 | ☑ |
 | S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☑ |
 | S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ☑ |
-| S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ◐ |
+| S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ☑ |
 
 ## Catálogo e detalhe (§3)
 | ID | Requisito | Bloco | Teste | St |
@@ -83,10 +83,10 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Integração e estado (§4)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| I1 | Router em rotas, search params e proteção | B3, B4 | T1, T3 | ◐ |
-| I2 | Query em consultas, mutations e cache; REST só via Axios | todos | revisão + ARCHITECTURE §5–6 | ☐ |
-| I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ◐ |
-| I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ◐ |
+| I1 | Router em rotas, search params e proteção | B3, B4 | T1, T3 | ☑ |
+| I2 | Query em consultas, mutations e cache; REST só via Axios | todos | revisão + ARCHITECTURE §5–6 | ☑ |
+| I3 | Contratos tipados transporte→estado→UI | B2 | `contracts/` + typecheck | ☑ |
+| I4 | Estados loading, vazio, erro, sucesso, atualização em segundo plano | B4–B6 | T12 (inclui indicador de refetch) | ☑ |
 | I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ☑ |
 | I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☑ |
 | I7 | Isolamento por usuário e por parâmetros | B3 | T3 | ☑ |
@@ -105,11 +105,11 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Mocking (§6)
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
-| M1 | Mocks só na camada de rede, reutilizados em dev/demo/testes; sem respostas fictícias no app | B2 | lint de import (`src/**` ≠ `@/mocks`) | ◐ |
+| M1 | Mocks só na camada de rede, reutilizados em dev/demo/testes; sem respostas fictícias no app | B2 | lint de import (`src/**` ≠ `@/mocks`) | ☑ |
 | M2 | Estado consistente entre os recursos; persistência; reset integral | B2 | T5/T8 (refresh) + `mock.reset` | ☑ |
-| M3 | Lentidão, latência variável, timeout, sem conexão, HTTP erro, configuráveis e reproduzíveis (PRNG com seed) | B2 | T1, T7, T12 | ◐ |
+| M3 | Lentidão, latência variável, timeout, sem conexão, HTTP erro, configuráveis e reproduzíveis (PRNG com seed) | B2 | T1, T7, T12 | ☑ |
 | M4 | Fixtures: variedade p/ filtros+paginação, ≥2 usuários | B2 | `mocks/fixtures` | ☑ |
-| M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ◐ |
+| M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ☑ |
 | M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ☑ |
 | M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ☑ |
 | M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ☑ |
@@ -130,17 +130,17 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Interface e a11y (§8)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| U1 | Fidelidade: tipografia, cores, espaçamentos, hierarquia, imagens, proporções; shadcn adaptado | B1b, B7 | VIS | ☐ |
-| U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ◐ |
+| U1 | Fidelidade: tipografia, cores, espaçamentos, hierarquia, imagens, proporções; shadcn adaptado | B1b, B7 | VIS | ◐ |
+| U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ☑ |
 | U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ☑ |
-| U4 | Teclado e foco visível | todos | T11, AXE | ☐ |
-| U5 | Foco em diálogos e drawers | B4–B6 | T11 | ◐ |
+| U4 | Teclado e foco visível | todos | T11, AXE | ☑ |
+| U5 | Foco em diálogos e drawers | B4–B6 | T11 | ☑ |
 | U6 | Semântica, labels, erros associados | B3, B6 | T11, AXE | ☑ |
-| U7 | Texto alternativo | B4 | AXE | ◐ |
-| U8 | Contraste; estado não só por cor | B7 | AXE | ☐ |
+| U7 | Texto alternativo | B4 | AXE | ☑ |
+| U8 | Contraste; estado não só por cor | B7 | AXE | ☑ |
 | U9 | Feedback acessível de mutations e realtime | B4–B6 | T11 (`aria-live`) | ☑ |
-| U10 | Sem overflow horizontal; zoom sem perda | B7 | `layout.spec` (320px ≈ zoom 400%) | ◐ |
-| U11 | Assets do Figma locais; substituições documentadas | B1a, B1b | DESIGN.md + ARCHITECTURE §15 | ◐ |
+| U10 | Sem overflow horizontal; zoom sem perda | B7 | `layout.spec` (320px ≈ zoom 400%) | ☑ |
+| U11 | Assets do Figma locais; substituições documentadas | B1a, B1b | DESIGN.md + ARCHITECTURE §15 | ☑ |
 
 ## Testes (§9)
 | ID | Requisito | Bloco | St |
@@ -155,13 +155,13 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | T8 | Perfil, avatar, senha, carteiras + erros de validação | B3 | ☑ |
 | T9 | Preço/disponibilidade via Socket.IO durante o checkout | B6 | ☑ |
 | T10 | Eventos duplicados/antigos, desconexão, retomada de pendente | B6 | ☑ |
-| T11 | Teclado, foco em diálogos, validação de formulários | B3–B7 | ☐ |
+| T11 | Teclado, foco em diálogos, validação de formulários | B3–B7 | ☑ |
 | T12 | Skeleton em carga lenta, feedback de falha, nova tentativa | B4 | ☑ |
-| TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ◐ |
-| TQ2 | VIS de início, detalhe, carrinho, pagamento; baselines Linux versionadas (Docker), pulado fora do Linux; dados estáveis | B7 | ☐ |
-| TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ◐ |
+| TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ☑ |
+| TQ2 | VIS de início, detalhe, carrinho, pagamento; baselines Linux versionadas (Docker), pulado fora do Linux; dados estáveis | B7 | ☑ |
+| TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ☑ |
 | TQ4 | Relatório HTML + traces de falha **entregues** | B9 | ☐ |
-| TQ5 | Asserções na UI e no resultado das operações; realtime via cliente Socket.IO, REST via MSW | todos | ☐ |
+| TQ5 | Asserções na UI e no resultado das operações; realtime via cliente Socket.IO, REST via MSW | todos | ☑ |
 
 ## Performance (§10)
 | ID | Requisito | Bloco | Evidência | St |
@@ -179,7 +179,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | D1 | Código, lockfile, assets, mocks, fixtures, testes e configs de auditoria | B9 | repo | ◐ |
 | D2 | Deploy público = código entregue; mocks e realtime ativos; refresh/acesso direto | B1b, B9 | `deploy.spec` (`/version.json` = HEAD) | ◐ |
 | D3 | Link do repositório (push) | B1b | GitHub | ◐ |
-| D4 | README: setup, env, credenciais fictícias, cenários (seleção/reset), comandos, como reproduzir falhas | B9 | README | ☐ |
+| D4 | README: setup, env, credenciais fictícias, cenários (seleção/reset), comandos, como reproduzir falhas | B9 | README | ◐ |
 | D5 | Docs: contratos REST/eventos, sessão, carrinho, cache, reconciliação REST × Socket | B9 | ARCHITECTURE | ◐ |
 | D6 | ARCHITECTURE: limitações, decisões de UX, desvios do Figma | B9 | ARCHITECTURE §15 (espelha DESIGN.md) | ◐ |
 | D7 | Comandos: dev com mocks, build, preview, typecheck, lint, e2e, lighthouse | B0 | package.json | ☑ |

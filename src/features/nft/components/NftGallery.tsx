@@ -12,7 +12,8 @@ const VIEWS = 4
 export function NftGallery({ art, name }: { art: ArtName; name: string }) {
   const [active, setActive] = useState(0)
   return (
-    <div className="flex flex-col-reverse gap-4 lg:flex-row lg:gap-7">
+    // Tablet: keep the artwork at a readable size instead of stretching to 736 px.
+    <div className="mx-auto flex w-full max-w-[520px] flex-col-reverse gap-4 lg:mx-0 lg:max-w-none lg:flex-row lg:gap-7">
       <ul aria-label={t.detail.gallery} className="hidden gap-4 lg:flex lg:flex-col">
         {Array.from({ length: VIEWS }, (_, view) => `view-${view}`).map((key, view) => (
           <li key={key}>

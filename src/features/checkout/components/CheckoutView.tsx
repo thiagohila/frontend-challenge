@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, Navigate, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Cart } from '@/contracts/cart'
@@ -60,6 +60,7 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
   const [connectError, setConnectError] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [staleNotice, setStaleNotice] = useState<string | null>(null)
+  const confirmButton = useRef<HTMLButtonElement>(null)
   const [review, setReview] = useState<{ values: CheckoutFormOutput; signature: string } | null>(null)
 
   if (cart.items.length === 0) return <Navigate to="/cart" />
@@ -177,6 +178,7 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
           onDisconnect={() => selectedWallet && disconnect.mutate(selectedWallet.id)}
         />
         <Button
+          ref={confirmButton}
           type="submit"
           disabled={!quote.data || placeOrder.isPending}
           className="h-[60px] rounded-full text-base font-bold lg:h-[45px] lg:rounded-lg"
@@ -196,6 +198,7 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
           error={submitError}
           onSubmit={submitOrder}
           onClose={() => setReview(null)}
+          returnFocusTo={confirmButton}
         />
       )}
     </form>

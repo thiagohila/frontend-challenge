@@ -38,4 +38,8 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B6b | Clique em "Salvar" perdido após erro no blur | `mode: 'onTouched'`: a mensagem aparece no blur, desloca o botão sob o ponteiro e o mouseup cai fora | `mode: 'onSubmit'` + `reValidateMode: 'onChange'` em todos os formulários | e2e T8 (desktop/mobile) |
 | B6b | Formulário de perfil remontado ao trocar o avatar | `key={dataUpdatedAt}` apagaria o que foi digitado | removido; `form.reset` só após salvar | revisão |
 | B6b | Processo: commit seguiu após falha de script | comandos encadeados com `;` | `set -e` em comandos que terminam em commit | prática |
+| B7 | Foco não voltava ao "Confirmar compra" ao fechar a revisão | diálogo aberto programaticamente (sem trigger Radix para restaurar) | `onCloseAutoFocus` devolve o foco ao botão | e2e T11 |
+| B7 | Baselines visuais instáveis (±1 px de altura) | imagens `lazy` carregando durante a captura de página inteira | testes carregam e decodificam todas as imagens antes da captura; Docker Linux | `visual.spec` verificado 2× sem retry |
+| B7 | T1 mobile intermitente: lista "vazia" | Radix marca a página como `aria-hidden` enquanto o drawer fecha; `getByRole` ignora | esperar o drawer sumir (`closeFilters`) | catalog.spec repetido 4× |
+| B7 | Tablet herdava o layout mobile esticado (cards e arte gigantes) | só havia breakpoint `lg` | catálogo em 3 colunas a partir de `md`; arte/painel do detalhe limitados | revisão em 768 px |
 
