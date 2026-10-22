@@ -25,7 +25,15 @@ const versionFile = (): Plugin => ({
 export default defineConfig({
   plugins: [
     // must run before react()
-    tanstackRouter({ target: 'react', autoCodeSplitting: true }),
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+      // Also split pending/error/notFound components: by default they stay in the entry chunk and drag
+      // their imports (e.g. the whole NFT detail view) into the critical path (L2, REVIEW-LOG B8).
+      codeSplittingOptions: {
+        defaultBehavior: [['component'], ['pendingComponent'], ['errorComponent'], ['notFoundComponent']],
+      },
+    }),
     react(),
     tailwindcss(),
     versionFile(),

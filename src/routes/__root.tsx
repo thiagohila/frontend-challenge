@@ -5,7 +5,6 @@ import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { LiveRegion } from '@/components/layout/LiveRegion'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
-import { RealtimeBridge } from '@/components/layout/RealtimeBridge'
 import { DeferredShell } from '@/components/layout/DeferredShell'
 import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
 import { PendingOrderBanner } from '@/features/orders/components/PendingOrderBanner'
@@ -47,7 +46,6 @@ function RootLayout() {
       <Footer />
       {showTabBar && <MobileTabBar />}
       <FavoriteIntentRunner />
-      <RealtimeBridge />
       <LiveRegion />
       <DeferredShell />
     </>
