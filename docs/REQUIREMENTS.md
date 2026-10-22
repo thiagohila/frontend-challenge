@@ -12,7 +12,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☑ |
 | X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ☑ |
 | X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ☑ |
-| X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo (B9) | ◐ |
+| X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo: 218 ✓ (`b70094c`); CI no GitHub Actions | ☑ |
 
 ## Escopo, telas e fluxos (§1, §3)
 | ID | Requisito | Bloco | Teste/Evidência | St |
@@ -130,7 +130,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Interface e a11y (§8)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| U1 | Fidelidade: tipografia, cores, espaçamentos, hierarquia, imagens, proporções; shadcn adaptado | B1b, B7 | VIS | ◐ |
+| U1 | Fidelidade: tipografia, cores, espaçamentos, hierarquia, imagens, proporções; shadcn adaptado | B1b, B7 | VIS + comparação lado a lado com `docs/design/frames` (15 telas, 22/10); desvios em ARCH §15 | ☑ |
 | U2 | Desktop, tablet e mobile em todas as telas (390/768/1440 no mínimo) | B7 | projeto `tablet` + `layout.spec` + VIS | ☑ |
 | U3 | Skeleton com shimmer (catálogo, detalhe, resumo do carrinho), sem CLS, com reduced motion | B4, B5 | T12 (`reducedMotion` nos dois modos) + LH CLS | ☑ |
 | U4 | Teclado e foco visível | todos | T11, AXE | ☑ |
@@ -176,12 +176,12 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 ## Entrega (§12)
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
-| D1 | Código, lockfile, assets, mocks, fixtures, testes e configs de auditoria | B9 | repo | ◐ |
-| D2 | Deploy público = código entregue; mocks e realtime ativos; refresh/acesso direto | B1b, B9 | `deploy.spec` (`/version.json` = HEAD) | ◐ |
-| D3 | Link do repositório (push) | B1b | GitHub | ◐ |
-| D4 | README: setup, env, credenciais fictícias, cenários (seleção/reset), comandos, como reproduzir falhas | B9 | README | ◐ |
-| D5 | Docs: contratos REST/eventos, sessão, carrinho, cache, reconciliação REST × Socket | B9 | ARCHITECTURE | ◐ |
-| D6 | ARCHITECTURE: limitações, decisões de UX, desvios do Figma | B9 | ARCHITECTURE §15 (espelha DESIGN.md) | ◐ |
+| D1 | Código, lockfile, assets, mocks, fixtures, testes e configs de auditoria | B9 | repo (`package-lock.json`, `public/assets`, `src/mocks`, `e2e/`, `tests/`, `scripts/lighthouse.mjs`) | ☑ |
+| D2 | Deploy público = código entregue; mocks e realtime ativos; refresh/acesso direto | B1b, B9 | `deploy.spec` contra https://kurio-gold.vercel.app (`/version.json` = HEAD) ✓ | ☑ |
+| D3 | Link do repositório (push) | B1b | https://github.com/thiagohila/frontend-challenge (público) | ☑ |
+| D4 | README: setup, env, credenciais fictícias, cenários (seleção/reset), comandos, como reproduzir falhas | B9 | README (seções conferidas na auditoria de 22/10) | ☑ |
+| D5 | Docs: contratos REST/eventos, sessão, carrinho, cache, reconciliação REST × Socket | B9 | ARCHITECTURE §4, §6, §7, §9 (conferidos × código) | ☑ |
+| D6 | ARCHITECTURE: limitações, decisões de UX, desvios do Figma | B9 | ARCHITECTURE §15 | ☑ |
 | D7 | Comandos: dev com mocks, build, preview, typecheck, lint, e2e, lighthouse | B0 | package.json | ☑ |
 | D8 | Roda de checkout limpo sem serviços privados | B9 | `git clone && npm ci && typecheck && lint && format:check && CI=1 test:e2e` (build no webServer): 218 ✓ em 2026-10-22 (`b70094c`) | ☑ |
 
