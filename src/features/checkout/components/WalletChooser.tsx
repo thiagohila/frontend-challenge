@@ -134,16 +134,17 @@ export function WalletProviderPicker({
         {walletTypeSchema.options.map((provider) => (
           <label
             key={provider}
-            className="flex cursor-pointer items-center gap-4 rounded-[14px] border border-border bg-card p-3 has-checked:border-primary"
+            className="flex cursor-pointer items-center gap-4 rounded-[14px] border border-border bg-card p-3 has-checked:border-primary lg:rounded-[3px] lg:bg-transparent lg:px-3 lg:py-2.5"
           >
             <span
               aria-hidden
-              className="grid size-10 place-items-center rounded-full border border-border-soft bg-surface-raised font-bold text-text-accent"
+              className="grid size-10 place-items-center rounded-full border border-border-soft bg-surface-raised font-bold text-text-accent lg:hidden"
             >
               {PROVIDER_LETTER[provider]}
             </span>
             <span className="flex-1">{t.walletTypes[provider]}</span>
-            <input type="radio" value={provider} className="size-4 accent-primary" {...form.register('provider')} />
+            {/* Figma: radio on the right with a letter avatar (mobile), on the left without it (desktop). */}
+            <input type="radio" value={provider} className="size-4 accent-primary lg:order-first" {...form.register('provider')} />
           </label>
         ))}
       </fieldset>
