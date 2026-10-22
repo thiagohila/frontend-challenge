@@ -176,7 +176,8 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
         <Button
           ref={confirmButton}
           type="submit"
-          disabled={!quote.data || placeOrder.isPending}
+          // A placeholder is the previous network's quote: wait for the real one before reviewing.
+          disabled={!quote.data || quote.isPlaceholderData || placeOrder.isPending}
           className="h-[60px] rounded-full text-base font-bold lg:h-[45px] lg:rounded-lg"
         >
           {t.checkout.confirm}

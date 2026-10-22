@@ -34,8 +34,9 @@ export function CollectorFields({ form }: { form: Form }) {
         <FormField label={t.checkout.email} required error={errors.email?.message}>
           <TextInput type="email" autoComplete="email" {...form.register('email')} />
         </FormField>
-        <FormField label={t.checkout.note} error={errors.note?.message} className="md:col-span-2">
-          <textarea rows={5} className={cn(inputClassName, 'h-auto resize-y py-2 md:max-w-[350px]')} {...form.register('note')} />
+        {/* Its own row below the fields, one column wide (same width as the fields above). */}
+        <FormField label={t.checkout.note} error={errors.note?.message} className="md:col-start-1">
+          <textarea rows={5} className={cn(inputClassName, 'h-auto resize-y py-2')} {...form.register('note')} />
         </FormField>
       </div>
     </details>

@@ -78,6 +78,10 @@ export const quoteQuery = (owner: Owner, network: Network, enabled = true) =>
       return quote
     },
     staleTime: 0,
+    // Switching network re-prices without blanking the summary: the previous quote of the *same owner*
+    // stays on screen until the new one arrives (never another owner's).
+    placeholderData: (previous, previousQuery) =>
+      previousQuery && previousQuery.queryKey[0] === owner.kind && previousQuery.queryKey[1] === owner.id ? previous : undefined,
     enabled,
   })
 

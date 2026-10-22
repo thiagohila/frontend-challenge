@@ -8,6 +8,7 @@ import { networkSchema } from '@/contracts/common'
 import { type Wallet, walletTypeSchema } from '@/contracts/wallet'
 import { inputClassName } from '@/components/form/TextInput'
 import { t } from '@/i18n'
+import { choiceClassName } from '@/components/form/choice'
 import { cn } from '@/lib/utils'
 import type { CheckoutFormOutput, CheckoutFormValues } from '../form'
 import type { ActiveConnection } from '../queries'
@@ -55,7 +56,7 @@ export function SavedWalletPicker({ form, wallets }: SavedWalletPickerProps) {
               <input
                 type="radio"
                 value={wallet.id}
-                className="mt-1 size-4 accent-primary"
+                className={cn(choiceClassName, 'mt-1')}
                 {...form.register('walletId', { onChange: () => form.setValue('network', wallet.network) })}
               />
               <span className="flex flex-1 flex-col gap-1">
@@ -63,7 +64,8 @@ export function SavedWalletPicker({ form, wallets }: SavedWalletPickerProps) {
                 <span className="text-sm text-muted-foreground">{wallet.secondaryRef ?? shortAddress(wallet.address)}</span>
                 <span className="text-sm text-muted-foreground">{t.checkout.networkOf(t.networks[wallet.network])}</span>
               </span>
-              <MoreVertical aria-hidden className="size-4 text-text-accent" />
+              {/* Figma: the selected card has no menu glyph. */}
+              {walletId !== wallet.id && <MoreVertical aria-hidden className="size-4 text-text-accent" />}
             </label>
           ))
         )}
@@ -135,7 +137,7 @@ export function WalletProviderPicker({
         {walletTypeSchema.options.map((provider) => (
           <label
             key={provider}
-            className="flex cursor-pointer items-center gap-4 rounded-[14px] border border-border bg-card p-3 has-checked:border-primary lg:rounded-[3px] lg:bg-transparent lg:px-3 lg:py-2.5"
+            className="flex cursor-pointer items-center gap-4 rounded-[14px] border border-border bg-card p-3 has-checked:border-primary has-disabled:cursor-not-allowed has-disabled:opacity-60 lg:rounded-[3px] lg:bg-transparent lg:px-3 lg:py-2.5"
           >
             <span
               aria-hidden
@@ -145,7 +147,14 @@ export function WalletProviderPicker({
             </span>
             <span className="flex-1">{t.walletTypes[provider]}</span>
             {/* Figma: radio on the right with a letter avatar (mobile), on the left without it (desktop). */}
-            <input type="radio" value={provider} className="size-4 accent-primary lg:order-first" {...form.register('provider')} />
+            {/* Locked while connected: changing the wallet app means disconnecting first. */}
+            <input
+              type="radio"
+              value={provider}
+              disabled={isConnected}
+              className={cn(choiceClassName, 'lg:order-first')}
+              {...form.register('provider')}
+            />
           </label>
         ))}
       </fieldset>

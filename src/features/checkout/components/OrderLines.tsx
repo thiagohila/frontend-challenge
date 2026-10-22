@@ -7,12 +7,15 @@ import { formatEth, money } from '@/lib/money'
 export function OrderLines({ quote }: { quote: Quote }) {
   return (
     <div className="flex flex-col gap-4">
-      <table className="w-full border-separate border-spacing-y-2 text-sm">
+      {/* -mt-1: title → header gap matches "Perfil do colecionador" → fields (20 px). */}
+      <table className="-mt-1 w-full border-separate border-spacing-y-2 text-sm">
         <caption className="sr-only">{t.checkout.yourNfts}</caption>
         <thead>
           <tr className="text-left text-base font-bold">
-            <th scope="col">{t.checkout.nfts}</th>
-            <th scope="col" className="text-right">
+            <th scope="col" className="border-b border-border pb-3">
+              {t.checkout.nfts}
+            </th>
+            <th scope="col" className="border-b border-border pb-3 text-right">
               {t.checkout.subtotalCol}
             </th>
           </tr>

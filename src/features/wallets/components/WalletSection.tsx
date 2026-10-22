@@ -2,6 +2,7 @@ import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import type { Wallet, WalletRole } from '@/contracts/wallet'
 import { t } from '@/i18n'
+import { choiceClassName } from '@/components/form/choice'
 import type { WalletFormValues } from '../form'
 import { WalletForm } from './WalletForm'
 
@@ -64,7 +65,7 @@ export function WalletSection({
                 checked={copied !== null}
                 onChange={(event) => toggleSameAsPrimary(event.target.checked)}
                 // Figma: a round marker. Still a checkbox (on/off), styled round.
-                className="grid size-4 shrink-0 appearance-none place-content-center rounded-full border border-primary before:size-2 before:scale-0 before:rounded-full before:bg-primary before:transition-transform before:content-[''] checked:before:scale-100 motion-reduce:before:transition-none"
+                className={choiceClassName}
               />
               {t.wallets.sameAsPrimary}
             </label>
