@@ -4,7 +4,7 @@ import { t } from '@/i18n'
 
 const triggerClass =
   // Must shrink + wrap: on 390px the long reviews label overflowed and widened the layout viewport (U10).
-  'h-auto min-w-0 flex-initial whitespace-normal text-left rounded-none border-0 border-b-[3px] border-transparent bg-transparent px-0 pb-2 text-base font-normal text-foreground shadow-none lg:text-[17px] data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-text-accent data-[state=active]:shadow-none'
+  'h-auto min-w-0 flex-initial whitespace-normal text-left rounded-none border-0 border-b-[3px] border-transparent -mb-px bg-transparent px-0 pb-2 text-base leading-5 font-normal text-foreground shadow-none lg:text-[17px] data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-text-accent data-[state=active]:shadow-none'
 
 /** Details / reviews (Radix tabs: arrow-key navigation). Labels follow content (Figma had them swapped). */
 export function NftInfoTabs({ nft }: { nft: NftDetail }) {

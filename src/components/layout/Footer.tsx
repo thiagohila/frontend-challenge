@@ -17,7 +17,7 @@ const SOCIAL: readonly { name: string; icon: IconName }[] = [
 export function Footer() {
   const { footer } = t
   return (
-    <footer className="mx-auto mt-24 w-full max-w-page px-4 pb-24 lg:px-0 lg:pb-6">
+    <footer className="mx-auto mt-24 w-full max-w-page px-4 pb-[calc(var(--bottom-bar-height,4rem)+2rem)] lg:px-0 lg:pb-6">
       <div className="grid grid-cols-1 gap-8 bg-card p-6 lg:grid-cols-[1fr_1fr_1fr_1.2fr] lg:gap-0 lg:px-10 lg:py-8">
         {footer.features.map((feature) => (
           <section key={feature.letter} className="lg:border-r lg:border-primary lg:px-6 lg:first:pl-0">

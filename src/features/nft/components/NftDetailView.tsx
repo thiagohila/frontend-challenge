@@ -1,10 +1,11 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
-import { ChevronLeft, Heart } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import { nftDetailQuery } from '@/features/catalog/queries'
 import { nftDisplayName } from '@/features/catalog/format'
 import { useFavorites } from '@/features/favorites/queries'
 import { t } from '@/i18n'
+import { iconSrc } from '@/lib/assets'
 import { cn } from '@/lib/utils'
 import { NftGallery } from './NftGallery'
 import { NftInfoTabs } from './NftInfoTabs'
@@ -25,24 +26,26 @@ export function NftDetailView({ nftId, editionId, onEditionChange }: NftDetailVi
   const isFavorite = favorites.isFavorite(nft.id)
   const name = nftDisplayName(nft)
 
+  // Mobile: the Figma hero gradient (506 px) sits behind the top bar and the art; the page below is ink.
   return (
-    <div className="mx-auto max-w-page px-4 pt-4 pb-72 lg:px-0 lg:pt-8 lg:pb-0">
+    <div className="mx-auto max-w-page bg-[linear-gradient(137.6deg,#241612_12%,#2f1d15_106.6%)] bg-[length:100%_506px] bg-no-repeat px-[26px] pt-6 lg:bg-none lg:px-0 lg:pt-8">
       {/* Mobile top bar (Figma): back + favorite. */}
-      <div className="mb-4 flex justify-between lg:hidden">
+      <div className="mb-2 flex justify-between lg:hidden">
         <button
           type="button"
           onClick={() => router.history.back()}
           aria-label={t.detail.back}
-          className="grid size-[30px] place-items-center rounded-full border border-border bg-surface-raised"
+          className="grid size-[35px] place-items-center rounded-full border border-border bg-surface-raised"
         >
-          <ChevronLeft aria-hidden className="size-4" />
+          {/* The Figma glyph is a chevron drawn pointing down and rotated 90° into a back arrow. */}
+          <img src={iconSrc('icon-arrow-left-secondary')} alt="" width={13} height={7} className="rotate-90" />
         </button>
         <button
           type="button"
           onClick={() => favorites.toggle(nft)}
           aria-pressed={isFavorite}
           aria-label={isFavorite ? `${t.favorites.remove}: ${name}` : `${t.favorites.add}: ${name}`}
-          className="grid size-[30px] place-items-center rounded-full border border-border bg-surface-raised text-text-accent"
+          className="grid size-[35px] place-items-center rounded-full border border-border bg-surface-raised text-text-accent"
         >
           <Heart aria-hidden className={cn('size-4', isFavorite && 'fill-primary')} />
         </button>
@@ -52,7 +55,7 @@ export function NftDetailView({ nftId, editionId, onEditionChange }: NftDetailVi
 
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         <NftGallery art={nft.art} name={name} />
-        <div className="relative z-10 mx-auto -mt-14 w-full max-w-[640px] rounded-t-[31px] bg-card px-6 pt-6 lg:mx-0 lg:mt-0 lg:w-[595px] lg:max-w-none lg:rounded-none lg:bg-transparent lg:p-0">
+        <div className="relative z-10 -mx-[26px] -mt-[62px] rounded-[31px] bg-card px-6 pt-8 pb-6 lg:mx-0 lg:mt-0 lg:w-[595px] lg:rounded-none lg:bg-transparent lg:p-0">
           <PurchasePanel nft={nft} editionId={editionId} onEditionChange={onEditionChange} />
         </div>
       </div>
