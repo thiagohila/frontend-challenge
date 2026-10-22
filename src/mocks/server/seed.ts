@@ -182,9 +182,9 @@ function buildWallets(): WalletRecord[] {
       address: '0xA91F3c5b7E2d4F6a8B0c1D2e3F4a5B6c7D8eE82C',
       secondaryRef: null,
       walletType: 'metamask',
-      referralCode: null,
+      referralCode: 'KURIO-ANA',
       email: DEMO_USERS.ana.email,
-      ensName: null,
+      ensName: 'ana.eth',
     },
     {
       id: 'wal_ana_secondary',
@@ -197,7 +197,7 @@ function buildWallets(): WalletRecord[] {
       address: '0x5E3b9A1c7D2e4F6a8B0c1D2e3F4a5B6c7D8e9F10',
       secondaryRef: 'nova.kurio.eth',
       walletType: 'coinbase',
-      referralCode: null,
+      referralCode: 'KURIO-ANA',
       email: DEMO_USERS.ana.email,
       ensName: 'nova.eth',
     },
@@ -212,9 +212,9 @@ function buildWallets(): WalletRecord[] {
       address: '0xB0b0000000000000000000000000000000000B0B',
       secondaryRef: null,
       walletType: 'walletconnect',
-      referralCode: null,
+      referralCode: 'KURIO-BRUNO',
       email: DEMO_USERS.bruno.email,
-      ensName: null,
+      ensName: 'bruno.eth',
     },
   ]
 }
@@ -239,7 +239,8 @@ function buildUsers(): UserRecord[] {
       status: user.id === DEMO_USERS.carol.id ? 'restricted' : 'active',
       passwordSalt: salt,
       passwordHash: SEED_PASSWORD_HASHES[salt],
-      ensName: null,
+      // ENS is required by the profile form (Figma "Nome ENS*"): demo users come with one.
+      ensName: `${user.email.split('@')[0]}.eth`,
       walletAlias: null,
     } satisfies UserRecord
   })

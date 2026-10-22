@@ -21,14 +21,18 @@ export function FormField({ label, hideLabel, required, error, hint, className, 
   const describedBy = [error ? errorId : null, hint ? hintId : null].filter(Boolean).join(' ') || undefined
 
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
+    <div className={cn('flex flex-col gap-2.5', className)}>
       <label
         htmlFor={id}
-        className={cn('text-[15px] leading-4 font-medium', hideLabel === true && 'sr-only', hideLabel === 'mobile' && 'max-lg:sr-only')}
+        className={cn(
+          'flex items-center text-[15px] leading-[15px]',
+          hideLabel === true && 'sr-only',
+          hideLabel === 'mobile' && 'max-lg:sr-only',
+        )}
       >
         {label}
         {required && (
-          <span aria-hidden className="ml-0.5 text-coral">
+          <span aria-hidden className="ml-0.5 h-[15px] text-[22px] leading-[22px] text-coral">
             *
           </span>
         )}

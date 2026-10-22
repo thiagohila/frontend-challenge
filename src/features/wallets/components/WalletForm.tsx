@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { toast } from 'sonner'
 import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
-import { AffixInput, inputClassName, TextInput } from '@/components/form/TextInput'
+import { EnsInput, inputClassName, TextInput } from '@/components/form/TextInput'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { networkSchema } from '@/contracts/common'
@@ -12,25 +12,33 @@ import { t } from '@/i18n'
 import { announce } from '@/lib/announce'
 import { cn } from '@/lib/utils'
 import { applyApiErrors, useZodForm } from '@/lib/zod-form'
-import { toFormValues, toWalletInput, walletFormSchema } from '../form'
+import { toFormValues, toWalletInput, type WalletFormValues, walletFormSchema } from '../form'
 import { useSaveWallet } from '../queries'
 
 interface WalletFormProps {
   userId: string
   walletRole: WalletRole
   wallet: Wallet | undefined
-  /** Secondary form only: lets the user copy the primary wallet ("Igual à carteira principal"). */
-  primary?: Wallet | undefined
   defaultEmail: string
   onDone: () => void
+  /** Prefill (e.g. "Igual à carteira principal"); defaults to the wallet's own values. */
+  initialValues?: WalletFormValues
+  /** Reports the draft while typing (the secondary can copy an unsaved primary). */
+  onValuesChange?: (values: WalletFormValues) => void
 }
 
-export function WalletForm({ userId, walletRole: role, wallet, primary, defaultEmail, onDone }: WalletFormProps) {
+export function WalletForm({ userId, walletRole: role, wallet, defaultEmail, onDone, initialValues, onValuesChange }: WalletFormProps) {
   const { fields } = t.wallets
   const [formError, setFormError] = useState<string | null>(null)
-  const form = useZodForm(walletFormSchema, { defaultValues: toFormValues(wallet, defaultEmail) })
+  const form = useZodForm(walletFormSchema, { defaultValues: initialValues ?? toFormValues(wallet, defaultEmail) })
   const save = useSaveWallet(userId)
   const { errors } = form.formState
+  useEffect(() => {
+    if (!onValuesChange) return
+    onValuesChange(form.getValues())
+    const subscription = form.watch((values) => onValuesChange({ ...form.getValues(), ...values }))
+    return () => subscription.unsubscribe()
+  }, [form, onValuesChange])
 
   const submit = form.handleSubmit((values) => {
     setFormError(null)
@@ -49,16 +57,6 @@ export function WalletForm({ userId, walletRole: role, wallet, primary, defaultE
 
   return (
     <form noValidate onSubmit={submit} className="mt-6 flex flex-col gap-6">
-      {primary && (
-        <label className="flex items-center gap-2 self-end text-sm">
-          <input
-            type="checkbox"
-            className="size-4 accent-primary"
-            onChange={(event) => event.target.checked && form.reset({ ...toFormValues(primary), alias: '' }, { keepDefaultValues: true })}
-          />
-          {t.wallets.sameAsPrimary}
-        </label>
-      )}
       <div className="grid gap-x-7 gap-y-6 md:grid-cols-2">
         <FormField label={fields.displayName} required error={errors.displayName?.message}>
           <TextInput autoComplete="name" {...form.register('displayName')} />
@@ -91,14 +89,14 @@ export function WalletForm({ userId, walletRole: role, wallet, primary, defaultE
             options={walletTypeSchema.options.map((value) => ({ value, label: t.walletTypes[value] }))}
           />
         </FormField>
-        <FormField label={fields.referralCode} error={errors.referralCode?.message}>
+        <FormField label={fields.referralCode} required error={errors.referralCode?.message}>
           <TextInput {...form.register('referralCode')} />
         </FormField>
         <FormField label={fields.email} required error={errors.email?.message}>
           <TextInput type="email" autoComplete="email" {...form.register('email')} />
         </FormField>
-        <FormField label={fields.ensName} error={errors.ensLabel?.message}>
-          <AffixInput affix={fields.ensSuffix} {...form.register('ensLabel')} />
+        <FormField label={fields.ensName} required error={errors.ensLabel?.message}>
+          <EnsInput suffix={fields.ensSuffix} suffixLabel={t.wallets.fields.ensDomain} {...form.register('ensLabel')} />
         </FormField>
       </div>
       <FormError message={formError} />
@@ -106,7 +104,12 @@ export function WalletForm({ userId, walletRole: role, wallet, primary, defaultE
         <Button type="submit" disabled={save.isPending} className="h-10 rounded-[3px] px-3 font-bold">
           {save.isPending ? t.form.saving : t.wallets.save}
         </Button>
-        <Button type="button" variant="link" onClick={onDone} className="text-text-accent">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onDone}
+          className="h-10 rounded-[3px] border-primary bg-transparent px-3 font-bold text-text-accent hover:bg-surface-raised"
+        >
           {t.wallets.cancel}
         </Button>
       </div>
@@ -131,7 +134,7 @@ function SelectControl({ control, name, placeholder, options, ...a11y }: SelectC
       name={name}
       render={({ field }) => (
         <Select value={field.value} onValueChange={field.onChange}>
-          <SelectTrigger {...a11y} onBlur={field.onBlur} className={cn(inputClassName, 'justify-between')}>
+          <SelectTrigger size="field" {...a11y} onBlur={field.onBlur} className={cn(inputClassName, 'justify-between')}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>

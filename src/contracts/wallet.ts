@@ -12,7 +12,9 @@ export type WalletRole = z.infer<typeof walletRoleSchema>
 export const walletAddressSchema = z
   .string()
   .trim()
-  .regex(/^0x[a-fA-F0-9]{40}$/, 'Endereço 0x inválido (40 caracteres hex)')
+  // Ethereum address = "0x" + 40 hex characters. The prefix is optional when typing; it is always stored.
+  .regex(/^(0x)?[a-fA-F0-9]{40}$/, 'Endereço inválido: use 40 caracteres hexadecimais (0–9, a–f), com ou sem 0x')
+  .transform((address) => (address.startsWith('0x') ? address : `0x${address}`))
 
 export const walletInputSchema = z.object({
   role: walletRoleSchema,

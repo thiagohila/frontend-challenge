@@ -7,7 +7,8 @@ export const usernameSchema = z
   .trim()
   .min(3, 'Mínimo de 3 caracteres')
   .max(24, 'Máximo de 24 caracteres')
-  .regex(/^[a-z0-9_.]+$/i, 'Use letras, números, ponto ou _')
+  // A plain name (it is also the display name at sign-up): any letter, accents included, digits and spaces.
+  .regex(/^[\p{L}\p{N} ._-]+$/u, 'Use letras, números, espaço, ponto, hífen ou _')
 export const passwordSchema = z
   .string()
   .min(8, 'Mínimo de 8 caracteres')

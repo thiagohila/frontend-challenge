@@ -131,6 +131,7 @@ export const en = {
       email: 'Email',
       ensName: 'ENS name',
       ensSuffix: '.eth',
+      ensDomain: 'ENS domain',
     },
   },
   catalog: {
@@ -479,7 +480,8 @@ export const en = {
     'Sem conexão com o servidor.': 'No connection to the server.',
     'As senhas não coincidem': "Passwords don't match",
     'E-mail inválido': 'Invalid email',
-    'Endereço 0x inválido (40 caracteres hex)': 'Invalid 0x address (40 hex characters)',
+    'Endereço inválido: use 40 caracteres hexadecimais (0–9, a–f), com ou sem 0x':
+      'Invalid address: use 40 hexadecimal characters (0–9, a–f), with or without 0x',
     'Formato de imagem não suportado': 'Unsupported image format',
     'Imagem acima de 200 KB': 'Image larger than 200 KB',
     'Inclua ao menos um número': 'Include at least one number',
@@ -487,6 +489,7 @@ export const en = {
     'Informe a senha atual': 'Enter your current password',
     'Informe a senha': 'Enter your password',
     'Informe o código': 'Enter the code',
+    'Informe o código de indicação': 'Enter the referral code',
     'Máximo de 20 caracteres': 'Maximum 20 characters',
     'Máximo de 24 caracteres': 'Maximum 24 characters',
     'Máximo de 30 caracteres': 'Maximum 30 characters',
@@ -501,6 +504,6 @@ export const en = {
     'Selecione uma rede': 'Select a network',
     'Senha inválida': 'Invalid password',
     'Use 3 a 40 letras, números ou hífen': 'Use 3 to 40 letters, numbers or hyphens',
-    'Use letras, números, ponto ou _': 'Use letters, numbers, dots or _',
+    'Use letras, números, espaço, ponto, hífen ou _': 'Use letters, numbers, spaces, dots, hyphens or _',
   },
 } satisfies Dictionary & { messages: Readonly<Record<string, string>> }

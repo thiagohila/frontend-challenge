@@ -16,13 +16,13 @@ export const walletFormSchema = z.object({
   address: walletAddressSchema,
   secondaryRef: z.string().trim().max(60, 'Máximo de 60 caracteres'),
   walletType: z.string().pipe(z.enum(walletTypeSchema.options, { error: 'Selecione uma carteira' })),
-  // Marked required in the Figma, but a referral code is optional by nature (ARCHITECTURE §15).
-  referralCode: z.string().trim().max(20, 'Máximo de 20 caracteres'),
+  // Required in the Figma (both fields carry "*").
+  referralCode: z.string().trim().min(1, 'Informe o código de indicação').max(20, 'Máximo de 20 caracteres'),
   email: emailSchema,
   ensLabel: z
     .string()
     .trim()
-    .regex(/^([a-z0-9-]{3,40})?$/i, 'Use 3 a 40 letras, números ou hífen'),
+    .regex(/^[a-z0-9-]{3,40}$/i, 'Use 3 a 40 letras, números ou hífen'),
 })
 export type WalletFormValues = z.input<typeof walletFormSchema>
 

@@ -13,7 +13,8 @@ export const profileFormSchema = z
     ensLabel: z
       .string()
       .trim()
-      .regex(/^([a-z0-9-]{3,40})?$/i, 'Use 3 a 40 letras, números ou hífen'),
+      // Required in the Figma ("Nome ENS*").
+      .regex(/^[a-z0-9-]{3,40}$/i, 'Use 3 a 40 letras, números ou hífen'),
     walletAlias: z.string().trim().min(2, 'Mínimo de 2 caracteres').max(30, 'Máximo de 30 caracteres'),
     currentPassword: optional,
     newPassword: optional,

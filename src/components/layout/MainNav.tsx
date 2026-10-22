@@ -9,7 +9,7 @@ import { ComingSoon } from './ComingSoon'
  * Which top-level section the user is in: market-flow screens are "Mercado"; on "/" it follows the
  * scroll (the catalog section reaching the upper part of the viewport makes "Mercado" current).
  */
-function useActiveSection(): NavSection {
+function useActiveSection(): NavSection | null {
   const { pathname } = useLocation()
   const [onCatalog, setOnCatalog] = useState(false)
   const onHome = pathname === '/'
@@ -35,7 +35,9 @@ function useActiveSection(): NavSection {
   }, [onHome])
 
   if (isMarketPath(pathname)) return 'market'
-  return onHome && onCatalog ? 'market' : 'home'
+  // Account, favorites, auth…: not a section of the main navigation, so nothing is current there.
+  if (!onHome) return null
+  return onCatalog ? 'market' : 'home'
 }
 
 // Figma: 21 px label + 24 px gap; the sliding underline sits at the bottom of the 45 px row (on the divider).
@@ -50,6 +52,7 @@ export function MainNav() {
   const [marker, setMarker] = useState<{ left: number; width: number } | null>(null)
 
   useLayoutEffect(() => {
+    if (!active) return
     const place = () => {
       const link = links.current[active]
       if (link) setMarker({ left: link.offsetLeft, width: link.offsetWidth })
@@ -90,7 +93,7 @@ export function MainNav() {
         <li>
           <ComingSoon className="text-foreground">{t.nav.learn}</ComingSoon>
         </li>
-        {marker && (
+        {active && marker && (
           <li
             aria-hidden
             className="pointer-events-none absolute bottom-0 h-[3px] bg-primary transition-[left,width] duration-300 ease-out motion-reduce:transition-none"

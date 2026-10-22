@@ -1,7 +1,7 @@
-import { ImageIcon } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { t } from '@/i18n'
+import { iconSrc } from '@/lib/assets'
 import { announce } from '@/lib/announce'
 import { isApiError } from '@/lib/api-error'
 import { AVATAR_TYPES, checkAvatar, toAvatarDataUrl } from '@/lib/image'
@@ -51,10 +51,11 @@ export function AvatarField({ userId, avatarUrl }: { userId: string; avatarUrl: 
         ) : (
           <span
             aria-hidden
-            className="grid size-[50px] place-items-center rounded-full border border-border bg-surface-raised text-brand-secondary"
+            className="grid size-[50px] place-items-center rounded-full border border-border bg-surface-raised"
             data-testid="avatar-placeholder"
           >
-            <ImageIcon className="size-5" />
+            {/* Figma 9:1560 (Iconly "Image 2"), 24 px. */}
+            <img src={iconSrc('icon-image')} alt="" width={24} height={24} />
           </span>
         )}
         <input

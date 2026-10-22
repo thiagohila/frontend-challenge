@@ -65,12 +65,12 @@ export function LoginForm({ defaultEmail = '', intent, onSuccess, compact }: Log
       <Button
         type="submit"
         disabled={login.isPending}
-        className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md"
+        className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:mt-3 lg:h-[45px] lg:rounded-[5px]"
       >
         {login.isPending ? t.auth.submitting : t.auth.submitSignIn}
       </Button>
       {!compact && (
-        <div className="mt-8">
+        <div className="mt-8 lg:mt-3">
           <SocialSignIn />
         </div>
       )}

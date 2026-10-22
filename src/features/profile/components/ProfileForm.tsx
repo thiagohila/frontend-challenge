@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
-import { AffixInput, PasswordInput, TextInput } from '@/components/form/TextInput'
+import { EnsInput, PasswordInput, TextInput } from '@/components/form/TextInput'
 import { Button } from '@/components/ui/button'
 import type { Profile } from '@/contracts/profile'
 import { t } from '@/i18n'
@@ -53,8 +53,8 @@ export function ProfileForm({ userId, profile }: { userId: string; profile: Prof
           <FormField label={t.profile.email} required error={errors.email?.message}>
             <TextInput type="email" autoComplete="email" {...form.register('email')} />
           </FormField>
-          <FormField label={t.profile.ensName} error={errors.ensLabel?.message}>
-            <AffixInput affix={t.wallets.fields.ensSuffix} {...form.register('ensLabel')} />
+          <FormField label={t.profile.ensName} required error={errors.ensLabel?.message}>
+            <EnsInput suffix={t.wallets.fields.ensSuffix} suffixLabel={t.wallets.fields.ensDomain} {...form.register('ensLabel')} />
           </FormField>
           <FormField label={t.profile.walletAlias} required error={errors.walletAlias?.message}>
             <TextInput {...form.register('walletAlias')} />

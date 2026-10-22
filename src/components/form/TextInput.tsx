@@ -1,5 +1,6 @@
 import { type ComponentProps, forwardRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
 
@@ -10,16 +11,28 @@ export const TextInput = forwardRef<HTMLInputElement, ComponentProps<'input'>>(f
   return <input ref={ref} className={cn(inputClassName, className)} {...props} />
 })
 
-/** Input with a static leading affix (e.g. ".eth"); id/aria props land on the <input>. */
-export const AffixInput = forwardRef<HTMLInputElement, ComponentProps<'input'> & { affix: string }>(function AffixInput(
-  { affix, className, ...props },
+/**
+ * ENS name: suffix select (Figma: ".eth" select, 78 px; only one TLD exists, so it can't change) +
+ * the name input. id/aria props land on the <input>; the select names itself for assistive tech.
+ */
+export const EnsInput = forwardRef<HTMLInputElement, ComponentProps<'input'> & { suffix: string; suffixLabel: string }>(function EnsInput(
+  { suffix, suffixLabel, className, ...props },
   ref,
 ) {
   return (
     <div className="flex gap-2.5">
-      <span aria-hidden className={cn(inputClassName, 'flex w-[78px] shrink-0 items-center')}>
-        {affix}
-      </span>
+      <Select value={suffix}>
+        <SelectTrigger
+          size="field"
+          aria-label={suffixLabel}
+          className={cn(inputClassName, 'w-[88px] shrink-0 justify-between gap-1 pr-2 pl-2.5 text-sm')}
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={suffix}>{suffix}</SelectItem>
+        </SelectContent>
+      </Select>
       <input ref={ref} className={cn(inputClassName, className)} {...props} />
     </div>
   )

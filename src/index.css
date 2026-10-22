@@ -29,6 +29,7 @@
   --color-amber: var(--amber);
   --container-page: 75rem; /* 1200px content width */
   --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-heart-burst: heart-burst 700ms ease-out forwards;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -120,6 +121,22 @@
   --sidebar-accent-foreground: var(--text-accent);
   --sidebar-border: #3f2319;
   --sidebar-ring: var(--text-accent);
+}
+
+/* Favorite feedback over the card art: pops in, then fades away. */
+@keyframes heart-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  30% {
+    opacity: 0.95;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
 }
 
 @keyframes shimmer {

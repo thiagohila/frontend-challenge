@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { Heart, Search, ShoppingCart } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { NftSummary } from '@/contracts/nft'
@@ -25,6 +26,12 @@ const actionClass =
  */
 export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priority }: NftCardProps) {
   const name = nftDisplayName(nft)
+  // Bumped only when the user favorites (not on data refresh): restarts the burst animation via `key`.
+  const [burst, setBurst] = useState(0)
+  const toggleFavorite = () => {
+    if (!isFavorite) setBurst((count) => count + 1)
+    onToggleFavorite(nft)
+  }
   return (
     <article className="group relative flex flex-col gap-3" aria-labelledby={`nft-${nft.id}`}>
       <div className="relative border-t border-transparent bg-card pt-6 pb-1 transition-[border-color] group-focus-within:border-primary group-hover:border-primary">
@@ -37,13 +44,28 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
         {nft.soldOut && (
           <span className="absolute top-2 right-2 rounded bg-ink/80 px-2 py-1 text-xs font-bold text-foreground">{t.catalog.soldOut}</span>
         )}
-        {/* Mobile (Figma): favorite at the top-right of the art. */}
-        <FavoriteButton
-          name={name}
-          active={isFavorite}
-          onClick={() => onToggleFavorite(nft)}
-          className="absolute top-8 right-3 z-10 lg:hidden"
-        />
+        {burst > 0 && (
+          // Decorative feedback (the live region announces the change); no motion → no burst.
+          <span
+            key={burst}
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-6 bottom-1 grid place-items-center motion-reduce:hidden"
+          >
+            <Heart className="size-20 animate-heart-burst fill-primary text-primary opacity-0 drop-shadow-lg" />
+          </span>
+        )}
+        {/* Mobile: the favorite toggle sits at the bottom-right corner of the art. */}
+        <FavoriteButton name={name} active={isFavorite} onClick={toggleFavorite} className="absolute right-3 bottom-3 z-10 lg:hidden" />
+        {/* Desktop: a favorited NFT keeps a heart at the bottom-right corner of the art (hidden while the hover actions show). */}
+        {isFavorite && (
+          <span
+            aria-hidden
+            className="absolute right-3 bottom-3 z-10 hidden size-[35px] place-items-center rounded bg-ink/70 transition-opacity group-focus-within:opacity-0 group-hover:opacity-0 lg:grid"
+            data-testid="favorite-indicator"
+          >
+            <Heart className="size-4 fill-primary text-primary" />
+          </span>
+        )}
         {/* Desktop (Figma hover): cart, favorite, view — also revealed on keyboard focus. */}
         <div className="absolute inset-x-0 bottom-3 z-10 hidden justify-center gap-2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 lg:flex">
           {onQuickAdd && !nft.soldOut && (
@@ -51,7 +73,7 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
               <ShoppingCart aria-hidden className="size-4" />
             </button>
           )}
-          <FavoriteButton name={name} active={isFavorite} onClick={() => onToggleFavorite(nft)} />
+          <FavoriteButton name={name} active={isFavorite} onClick={toggleFavorite} />
           <Link to="/nft/$nftId" params={{ nftId: nft.id }} className={actionClass} aria-label={t.catalog.view(name)} tabIndex={-1}>
             <Search aria-hidden className="size-4" />
           </Link>

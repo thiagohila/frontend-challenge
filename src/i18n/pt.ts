@@ -153,6 +153,7 @@ export const pt = {
       email: 'E-mail',
       ensName: 'Nome ENS',
       ensSuffix: '.eth',
+      ensDomain: 'Domínio ENS',
     },
   },
   catalog: {

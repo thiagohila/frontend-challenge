@@ -83,6 +83,7 @@ export function SavedWalletPicker({ form, wallets }: SavedWalletPickerProps) {
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger
+                size="field"
                 aria-labelledby="checkout-network-label"
                 aria-invalid={Boolean(errors.network)}
                 className={cn(inputClassName, 'justify-between')}

@@ -2,8 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { WalletRole } from '@/contracts/wallet'
-import { WalletSection } from '@/features/wallets/components/WalletSection'
+import { WalletsManager } from '@/features/wallets/components/WalletsManager'
 import { walletsQuery } from '@/features/wallets/queries'
 import { t } from '@/i18n'
 import { useSessionUser } from '@/lib/session/store'
@@ -17,8 +16,6 @@ function WalletsPage() {
   const user = useSessionUser()
   const wallets = useQuery({ ...walletsQuery(user?.id ?? ''), enabled: Boolean(user) })
   if (!user) return null
-
-  const byRole = (role: WalletRole) => wallets.data?.find((wallet) => wallet.role === role)
 
   return (
     <div>
@@ -36,16 +33,7 @@ function WalletsPage() {
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col gap-10">
-          <WalletSection userId={user.id} email={user.email} walletRole="primary" wallet={byRole('primary')} />
-          <WalletSection
-            userId={user.id}
-            email={user.email}
-            walletRole="secondary"
-            wallet={byRole('secondary')}
-            primary={byRole('primary')}
-          />
-        </div>
+        <WalletsManager userId={user.id} email={user.email} wallets={wallets.data} />
       )}
     </div>
   )

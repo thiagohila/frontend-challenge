@@ -8,6 +8,24 @@ const PNG = Buffer.from(
 )
 
 test.describe('T8 — wallets', () => {
+  test('"Igual à carteira principal" sits on the secondary header: shown with a primary (or while filling one in) and copies it, alias excluded', async ({
+    page,
+    loginAs,
+  }) => {
+    await page.goto('/account/wallets')
+    await loginAs('bruno') // primary only
+    const secondary = page.getByRole('region', { name: 'Carteira secundária' })
+    const same = secondary.getByRole('checkbox', { name: 'Igual à carteira principal' })
+    await same.check()
+    await expect(secondary.getByRole('textbox', { name: 'Nome de exibição' })).toHaveValue('Bruno Lima')
+    await expect(secondary.getByRole('textbox', { name: 'Nome do perfil' })).toHaveValue('bruno.nft')
+    await expect(secondary.getByRole('textbox', { name: 'Apelido da carteira' })).toHaveValue('') // names this wallet: not copied
+    await same.uncheck()
+    await expect(secondary.getByRole('textbox', { name: 'Nome de exibição' })).toHaveValue('')
+    await secondary.getByRole('button', { name: 'Cancelar' }).click()
+    await expect(secondary.getByRole('button', { name: 'Salvar carteira' })).toHaveCount(0)
+  })
+
   test('edits the primary and the secondary wallet; both changes persist after reload', async ({ page, loginAs }) => {
     await page.goto('/account/wallets')
     await loginAs('ana')
@@ -35,7 +53,7 @@ test.describe('T8 — wallets', () => {
     await secondary.getByRole('button', { name: 'Salvar carteira' }).click()
     // Errors are exposed the way assistive tech reads them: the field's accessible description.
     await expect(secondary.getByRole('combobox', { name: 'Rede' })).toHaveAccessibleDescription(/Selecione uma rede/)
-    await expect(secondary.getByRole('textbox', { name: 'Endereço da carteira' })).toHaveAccessibleDescription(/Endereço 0x inválido/)
+    await expect(secondary.getByRole('textbox', { name: 'Endereço da carteira' })).toHaveAccessibleDescription(/Endereço inválido/)
 
     await secondary.getByRole('textbox', { name: 'Nome de exibição' }).fill('Bruno Lima')
     await secondary.getByRole('textbox', { name: 'Apelido da carteira' }).fill('Cofre frio')
@@ -45,6 +63,8 @@ test.describe('T8 — wallets', () => {
     await secondary.getByRole('textbox', { name: 'Endereço da carteira' }).fill('0x1234')
     await secondary.getByRole('combobox', { name: 'Tipo de carteira' }).click()
     await page.getByRole('option', { name: 'Coinbase Wallet' }).click()
+    await secondary.getByRole('textbox', { name: 'Código de indicação' }).fill('KURIO-BRUNO') // required (Figma "*")
+    await secondary.getByRole('textbox', { name: 'Nome ENS' }).fill('bruno-cofre')
     await secondary.getByRole('button', { name: 'Salvar carteira' }).click()
     await expect(secondary.getByRole('textbox', { name: 'Endereço da carteira' })).toHaveAttribute('aria-invalid', 'true')
 
@@ -69,6 +89,8 @@ test.describe('T8 — wallets', () => {
     await primary.getByRole('textbox', { name: 'Endereço da carteira' }).fill('0xC0ffee254729296a45a3885639AC7E10F9d54979')
     await primary.getByRole('combobox', { name: 'Tipo de carteira' }).click()
     await page.getByRole('option', { name: 'MetaMask' }).click()
+    await primary.getByRole('textbox', { name: 'Código de indicação' }).fill('KURIO-CAROL')
+    await primary.getByRole('textbox', { name: 'Nome ENS' }).fill('carol')
     await primary.getByRole('button', { name: 'Salvar carteira' }).click()
     await expect(primary.getByRole('alert')).toContainText('não tem permissão')
   })

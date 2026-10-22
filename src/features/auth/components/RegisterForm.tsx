@@ -66,11 +66,11 @@ export function RegisterForm({ intent, onSuccess }: { intent?: Intent | undefine
       <Button
         type="submit"
         disabled={register.isPending}
-        className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md"
+        className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:mt-3 lg:h-[45px] lg:rounded-[5px]"
       >
         {register.isPending ? t.auth.submitting : isDesktop ? t.auth.submitSignUp : t.auth.submitSignUpMobile}
       </Button>
-      <div className="mt-8">
+      <div className="mt-8 lg:mt-3">
         <SocialSignIn />
       </div>
     </form>
