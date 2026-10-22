@@ -53,7 +53,44 @@ test.describe('T9 — price/stock changes via Socket.IO during checkout (RT7, P4
   })
 })
 
+test.describe('P4 — revalidation of fees and stock at confirmation', () => {
+  test('a network fee change makes the quote stale: new values shown, confirmation required again', async ({ page, loginAs, mock }) => {
+    await openReview(page, loginAs, mock)
+    await mock.setNetworkFee('ethereum', '0.020')
+    await review(page).getByRole('button', { name: 'Enviar pedido' }).click()
+    await expect(page.getByTestId('stale-quote')).toBeVisible()
+    await expect(page.getByTestId('checkout-total')).toHaveText('1.21 ETH') // 1.19 + 0.020
+    expect(await orders(mock)).toHaveLength(0)
+  })
+
+  test.describe('the edition sells out at confirmation', () => {
+    test.use({ scenario: 'sold-out-checkout' })
+    test('no order is created and the buyer is told why', async ({ page, loginAs, mock }) => {
+      await openReview(page, loginAs, mock)
+      await review(page).getByRole('button', { name: 'Enviar pedido' }).click()
+      await expect(page.getByText('Esgotado: Emerald Ape #042. O item saiu do seu carrinho.').first()).toBeVisible()
+      await expect(page.getByTestId('quote-error')).not.toContainText('Não foi possível calcular') // definitive, not "retry"
+      expect(await orders(mock)).toHaveLength(0)
+    })
+  })
+})
+
 test.describe('T10 — pending order: reloads, disconnections, duplicate/stale events (RT8, RT3, RT5)', () => {
+  test('order.updated over the live socket confirms the pending order and announces it (RT2)', async ({ page, loginAs, mock }) => {
+    await openReview(page, loginAs, mock)
+    await mock.setOrderResolution(60_000)
+    await review(page).getByRole('button', { name: 'Enviar pedido' }).click()
+    await expect(page.getByTestId('order-pending')).toBeVisible()
+    const [order] = await orders(mock)
+    if (!order) throw new Error('order not created')
+    await expect.poll(() => mock.socketConnections()).toBeGreaterThan(0)
+
+    await mock.resolveOrder(order.id, 'confirmed')
+    await expect(page.getByTestId('order-confirmed')).toBeVisible()
+    // Only the socket path announces (the polling fallback just refetches): proves the event was applied.
+    await expect(page.getByTestId('live-region')).toContainText('Pagamento confirmado.')
+  })
+
   test('pending survives a reload and a dropped connection, resolves once, and old/foreign events never regress it', async ({
     page,
     loginAs,

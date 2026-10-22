@@ -1,3 +1,4 @@
+import type { Network } from '@/contracts/common'
 import type { RealtimeEvent } from '@/contracts/events'
 import { runtime } from './runtime'
 import { type FailureResponse, type ScenarioName, scenarios } from './scenarios'
@@ -19,15 +20,21 @@ export const mockControl = {
   get scenario() {
     return runtime.scenarioName
   },
-  async reset(scenario?: ScenarioName) {
-    if (scenario) runtime.setScenario(scenario)
-    else runtime.clearFailures()
+  /**
+   * Restores a known state: the scenario's seed and fresh conditions (no latency override, failures,
+   * consumed one-shot flags or order-resolution override). Sockets are dropped so clients reconnect
+   * and reconcile with REST. Without an argument the current scenario is kept.
+   */
+  async reset(scenario: ScenarioName = runtime.scenarioName) {
+    runtime.setScenario(scenario)
     await db.reset()
+    realtimeControl.dropConnections()
   },
   /** Switching scenario restores its seed (e.g. `empty` has no catalog). */
   async setScenario(name: ScenarioName) {
     runtime.setScenario(name)
     await db.reset()
+    realtimeControl.dropConnections()
   },
   fail(path: string, response: FailureResponse, options: { method?: string; times?: number } = {}) {
     runtime.addFailure({
@@ -40,6 +47,11 @@ export const mockControl = {
   clearFailures: () => runtime.clearFailures(),
   setLatency: (latency: number | readonly [number, number] | null) => runtime.setLatency(latency),
   updateNft: (id: string, patch: NftPatch) => updateNft(ctx, id, patch),
+  /** Changes a network fee: open quotes become stale and checkout requires a new confirmation (P4). */
+  setNetworkFee: (network: Network, feeEth: string) =>
+    db.write((state) => {
+      state.networkFees = { ...state.networkFees, [network]: feeEth }
+    }),
   /** Sends an event as-is (duplicates / stale versions for T10). */
   emitRaw: (event: RealtimeEvent) => bus.publish(event),
   /** Closes every socket transport; clients reconnect and reconcile with REST. */

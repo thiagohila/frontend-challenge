@@ -75,7 +75,9 @@ O MSW intercepta `/api/*` (service worker) e o WebSocket do Socket.IO (no navega
 
 ### Cenários
 
-Selecione com `?scenario=<nome>` na URL, por exemplo https://kurio-gold.vercel.app/?scenario=slow. A escolha fica na aba até ser trocada.
+Selecione com `?scenario=<nome>` na URL, por exemplo https://kurio-gold.vercel.app/?scenario=slow. Trocar de cenário pela URL **restaura o seed daquele cenário** (ex.: `empty` zera o catálogo), e a escolha fica na aba até ser trocada.
+
+**Reset:** `?scenario=default` volta ao padrão com o seed original; no console, `await __mock.reset()` restaura o seed do cenário atual e `await __mock.reset('default')` volta ao padrão. O reset também limpa latência forçada, falhas injetadas, gatilhos únicos já consumidos (ex.: a corrida de preço de `price-change-checkout`) e a resolução de pedidos forçada, e derruba os sockets para o app reconectar e reconciliar com o REST.
 
 | Cenário                 | O que simula                                                                         |
 | ----------------------- | ------------------------------------------------------------------------------------ |
@@ -102,11 +104,12 @@ Selecione com `?scenario=<nome>` na URL, por exemplo https://kurio-gold.vercel.a
 `window.__mock` age **no servidor simulado**; as mudanças chegam ao app por REST e por eventos Socket.IO, nunca por estado do app.
 
 ```js
-await __mock.reset() // restaura o seed (e limpa falhas injetadas)
+await __mock.reset() // seed + condições do cenário atual; reset('default') volta ao padrão
 await __mock.setScenario('payment-declined')
-__mock.fail('/nfts', { status: 503 }, { times: 3 }) // falha pontual; clearFailures() remove
+__mock.fail('/nfts', { status: 503 }, { times: 3 }) // falha pontual com o código do status; clearFailures() remove
 __mock.setLatency([100, 2000])
 await __mock.updateNft('emerald-ape-042', { priceEth: '2.50' }) // REST + evento nft.updated
+await __mock.setNetworkFee('ethereum', '0.020') // cotação aberta fica desatualizada → nova confirmação
 __mock.dropConnection() // derruba o socket (reconexão + reconciliação)
 __mock.setOrderResolution(60000) // mantém novos pedidos pendentes por 60 s
 await __mock.resolveOrder('<orderId>', 'confirmed')
@@ -125,6 +128,7 @@ await __mock.snapshot() // estado do servidor (leitura)
 | Sessão expirada no meio do fluxo     | entre, comece a editar uma carteira ou o checkout, rode `__mock.expireSession()` e salve: o diálogo de reautenticação preserva a tela e o formulário                                                   |
 | Cupom inválido/expirado              | carrinho → `XYZ` (inválido) / `GENESIS20` (expirado) / `KURIO10` (válido)                                                                                                                              |
 | Preço muda durante a compra          | no checkout com a revisão aberta: `__mock.updateNft('emerald-ape-042', { priceEth: '1.50' })` → a revisão exige nova confirmação. Ou `/?scenario=price-change-checkout`                                |
+| Taxa ou estoque mudam na compra      | revisão aberta: `__mock.setNetworkFee('ethereum', '0.020')` → nova confirmação; `/?scenario=sold-out-checkout` → nenhum pedido, aviso "Esgotado: …"                                                    |
 | Pagamento recusado                   | `/?scenario=payment-declined` → recusa, itens continuam no carrinho                                                                                                                                    |
 | Clique repetido / timeout            | `/?scenario=order-timeout` → um único pedido é criado e recuperado pela mesma Idempotency-Key                                                                                                          |
 | Carteira recusa / desconecta         | `/?scenario=wallet-rejected` / `/?scenario=wallet-disconnect`                                                                                                                                          |
@@ -134,7 +138,7 @@ await __mock.snapshot() // estado do servidor (leitura)
 ## Testes
 
 - **Unitários** (`tests/unit`, Node): dinheiro em decimal, contrato do servidor simulado (idempotência, cotação desatualizada, isolamento entre usuários, merge de carrinho), portão de eventos realtime (dedupe/versão/usuário).
-- **E2E** (`e2e/`): os 12 cenários do enunciado §9 (T1–T12), contrato REST via service worker, axe (WCAG 2.1 AA) e ausência de overflow horizontal (390/768/1440; 320 px ≈ zoom 400%), em desktop e mobile, com estado isolado por teste.
+- **E2E** (`e2e/`): os 12 cenários do enunciado §9 (T1–T12), contrato REST via service worker, axe (WCAG 2.1 AA) e ausência de overflow horizontal (390/768/1440 e 320 px ≈ zoom 400%, em `layout.spec`), em desktop e mobile, com estado isolado por teste.
 - **Visual** (`e2e/visual.spec.ts`): início, detalhe, carrinho e pagamento × desktop/mobile, baselines Linux versionadas.
 
 Mapa completo de specs e requisitos: `ARCHITECTURE.md` §12 e `docs/REQUIREMENTS.md`.

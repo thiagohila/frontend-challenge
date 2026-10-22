@@ -7,7 +7,7 @@ Páginas **Início** (`/`) e **Detalhe do NFT** (`/nft/emerald-ape-042`), perfis
 ```bash
 npm run build && npm run lighthouse                                   # contra o preview local (sobe e derruba sozinho)
 BASE_URL=https://kurio-gold.vercel.app npm run lighthouse             # contra a produção (usado abaixo)
-LH_RUNS=3 LH_DETAIL_PATH=/nft/emerald-ape-042 npm run lighthouse      # parâmetros (padrões: 3 e /nft/1)
+LH_RUNS=3 LH_DETAIL_PATH=/nft/emerald-ape-042 npm run lighthouse      # parâmetros (padrões: 3 e /nft/emerald-ape-042)
 ```
 
 Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.mjs). Mobile usa a configuração padrão do Lighthouse; desktop usa `lighthouse/core/config/desktop-config.js`. Saída: `<página>-<perfil>-<n>.html|json` e `summary.json` (medianas + ambiente).

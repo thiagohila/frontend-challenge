@@ -116,4 +116,17 @@ test.describe('T3 — account and session', () => {
     await expect(page.getByText('Sage Nomad #009')).toHaveCount(0) // Ana's favorite
     await expect.poll(() => mock.socketConnections()).toBe(1)
   })
+
+  test('a stored session revoked on the server is detected on boot (GET /auth/session) and re-authenticates in place', async ({
+    page,
+    loginAs,
+    mock,
+  }) => {
+    await page.goto('/account/wallets')
+    await loginAs('ana')
+    await expect(page.getByTestId('wallet-primary')).toBeVisible()
+    await mock.expireSession()
+    await page.reload()
+    await expect(page.getByRole('dialog', { name: 'Sua sessão expirou' })).toBeVisible()
+  })
 })

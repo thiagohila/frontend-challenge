@@ -1,3 +1,4 @@
+import { useRouter } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { useCartOwner } from '@/features/cart/queries'
 import { t } from '@/i18n'
@@ -20,6 +21,7 @@ export function RealtimeBridge() {
   const state = useSession()
   const owner = useCartOwner()
   const status = useRealtimeStatus()
+  const router = useRouter()
   const token = state.status === 'authenticated' ? state.token : null
   const userId = state.status === 'authenticated' ? state.user.id : null
   const ownerKey = owner ? `${owner.kind}:${owner.id}` : null
@@ -36,10 +38,12 @@ export function RealtimeBridge() {
     () =>
       onRealtimeApplied((result) => {
         if (result.kind === 'nft' && result.inCart) announce(t.realtime.cartUpdated)
+        // On the NFT's own page the change is announced too (the price/stock shown just changed).
+        else if (result.kind === 'nft' && router.state.location.pathname === `/nft/${result.nftId}`) announce(t.realtime.nftUpdated)
         if (result.kind === 'order') announce(result.status === 'confirmed' ? t.realtime.orderConfirmed : t.realtime.orderDeclined)
         if (result.kind === 'wallet') announce(t.realtime.walletDisconnected)
       }),
-    [],
+    [router],
   )
 
   if (status !== 'reconnecting') return null

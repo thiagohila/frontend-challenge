@@ -1,5 +1,8 @@
 {
   "baseUrl": "https://kurio-gold.vercel.app",
+  "commit": "97f44e4",
+  "measuredAt": "2026-10-22",
+  "note": "commit e data anotados à mão nesta rodada; o script grava os dois automaticamente a partir de então",
   "runs": 3,
   "node": "v22.23.0",
   "os": "Darwin 25.5.0 x64",

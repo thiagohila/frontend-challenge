@@ -66,3 +66,23 @@ test.describe('offline scenario', () => {
     expect(result).toBe('network-error')
   })
 })
+
+test('reset restores the seed and fresh conditions; a ?scenario= switch reseeds the database (M4)', async ({ page, mock }) => {
+  await mock.updateNft('emerald-ape-042', { priceEth: '9.99' })
+  await mock.fail('/nfts', { status: 404 })
+  expect(await api(page, '/nfts')).toMatchObject({ status: 404, body: { error: { code: 'NOT_FOUND' } } }) // status-specific code
+  await mock.setLatency(5000)
+
+  await mock.reset()
+  const started = Date.now()
+  const detail = await api(page, '/nfts/emerald-ape-042')
+  expect(Date.now() - started).toBeLessThan(2000) // latency override cleared
+  expect(detail).toMatchObject({ status: 200, body: { priceEth: '1.19' } }) // seed restored, failure cleared
+
+  await page.goto('/?scenario=empty')
+  await waitForMockServer(page)
+  expect(await api(page, '/nfts')).toMatchObject({ status: 200, body: { total: 0 } })
+  await page.goto('/?scenario=default')
+  await waitForMockServer(page)
+  expect((await api(page, '/nfts')).body).toMatchObject({ total: 45 })
+})

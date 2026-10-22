@@ -7,6 +7,7 @@ import type { Cart } from '@/contracts/cart'
 import type { Profile } from '@/contracts/profile'
 import type { Quote } from '@/contracts/quote'
 import type { Wallet } from '@/contracts/wallet'
+import { QuoteError } from '@/features/cart/components/QuoteError'
 import { quoteQuery } from '@/features/cart/queries'
 import { t } from '@/i18n'
 import { announce } from '@/lib/announce'
@@ -156,12 +157,7 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
             <Skeleton className="h-32 w-full" />
           </div>
         ) : quote.isError ? (
-          <div role="alert" className="flex flex-col gap-3 text-sm">
-            {t.cart.summaryError}
-            <Button type="button" variant="outline" onClick={() => void quote.refetch()}>
-              {t.cart.retry}
-            </Button>
-          </div>
+          <QuoteError error={quote.error} onRetry={() => void quote.refetch()} />
         ) : (
           <OrderLines quote={quote.data} />
         )}

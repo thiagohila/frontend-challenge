@@ -31,7 +31,7 @@ const matchesText = (nft: NftRecord, q: string) => {
 
 export async function listNfts(ctx: ServerContext, query: NftListQuery): Promise<NftListResponse> {
   const state = await ctx.db.read()
-  const page = query.page ?? 1
+  const requestedPage = query.page ?? 1
   const pageSize = query.pageSize ?? DEFAULT_PAGE_SIZE
   const newSince = ctx.now() - NEW_RELEASES_DAYS * 86_400_000
 
@@ -63,6 +63,8 @@ export async function listNfts(ctx: ServerContext, query: NftListQuery): Promise
 
   const total = sorted.length
   const totalPages = Math.ceil(total / pageSize)
+  // A page past the end (stale link, hand-edited URL) answers the last page, like a real paginated API.
+  const page = Math.min(requestedPage, Math.max(totalPages, 1))
   const count = <K extends 'collection' | 'network'>(key: K, items: NftRecord[]) => {
     const counts = new Map<NftRecord[K], number>()
     for (const nft of items) counts.set(nft[key], (counts.get(nft[key]) ?? 0) + 1)

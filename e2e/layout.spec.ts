@@ -1,6 +1,6 @@
 import { addToCart, expect, test } from './fixtures'
 
-// No horizontal overflow (U10). At 390px this also covers 400% zoom of a 1280px window (WCAG 1.4.10).
+// No horizontal overflow (U10) at each project width; 400% zoom (320 px) is covered at the end of this file.
 for (const path of ['/', '/nft/emerald-ape-042', '/login', '/register', '/rota-inexistente']) {
   test(`no horizontal overflow on ${path}`, async ({ page }) => {
     await page.goto(path)
@@ -48,4 +48,20 @@ test('no horizontal overflow on the signed-in account area', async ({ page, logi
   }
   const widths = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth])
   expect(widths[0]).toBeLessThanOrEqual(widths[1] ?? 0)
+})
+
+// 320 CSS px = 1280 px window at 400% zoom (WCAG 1.4.10 reflow): content reflows, nothing is cut.
+test.describe('reflow at 320 px', () => {
+  test.use({ viewport: { width: 320, height: 720 } })
+  for (const path of ['/', '/nft/emerald-ape-042', '/cart', '/login']) {
+    test(`no horizontal overflow at 320 px on ${path}`, async ({ page }) => {
+      await page.goto(path)
+      await page.waitForLoadState('networkidle')
+      const [scrollWidth, clientWidth] = await page.evaluate(() => [
+        document.documentElement.scrollWidth,
+        document.documentElement.clientWidth,
+      ])
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth ?? 0)
+    })
+  }
 })

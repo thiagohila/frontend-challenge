@@ -1,3 +1,4 @@
+import type { ErrorCode } from '@/contracts/common'
 import { delay, http, HttpResponse, type DefaultBodyType, type PathParams } from 'msw'
 import type { z } from 'zod'
 import { env } from '@/env'
@@ -47,6 +48,21 @@ function zodFields(error: z.ZodError) {
  * Wraps every REST handler with the network simulation (latency, injected failures),
  * auth resolution and the error envelope — handlers only express business rules.
  */
+// Injected failures carry the code a real server would send for that status (ARCHITECTURE §4).
+const INJECTED: Partial<Record<number, [ErrorCode, string]>> = {
+  400: ['VALIDATION', 'Requisição inválida.'],
+  401: ['UNAUTHORIZED', 'Sessão inválida.'],
+  403: ['FORBIDDEN', 'Acesso não autorizado para esta conta.'],
+  404: ['NOT_FOUND', 'Recurso não encontrado.'],
+  409: ['CONFLICT', 'Conflito com o estado atual.'],
+  422: ['VALIDATION', 'Dados inválidos.'],
+}
+
+function injectedError(status: number) {
+  const [code, message] = INJECTED[status] ?? ['UNAVAILABLE', 'Serviço temporariamente indisponível.']
+  return new HttpError(status, code, message)
+}
+
 export function route(
   method: Method,
   path: string,
@@ -60,7 +76,7 @@ export function route(
     const failure = runtime.matchFailure(method.toUpperCase(), relativePath)
     if (failure === 'network') return HttpResponse.error()
     if (failure === 'timeout') return delay('infinite').then(() => HttpResponse.error())
-    if (failure) return errorResponse(new HttpError(failure.status, 'UNAVAILABLE', 'Serviço temporariamente indisponível.'))
+    if (failure) return errorResponse(injectedError(failure.status))
 
     const token = bearer(request)
     const context: RouteContext = {

@@ -93,7 +93,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | I8 | Recuperar falhas sem duplicar operações | B6 | T7 | ☑ |
 | I9 | Rota inexistente; acesso direto a qualquer tela (inclui `/checkout` vazio, pedido alheio = 404) | B3–B6 | T2, SMK | ☑ |
 | I10 | Update otimista com rollback (≥1) | B4 | T4 | ☑ |
-| I11 | Política de cache/retry/sync documentada | B9 | ARCHITECTURE §6 | ◐ |
+| I11 | Política de cache/retry/sync documentada | B9 | ARCHITECTURE §6 (conferida contra `lib/query-client.ts`) | ☑ |
 
 ## Contratos REST (§5)
 | ID | Requisito | Bloco | Evidência | St |

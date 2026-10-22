@@ -44,4 +44,8 @@ createRoot(rootElement).render(
 
 enableMocks()
   .catch((error: unknown) => console.error('Failed to start API mocks', error))
-  .finally(markMocksReady)
+  .finally(() => {
+    markMocksReady()
+    // Lazy: keeps sign-in code (toasts, cart merge) out of the entry chunk.
+    void import('@/features/auth/session-actions').then(({ verifyStoredSession }) => verifyStoredSession())
+  })

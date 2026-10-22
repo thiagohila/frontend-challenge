@@ -13,7 +13,8 @@ interface CatalogToolbarProps {
 export function CatalogToolbar({ tab, sort, onTab, onSort }: CatalogToolbarProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
-      <fieldset className="flex gap-4 overflow-x-auto text-[15px] leading-4 font-medium whitespace-nowrap lg:gap-5">
+      {/* min-w-0: a fieldset defaults to min-inline-size: min-content and would never scroll (320 px). */}
+      <fieldset className="flex min-w-0 gap-4 overflow-x-auto text-[15px] leading-4 font-medium whitespace-nowrap lg:gap-5">
         <legend className="sr-only">{t.catalog.tabsLabel}</legend>
         {catalogTabSchema.options.map((option) => (
           <button

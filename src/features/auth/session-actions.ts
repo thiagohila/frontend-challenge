@@ -2,6 +2,7 @@ import { toast } from 'sonner'
 import type { SessionResponse } from '@/contracts/auth'
 import { t } from '@/i18n'
 import { announce } from '@/lib/announce'
+import { isApiError } from '@/lib/api-error'
 import { guestCart } from '@/lib/guest'
 import { queryClient } from '@/lib/query-client'
 import { endSessionResources } from '@/lib/session/lifecycle'
@@ -39,7 +40,8 @@ export async function completeSignIn(response: SessionResponse, intent?: Intent)
 
   session.signIn(response)
   if (previousUserId === response.user.id) await queryClient.invalidateQueries()
-  if (merge?.hadItems) toast.success(merge.adjusted ? t.auth.cartAdjusted(merge.adjusted) : t.auth.cartMerged)
+  if (merge && 'failed' in merge) toast.error(t.auth.cartMergeFailed)
+  else if (merge?.hadItems) toast.success(merge.adjusted ? t.auth.cartAdjusted(merge.adjusted) : t.auth.cartMerged)
   announce(t.auth.signedIn(response.user.displayName))
 }
 
@@ -50,8 +52,10 @@ async function mergeGuestCart(token: string) {
     const { cart, adjustments } = await authApi.mergeGuestCart(guestId, token)
     guestCart.forget()
     return { hadItems: cart.items.length > 0, adjusted: adjustments.length }
-  } catch {
-    return null // keep the guest id: the merge is retried on the next sign-in
+  } catch (error) {
+    // Sign-in still succeeds; the guest id is kept so the merge is retried on the next sign-in.
+    console.warn('guest cart merge failed', error)
+    return { failed: true } as const
   }
 }
 
@@ -68,4 +72,18 @@ export async function signOut(navigateAway: () => Promise<void> | void) {
   await clearPrivateState(userId)
   if (token) await authApi.logout(token).catch(() => undefined)
   announce(t.auth.signedOut)
+}
+
+/**
+ * A session restored from storage is confirmed with the server on boot (`GET /auth/session`): an
+ * expired or revoked token opens the re-auth dialog right away instead of at the first private call.
+ * Other failures (offline, 5xx) keep the session — the next call decides.
+ */
+export async function verifyStoredSession() {
+  if (session.get().status !== 'authenticated') return
+  try {
+    await authApi.session()
+  } catch (error) {
+    if (isApiError(error) && error.status === 401) session.expire()
+  }
 }

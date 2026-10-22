@@ -15,14 +15,20 @@ interface RuntimeState {
   orderResolutionMs?: number | null
 }
 
-const random = createRandom(42)
+const JITTER_SEED = 42
+let random = createRandom(JITTER_SEED)
+/** A `?scenario=` different from the tab's current one: its seed must replace the stored database. */
+let scenarioChangedOnLoad = false
 
 function load(): RuntimeState {
   const fromUrl = new URLSearchParams(window.location.search).get('scenario')
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY)
     const saved = raw ? (JSON.parse(raw) as RuntimeState) : null
-    if (fromUrl && isScenarioName(fromUrl) && fromUrl !== saved?.scenario) return fresh(fromUrl)
+    if (fromUrl && isScenarioName(fromUrl) && fromUrl !== saved?.scenario) {
+      scenarioChangedOnLoad = Boolean(saved) || fromUrl !== 'default'
+      return fresh(fromUrl)
+    }
     if (saved && isScenarioName(saved.scenario)) return saved
   } catch {
     // corrupted state: start over
@@ -51,9 +57,17 @@ export const runtime = {
   get scenario(): Scenario {
     return scenarios[state.scenario]
   },
+  /** Fresh conditions for `name`: no overrides, failures or consumed one-shot flags; jitter restarts. */
   setScenario(name: ScenarioName) {
     state = fresh(name)
+    random = createRandom(JITTER_SEED)
     save()
+  },
+  /** True once if this load switched scenario through the URL (the db is then reseeded). */
+  takeScenarioChange() {
+    const changed = scenarioChangedOnLoad
+    scenarioChangedOnLoad = false
+    return changed
   },
   setLatency(latency: number | readonly [number, number] | null) {
     state.latency = latency

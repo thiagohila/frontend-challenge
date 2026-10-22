@@ -8,6 +8,7 @@ import { t } from '@/i18n'
 import { formatEth, money } from '@/lib/money'
 import type { Owner } from '@/lib/query-keys'
 import { quoteQuery } from '../queries'
+import { QuoteError } from './QuoteError'
 import { CouponForm } from './CouponForm'
 
 /** Totals come from the server quote (K5); realtime price/stock changes re-price and are listed (RT7). */
@@ -31,12 +32,7 @@ export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
           ))}
         </div>
       ) : quote.isError ? (
-        <div role="alert" className="flex flex-col gap-3 text-sm">
-          {t.cart.summaryError}
-          <Button variant="outline" onClick={() => void quote.refetch()}>
-            {t.cart.retry}
-          </Button>
-        </div>
+        <QuoteError error={quote.error} onRetry={() => void quote.refetch()} />
       ) : (
         <QuoteValues quote={quote.data} updating={quote.isFetching} />
       )}

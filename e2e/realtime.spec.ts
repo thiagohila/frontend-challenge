@@ -20,6 +20,7 @@ test.describe('realtime — nft.updated through socket.io-client (RT1, M7, M9)',
     await waitForSocket(mock)
     await mock.updateNft('emerald-ape-042', { priceEth: '2.50' })
     await expect(page.getByText('2.50 ETH').filter({ visible: true }).first()).toBeVisible()
+    await expect(page.getByTestId('live-region')).toContainText('O preço ou a disponibilidade deste NFT foi atualizado.')
 
     await page.goto('/')
     await waitForSocket(mock)

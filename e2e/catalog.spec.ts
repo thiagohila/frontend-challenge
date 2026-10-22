@@ -98,6 +98,12 @@ test.describe('T1 — search, filters, sort, pagination and history', () => {
       await expect(page.getByTestId('catalog-updating')).toBeHidden({ timeout: 10_000 })
       await expect(page).toHaveURL(/solana/)
       await expect(page).not.toHaveURL(/polygon/)
+      // What is rendered is the answer to the final filter, not a late response to an earlier one.
+      const expected = await page.evaluate(async () => {
+        const response = await fetch('/api/nfts?network=solana&pageSize=9')
+        return ((await response.json()) as { total: number }).total
+      })
+      await expect(page.getByRole('list', { name: `${expected} NFTs encontrados` })).toBeVisible()
     })
   })
 })

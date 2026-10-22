@@ -61,6 +61,8 @@ export interface ConnectionRecord extends WalletConnection {
 
 export interface DbState {
   schemaVersion: 1
+  /** Fee overrides set through the control API (absent = the default table). */
+  networkFees?: Partial<Record<Network, string>>
   users: UserRecord[]
   sessions: SessionRecord[]
   nfts: NftRecord[]
@@ -110,9 +112,13 @@ export function createDb(persistence: Persistence, seed: () => Promise<DbState>)
     read: ensure,
     async write<T>(mutate: (draft: DbState) => T): Promise<T> {
       const draft = await ensure()
-      const result = mutate(draft)
-      persistence.save(draft)
-      return result
+      try {
+        return mutate(draft)
+      } finally {
+        // Saved even when the mutation then rejects the request: server-side effects that already
+        // happened (stock clamp, a scenario's price race + its event) must survive a reload.
+        persistence.save(draft)
+      }
     },
     async reset() {
       persistence.clear()

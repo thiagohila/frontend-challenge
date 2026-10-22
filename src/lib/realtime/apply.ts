@@ -73,7 +73,7 @@ export async function applyEvent(queryClient: QueryClient, event: RealtimeEvent,
         // The quote is the price reference: re-price on the server (K5, RT7).
         if (inCart) await queryClient.invalidateQueries({ queryKey: queryKeys.quotes(context.cartOwner) })
       }
-      return { kind: 'nft', inCart } as const
+      return { kind: 'nft', nftId: event.resourceId, inCart } as const
     }
     case 'order.updated': {
       if (!context.userId) return { kind: 'ignored' } as const

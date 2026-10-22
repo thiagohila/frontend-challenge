@@ -55,8 +55,13 @@ export async function createOrder(
     const owner = { kind: 'user', userId: user.id } as const
     const wallet = state.wallets.find((candidate) => candidate.id === input.walletId && candidate.userId === user.id)
     if (!wallet) throw notFound('Carteira')
+    // The connection must be live and on the network being paid on (the client guard is not enough).
     const connected = state.connections.some(
-      (connection) => connection.walletId === wallet.id && connection.userId === user.id && connection.status === 'connected',
+      (connection) =>
+        connection.walletId === wallet.id &&
+        connection.userId === user.id &&
+        connection.status === 'connected' &&
+        connection.network === input.network,
     )
     if (!connected) throw new HttpError(409, 'WALLET_DISCONNECTED', 'Conecte sua carteira antes de confirmar a compra.')
 

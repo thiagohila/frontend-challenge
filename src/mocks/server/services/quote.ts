@@ -9,6 +9,8 @@ import { type CartOwner, ensureCart, ownerKeyOf, toCartView } from './cart'
 const QUOTE_TTL_MS = 5 * 60_000
 export const NETWORK_FEES: Record<Network, string> = { ethereum: '0.016', polygon: '0.002', solana: '0.001' }
 
+export const networkFee = (state: DbState, network: Network) => state.networkFees?.[network] ?? NETWORK_FEES[network]
+
 /** Prices the cart server-side — the quote is the reference to place an order (K5, K8). */
 export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner, network: Network): QuoteRecord {
   const ownerKey = ownerKeyOf(owner)
@@ -36,7 +38,11 @@ export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner,
     })
     .filter((item) => item.quantity > 0)
   const cart = toCartView(state, record, ctx.now())
-  if (cart.items.length === 0) throw new HttpError(422, 'VALIDATION', 'Seu carrinho está vazio.')
+  if (cart.items.length === 0) {
+    const soldOut = changes.filter((change) => change.kind === 'removed').map((change) => change.name)
+    if (soldOut.length > 0) throw new HttpError(409, 'OUT_OF_STOCK', `Esgotado: ${soldOut.join(', ')}. O item saiu do seu carrinho.`)
+    throw new HttpError(422, 'VALIDATION', 'Seu carrinho está vazio.')
+  }
 
   const lines = cart.items.map((item) => ({
     nftId: item.nftId,
@@ -51,7 +57,7 @@ export function buildQuote(ctx: ServerContext, state: DbState, owner: CartOwner,
   }))
   const subtotalEth = money.add(...lines.map((line) => line.lineTotalEth))
   const discountEth = cart.coupon ? money.percent(subtotalEth, cart.coupon.percentOff) : money.zero
-  const networkFeeEth = NETWORK_FEES[network]
+  const networkFeeEth = networkFee(state, network)
 
   // Prices are the server's: a different unit price than the previous quote is always a market change.
   const previous = state.quotes.filter((quote) => quote.ownerKey === ownerKey).at(-1)
@@ -98,6 +104,7 @@ export function isQuoteStale(ctx: ServerContext, state: DbState, quote: QuoteRec
   const cart = toCartView(state, ensureCart(state, owner), ctx.now())
   if (cart.items.length !== quote.lines.length) return true
   if ((cart.coupon?.code ?? null) !== (quote.coupon?.code ?? null)) return true
+  if (!money.equals(networkFee(state, quote.network), quote.networkFeeEth)) return true
   return quote.lines.some((line) => {
     const item = cart.items.find((candidate) => candidate.nftId === line.nftId && candidate.editionId === line.editionId)
     return !item || item.quantity !== line.quantity || !money.equals(item.unitPriceEth, line.unitPriceEth) || item.available < line.quantity

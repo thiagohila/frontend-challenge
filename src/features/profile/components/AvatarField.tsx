@@ -20,7 +20,13 @@ export function AvatarField({ userId, avatarUrl }: { userId: string; avatarUrl: 
     setError(null)
     const problem = checkAvatar(file)
     if (problem) return setError(problem === 'type' ? t.profile.avatarType : t.profile.avatarSize)
-    const dataUrl = await toAvatarDataUrl(file)
+    let dataUrl: string
+    try {
+      dataUrl = await toAvatarDataUrl(file)
+    } catch {
+      // Allowed MIME type but undecodable bytes (corrupt or mislabeled file).
+      return setError(t.profile.avatarUnreadable)
+    }
     setAvatar.mutate(dataUrl, {
       onSuccess: () => announce(t.profile.avatarUpdated),
       onError: (failure) => setError(isApiError(failure) ? failure.message : t.form.genericError),

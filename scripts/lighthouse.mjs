@@ -11,7 +11,7 @@ import desktopConfig from 'lighthouse/core/config/desktop-config.js'
 const PORT = 4174
 const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`
 const RUNS = Number(process.env.LH_RUNS ?? 3)
-const PAGES = { home: '/', detail: process.env.LH_DETAIL_PATH ?? '/nft/1' }
+const PAGES = { home: '/', detail: process.env.LH_DETAIL_PATH ?? '/nft/emerald-ape-042' }
 const PROFILES = { mobile: undefined, desktop: desktopConfig }
 const CATEGORIES = ['performance', 'accessibility', 'best-practices', 'seo']
 const OUT = 'docs/lighthouse'
@@ -39,8 +39,15 @@ const preview = await startPreview()
 const chromePath = () => process.env.CHROME_PATH ?? chromium.executablePath()
 
 const chrome = await chromeLauncher.launch({ chromePath: chromePath(), chromeFlags: ['--headless=new'] })
+// Provenance: the commit the audited deployment serves (version.json) and when it was measured.
+const deployedCommit = await fetch(`${BASE_URL}/version.json`)
+  .then((response) => response.json())
+  .then((version) => version.commit ?? null)
+  .catch(() => null)
 const summary = {
   baseUrl: BASE_URL,
+  commit: deployedCommit,
+  measuredAt: new Date().toISOString(),
   runs: RUNS,
   node: process.version,
   os: `${os.type()} ${os.release()} ${os.arch()}`,

@@ -62,7 +62,7 @@ export function NftCard({ nft, isFavorite, onToggleFavorite, onQuickAdd, priorit
         <Link
           to="/nft/$nftId"
           params={{ nftId: nft.id }}
-          className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+          className="after:absolute after:inset-0 after:rounded-lg after:content-[''] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-ring"
         >
           {name}
         </Link>

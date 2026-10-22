@@ -23,11 +23,12 @@ export function ProfileForm({ userId, profile }: { userId: string; profile: Prof
   const onSubmit = form.handleSubmit(async (values) => {
     setFormError(null)
     try {
-      const saved = await update.mutateAsync(toProfileUpdate(values))
+      // Password first: a wrong current password (the likeliest failure) must not leave the profile half-saved.
       if (values.currentPassword) {
         await changePassword.mutateAsync({ currentPassword: values.currentPassword, newPassword: values.newPassword })
         toast.success(t.profile.passwordChanged)
       }
+      const saved = await update.mutateAsync(toProfileUpdate(values))
       form.reset(toProfileFormValues(saved.profile))
       toast.success(t.profile.saved)
       announce(t.profile.saved)
