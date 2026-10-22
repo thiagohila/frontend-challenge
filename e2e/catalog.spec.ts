@@ -4,11 +4,11 @@ import { expect, test } from './fixtures'
 
 const results = (page: Page) => page.getByRole('list', { name: /NFTs? encontrados?/ })
 const cardTitles = (page: Page) => results(page).getByRole('heading', { level: 3 })
-/** Waits until no background fetch is in flight (placeholder data replaced by the real result). */
+/** Waits until no fetch is in flight: every listing update shows the skeleton until the real result. */
 const settled = async (page: Page) => {
   // The refetch may not have started yet when this runs: wait for the network to go idle first.
   await page.waitForLoadState('networkidle')
-  await expect(page.getByTestId('catalog-updating')).toBeHidden()
+  await expect(page.getByTestId('catalog-skeleton')).toBeHidden()
 }
 const cardPrices = async (page: Page) => (await results(page).locator('article p').allInnerTexts()).map((text) => text.split(' ')[0] ?? '0')
 
@@ -95,7 +95,7 @@ test.describe('T1 — search, filters, sort, pagination and history', () => {
       await panel.getByRole('button', { name: /Solana/ }).click()
       await closeFilters(page, isMobile)
       await expect(page).toHaveURL(/network=/)
-      await expect(page.getByTestId('catalog-updating')).toBeHidden({ timeout: 10_000 })
+      await expect(page.getByTestId('catalog-skeleton')).toBeHidden({ timeout: 10_000 })
       await expect(page).toHaveURL(/solana/)
       await expect(page).not.toHaveURL(/polygon/)
       // What is rendered is the answer to the final filter, not a late response to an earlier one.
@@ -167,4 +167,16 @@ test('the header search goes to the catalog and focuses "Explorar coleções", a
   await expect(search).toBeFocused()
   await page.keyboard.type('Golden')
   await expect(page).toHaveURL(/q=Golden/)
+})
+
+test('a URL with catalog search/filters lands on the market with the result (shared link, refresh)', async ({ page }) => {
+  const sectionTop = () => page.evaluate(() => document.getElementById('mercado')?.getBoundingClientRect().top ?? Number.NaN)
+  await page.goto('/?q=Golden&sort=price-asc')
+  await expect(cardTitles(page).first()).toContainText('Golden')
+  await expect.poll(sectionTop).toBeLessThan(130)
+  await expect.poll(sectionTop).toBeGreaterThanOrEqual(0)
+
+  await page.goto('/') // no catalog state: the page opens at the top
+  await expect(results(page)).toBeVisible()
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
 })

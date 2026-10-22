@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { useQuickAddToCart } from '@/features/cart/queries'
 import { useFavorites } from '@/features/favorites/queries'
 import { t } from '@/i18n'
 import { featuredQuery, nftListQuery } from '../queries'
-import { type CatalogSearch, toListQuery } from '../search'
+import { type CatalogSearch, hasCatalogState, toListQuery } from '../search'
 import { CatalogFilters } from './CatalogFilters'
 import { CatalogResults } from './CatalogResults'
 import { CatalogSearchField } from './CatalogSearchField'
@@ -27,6 +28,14 @@ export function CatalogHome({ search, onSearchChange, onClearFilters }: CatalogH
   const featured = useQuery(featuredQuery())
   const favorites = useFavorites()
   const quickAdd = useQuickAddToCart()
+  // Opened with catalog state in the URL (shared link, refresh): land on the market with the result.
+  // Only on arrival — later filter changes happen there already. A `#mercado` hash is the router's job.
+  const [arrivedWithState] = useState(() => hasCatalogState(search) && !window.location.hash)
+  useEffect(() => {
+    if (!arrivedWithState) return
+    const frame = requestAnimationFrame(() => document.getElementById(MARKET_ANCHOR)?.scrollIntoView({ block: 'start' }))
+    return () => cancelAnimationFrame(frame)
+  }, [arrivedWithState])
 
   const filterProps = {
     search,

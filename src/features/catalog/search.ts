@@ -24,6 +24,9 @@ export type CatalogSearch = z.infer<typeof catalogSearchSchema>
 
 export const CATALOG_PAGE_SIZE = 9
 
+/** A URL carrying catalog state (search, filters, tab, sort or page): a shared/bookmarked market view. */
+export const hasCatalogState = (search: CatalogSearch) => Object.values(search).some((value) => value !== undefined)
+
 export const toListQuery = (search: CatalogSearch): NftListQuery => {
   const { priceMin, priceMax } = search
   // An inverted range (hand-edited URL) is read as the range it obviously means.

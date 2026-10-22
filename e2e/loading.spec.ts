@@ -3,7 +3,7 @@ import { expect, test } from './fixtures'
 test.describe('T12 — loading skeletons, failure feedback and retry', () => {
   test.describe('slow network', () => {
     test.use({ scenario: 'slow' })
-    test('shows the shimmer skeleton, then the content; background refresh keeps results visible', async ({ page }) => {
+    test('shows the shimmer skeleton, then the content; every listing update shows the skeleton again', async ({ page }) => {
       await page.goto('/')
       const skeleton = page.getByTestId('catalog-skeleton')
       await expect(skeleton).toBeVisible()
@@ -11,8 +11,11 @@ test.describe('T12 — loading skeletons, failure feedback and retry', () => {
       await expect(page.getByRole('list', { name: /NFTs encontrados/ })).toBeVisible({ timeout: 15_000 })
 
       await page.getByRole('button', { name: 'Em alta', exact: true }).click()
-      await expect(page.getByTestId('catalog-updating')).toBeVisible()
-      await expect(page.getByRole('list', { name: /NFTs encontrados/ })).toBeVisible() // previous results stay
+      // No "updating" text and no stale cards: the skeleton (same footprint) until the new result.
+      await expect(skeleton).toBeVisible()
+      await expect(page.getByRole('list', { name: /NFTs encontrados/ })).toBeHidden()
+      await expect(page.getByText('Atualizando resultados…', { exact: true }).filter({ visible: true })).toHaveCount(0)
+      await expect(page.getByRole('list', { name: /NFTs encontrados/ })).toBeVisible({ timeout: 15_000 })
     })
   })
 
