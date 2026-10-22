@@ -33,7 +33,8 @@ routes/  ──►  features/*  ──►  lib/, contracts/, components/
 mocks/  ──►  contracts/   (nunca importa app)
 ```
 - `routes` compõem a página: `validateSearch`, `beforeLoad` (guards), `loader` (prefetch), pending/error/notFound. Lógica de negócio fica fora das rotas.
-- `features/<x>` expõe pela `index.ts` só hooks, componentes e `queryOptions`; não importa internals de outra feature.
+- `features/<x>`: sem barrel `index.ts` (ADR 17). Outras partes importam só `components/*`, `queries.ts` e `api.ts` de uma feature; helpers internos (ex.: `form.ts`) são privados a ela.
+- Rotas só compõem: `validateSearch`, guards, loader, `head` e montagem de componentes de feature. UI com estado vive em `features/<x>/components`.
 - `contracts` é puro (zod + tipos), sem React e sem axios.
 - `components/ui` é shadcn. `components/` tem os blocos compartilhados do app (Skeleton, QueryState, FormField, PriceTag…).
 
@@ -281,6 +282,7 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 | 14 | Idempotência consultada antes de qualquer validação | reenvio após timeout recupera o pedido, nunca duplica (C3) |
 | 15 | Cupom guardado no carrinho do servidor | aplicar/remover persiste em refresh e login (K4, K2) |
 | 16 | Timeout do Axios em JS (AbortController) | controlável pelo `page.clock` (TQ3, T7) |
+| 17 | Sem barrel files nas features | barrels puxam o módulo inteiro para o chunk de cada rota e pioram o code splitting e o HMR |
 
 ## 15. Limitações, decisões de UX e desvios do Figma
 Preenchido durante a implementação (obrigatório na entrega, D6).

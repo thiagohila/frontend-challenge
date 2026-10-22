@@ -51,6 +51,8 @@ Por revisão (checklist antes de cada commit):
 - **Semântica**: ação = `button`, navegação = `Link`; fora do escopo = `<ComingSoon>`.
 - **Sem arrays paralelos por índice**: dados relacionados vivem juntos (`{ label, slug }`).
 - Toda string de UI no dicionário `src/i18n`; nenhum texto solto em JSX.
+- **Rotas só compõem** (search, guard, loader, head, componentes de feature); UI com estado fica em `features/<x>/components`. Sem barrels (ADR 17).
+- **Erros de formulário**: campo = `aria-invalid` + `aria-describedby` (sem `role=alert`); erro geral da API = um único `<FormError>`.
 - Componente com uma responsabilidade; lógica de dados em `features/<x>/queries.ts`/hooks, não no JSX; arquivos > ~200 linhas → dividir.
 - Erros tratados explicitamente (`ApiError`), sem `catch` silencioso; estados loading/empty/error em todo componente com dados.
 - **Sem código provisório ao fechar o bloco**: `grep -rn "Scaffold\|TODO\|FIXME" src` zerado para as telas do bloco.

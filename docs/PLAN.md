@@ -27,7 +27,8 @@ X1 stack efetiva · X2 fluxos reais · X3 confirmação só pela simulação · 
 2. Testes do bloco escritos **no próprio bloco** e verdes (desktop + mobile; unit quando houver).
 3. `CI=1 npm run typecheck && npm run lint && npm run test:e2e` verdes; checklist a11y (§5) nas telas tocadas.
 4. Pixel pass das telas do bloco contra `docs/design/frames/` (desktop + mobile).
-5. Commit (Conventional). Desvio de arquitetura → ADR em ARCHITECTURE §14.
+5. **Revisão do bloco antes de fechar** (não deixar para o fim): reler o diff do bloco contra o checklist "Padrão de código" do `CLAUDE.md`, a regra de camadas (ARCH §2) e o checklist a11y (§5); rodar o axe nas telas novas; corrigir na hora o que aparecer e registrar o que virou regra.
+6. Commit (Conventional). Desvio de arquitetura → ADR em ARCHITECTURE §14.
 - **Push + preview Vercel** acontece nos checkpoints (B1b, 05:00, 13:30, B9), não em todo bloco, porque depende de login/permissão do usuário (§9).
 
 ## 4. Cronograma

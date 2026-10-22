@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { ComingSoon } from '@/components/layout/ComingSoon'
+import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
 import { PasswordInput, TextInput } from '@/components/form/TextInput'
 import { Button } from '@/components/ui/button'
@@ -51,11 +52,7 @@ export function LoginForm({ defaultEmail = '', intent, onSuccess, compact }: Log
       {!compact && (
         <ComingSoon className="self-end text-sm text-text-accent">{t.auth.forgotPassword}</ComingSoon>
       )}
-      {formError && (
-        <p role="alert" className="rounded border border-destructive/60 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {formError}
-        </p>
-      )}
+      <FormError message={formError} />
       <Button type="submit" disabled={login.isPending} className="mt-5 h-[60px] rounded-[10px] text-base font-bold lg:h-[45px] lg:rounded-md">
         {login.isPending ? t.auth.submitting : t.auth.submitSignIn}
       </Button>

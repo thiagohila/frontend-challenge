@@ -36,7 +36,9 @@ export function FormField({ label, hideLabel, required, error, hint, className, 
         </p>
       )}
       {error && (
-        <p id={errorId} role="alert" className="flex items-center gap-1 text-xs text-destructive">
+        // Not role="alert": a submit with many errors would flood screen readers. Focus moves to the
+        // first invalid field (react-hook-form) and its error is read via aria-describedby.
+        <p id={errorId} className="flex items-center gap-1 text-xs text-destructive">
           <span aria-hidden>⚠</span>
           {error}
         </p>

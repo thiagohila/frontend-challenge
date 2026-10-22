@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { toast } from 'sonner'
+import { FormError } from '@/components/form/FormError'
 import { FormField } from '@/components/form/FormField'
 import { AffixInput, inputClassName, TextInput } from '@/components/form/TextInput'
 import { Button } from '@/components/ui/button'
@@ -91,11 +92,7 @@ export function WalletForm({ userId, walletRole: role, wallet, primary, defaultE
           <AffixInput affix={fields.ensSuffix} {...form.register('ensLabel')} />
         </FormField>
       </div>
-      {formError && (
-        <p role="alert" className="rounded border border-destructive/60 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {formError}
-        </p>
-      )}
+      <FormError message={formError} />
       <div className="flex gap-4">
         <Button type="submit" disabled={save.isPending} className="h-10 rounded-[3px] px-3 font-bold">
           {save.isPending ? t.form.saving : t.wallets.save}

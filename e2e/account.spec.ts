@@ -8,8 +8,9 @@ test.describe('T8 — wallets', () => {
     await secondary.getByRole('button', { name: 'Adicionar' }).click()
 
     await secondary.getByRole('button', { name: 'Salvar carteira' }).click()
-    await expect(secondary.getByRole('alert').filter({ hasText: 'Selecione uma rede' })).toBeVisible()
-    await expect(secondary.getByRole('alert').filter({ hasText: 'Endereço 0x inválido (40 caracteres hex)' })).toBeVisible()
+    // Errors are exposed the way assistive tech reads them: the field's accessible description.
+    await expect(secondary.getByRole('combobox', { name: 'Rede' })).toHaveAccessibleDescription(/Selecione uma rede/)
+    await expect(secondary.getByRole('textbox', { name: 'Endereço da carteira' })).toHaveAccessibleDescription(/Endereço 0x inválido/)
 
     await secondary.getByRole('textbox', { name: 'Nome de exibição' }).fill('Bruno Lima')
     await secondary.getByRole('textbox', { name: 'Apelido da carteira' }).fill('Cofre frio')
