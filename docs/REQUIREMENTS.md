@@ -9,9 +9,9 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 |---|---|---|---|---|
 | X1 | Uso efetivo de toda a stack (§2) | todos | SMK + ARCHITECTURE §2 | ◐ |
 | X2 | Fluxos principais não apenas visuais | B3–B6 | T3, T5, T6, T8 | ◐ |
-| X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☐ |
-| X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ◐ |
-| X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ◐ |
+| X3 | Compra confirmada só com resposta da simulação | B6 | T6, T7 (recusado não mostra recibo) | ☑ |
+| X4 | Sem exposição de dados entre usuários | B2, B3, B6 | T3 (troca de usuário), T10 (evento de outra sessão), checkout.spec (`/orders/:id` e `/tx/:hash` alheios → 404) | ☑ |
+| X5 | Eventos não simulados diretamente na UI | B5, B6 | T9, T10 via `socket.io-client`; painel admin isolado (ARCH §10) | ☑ |
 | X6 | E2E executáveis | todos | `npm run test:e2e` em checkout limpo (B9) | ◐ |
 
 ## Escopo, telas e fluxos (§1, §3)
@@ -23,13 +23,13 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | S4 | Início: destaques, catálogo, busca, filtros, ordenação, navegação ao NFT | B4 | T1 | ☑ |
 | S5 | Detalhe: galeria, informações, edição, quantidade, favoritos, compra | B4, B5 | T2, T4, T5 | ◐ |
 | S6 | Carrinho: quantidades, remoção, cupom, resumo | B5 | T5 | ☑ |
-| S7 | Pagamento: dados, carteira+rede, revisão, envio | B6 | T6 | ☐ |
-| S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☐ |
+| S7 | Pagamento: dados, carteira+rede, revisão, envio | B6 | T6 | ☑ |
+| S8 | Confirmação: resultado, transação, itens, taxas, total | B6 | T6 | ☑ |
 | S9 | Login: autenticação, validação, **retorno ao fluxo anterior** | B3 | T3 | ☑ |
 | S10 | Cadastro: criação, validação, conflito | B3 | T3 | ☑ |
 | S11 | Perfil: dados, avatar, senha | B6b | T8 | ☐ |
 | S12 | Carteiras: cadastro/edição principal e secundária | B3 | T8 (carteiras) | ☑ |
-| S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ☐ |
+| S13 | Perfil, carteiras e confirmação funcionam em mobile sem frame | B3, B6, B6b, B7 | T6/T8 no projeto mobile | ◐ |
 | S14 | Fora do escopo (editorial, suporte, atividade, ofertas, downloads) **não aparenta sucesso**; links externos coerentes | B1b, B7 | ARCHITECTURE §11 "fora do escopo" + inspeção | ◐ |
 
 ## Catálogo e detalhe (§3)
@@ -52,21 +52,21 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | K5 | Subtotal, desconto, taxa de rede e total vindos da API | B5 | T5 | ☑ |
 | K6 | Reflete preço/disponibilidade recebidos com o carrinho aberto | B5 | `realtime.spec` (carrinho), T9 | ☑ |
 | K7 | ETH como string decimal, precisão no cálculo e na exibição; quantidade inteira | B2, B5 | unit `money.spec` + T5 (valores exatos) | ☑ |
-| K8 | Cotação da API é a referência para finalizar | B6 | T9 | ☐ |
+| K8 | Cotação da API é a referência para finalizar | B6 | T9 | ☑ |
 
 ## Pagamento e confirmação (§3)
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
-| P1 | Validar campos do layout; revisão antes do envio | B6 | T6, T11 | ☐ |
-| P2 | Usa carteiras cadastradas; seleção de rede | B6 | T6 | ☐ |
-| P3 | Simulação de conexão, **recusa** e **desconexão** da carteira | B2, B5, B6 | T7 (recusa), T10 (desconexão via `wallet.disconnected`) | ☐ |
-| P4 | Revalidar preço, disponibilidade, cupom e taxas antes de confirmar; mudança exige nova confirmação | B6 | T9 | ☐ |
-| P5 | Sem pedido duplicado: clique repetido e reenvio após timeout (idempotência consultada antes de validar) | B2, B6 | T7 + unit de contrato | ☐ |
-| P6 | Pendente, confirmado e recusado; recuperação após refresh/reconexão (`resolveAt` persistido) | B2, B6 | T7, T10 | ☐ |
-| P7 | Confirmação só para pedido confirmado | B6 | T6, T7 | ☐ |
-| P8 | Falha preserva itens; confirmação remove **só itens e quantidades comprados** (no servidor) | B6 | T6, T7 | ☐ |
-| P9 | Recibo = snapshot (mudança posterior no catálogo não altera) | B6 | T6 (emite `nft.updated` após confirmar) | ☐ |
-| P10 | Referência de transação e link de explorador simulados (`/tx` só do dono) | B6 | T6 | ☐ |
+| P1 | Validar campos do layout; revisão antes do envio | B6 | T6, T11 | ☑ |
+| P2 | Usa carteiras cadastradas; seleção de rede | B6 | T6 | ☑ |
+| P3 | Simulação de conexão, **recusa** e **desconexão** da carteira | B2, B5, B6 | T7 (recusa), T10 (desconexão via `wallet.disconnected`) | ☑ |
+| P4 | Revalidar preço, disponibilidade, cupom e taxas antes de confirmar; mudança exige nova confirmação | B6 | T9 | ☑ |
+| P5 | Sem pedido duplicado: clique repetido e reenvio após timeout (idempotência consultada antes de validar) | B2, B6 | T7 + unit de contrato | ☑ |
+| P6 | Pendente, confirmado e recusado; recuperação após refresh/reconexão (`resolveAt` persistido) | B2, B6 | T7, T10 | ☑ |
+| P7 | Confirmação só para pedido confirmado | B6 | T6, T7 | ☑ |
+| P8 | Falha preserva itens; confirmação remove **só itens e quantidades comprados** (no servidor) | B6 | T6, T7 | ☑ |
+| P9 | Recibo = snapshot (mudança posterior no catálogo não altera) | B6 | T6 (emite `nft.updated` após confirmar) | ☑ |
+| P10 | Referência de transação e link de explorador simulados (`/tx` só do dono) | B6 | T6 | ☑ |
 
 ## Conta e sessão (§3)
 | ID | Requisito | Bloco | Teste | St |
@@ -74,7 +74,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | A1 | Cadastro, login, logout e sessão integrados à API | B3 | T3 | ☑ |
 | A2 | Checkout, perfil, carteiras, favoritos e pedidos exigem auth | B3 | T3 (guards) | ☑ |
 | A3 | Sessão recuperável após refresh | B3 | T3 | ☑ |
-| A4 | Expiração durante navegação **e durante checkout**, preservando o contexto | B3, B6 | T3, T7 | ◐ |
+| A4 | Expiração durante navegação **e durante checkout**, preservando o contexto | B3, B6 | T3, T7 | ☑ |
 | A5 | Logout/troca limpa cache privado e subscriptions | B3 | T3 | ☑ |
 | A6 | Validar cadastro, perfil, senha e carteiras, incluindo erros da API | B3, B6b | T3, T8, T11 | ◐ |
 | A7 | Alterações confirmadas persistem após refresh | B3, B6b | T8 | ◐ |
@@ -90,8 +90,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | I5 | Invalidação coerente após mutations e eventos; versão nunca regride | B4–B6 | T4, T5, `realtime.spec` | ☑ |
 | I6 | Cancelar/descartar respostas obsoletas | B4 | T1 (`jitter`) | ☑ |
 | I7 | Isolamento por usuário e por parâmetros | B3 | T3 | ☑ |
-| I8 | Recuperar falhas sem duplicar operações | B6 | T7 | ☐ |
-| I9 | Rota inexistente; acesso direto a qualquer tela (inclui `/checkout` vazio, pedido alheio = 404) | B3–B6 | T2, SMK | ◐ |
+| I8 | Recuperar falhas sem duplicar operações | B6 | T7 | ☑ |
+| I9 | Rota inexistente; acesso direto a qualquer tela (inclui `/checkout` vazio, pedido alheio = 404) | B3–B6 | T2, SMK | ☑ |
 | I10 | Update otimista com rollback (≥1) | B4 | T4 | ☑ |
 | I11 | Política de cache/retry/sync documentada | B9 | ARCHITECTURE §6 | ◐ |
 
@@ -99,8 +99,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
 | R1 | Recursos: sessão, NFTs, favoritos, carrinho, cotação, pedidos, perfil, carteiras | B2 | ARCHITECTURE §4 | ☑ |
-| R2 | Erros: validação, sessão inválida, permissão (403 `carol`/`unauthorized`), inexistente, conflito, transitório | B2 | unit de contrato + T3 (401), checkout.spec (403) | ◐ |
-| R3 | Idempotência: mesma chave → mesmo pedido; chave + payload diferente → conflito | B2, B6 | unit de contrato + T7 | ◐ |
+| R2 | Erros: validação, sessão inválida, permissão (403 `carol`/`unauthorized`), inexistente, conflito, transitório | B2 | unit de contrato + T3 (401), checkout.spec (403) | ☑ |
+| R3 | Idempotência: mesma chave → mesmo pedido; chave + payload diferente → conflito | B2, B6 | unit de contrato + T7 | ☑ |
 
 ## Mocking (§6)
 | ID | Requisito | Bloco | Evidência | St |
@@ -111,7 +111,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | M4 | Fixtures: variedade p/ filtros+paginação, ≥2 usuários | B2 | `mocks/fixtures` | ☑ |
 | M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ◐ |
 | M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ☑ |
-| M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ◐ |
+| M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ☑ |
 | M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ☑ |
 | M9 | Mudança no dado simulado → REST **e** evento | B5 | `realtime.spec` (`updateNft` → evento + refetch iguais) | ☑ |
 
@@ -119,13 +119,13 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | ID | Requisito | Bloco | Teste | St |
 |---|---|---|---|---|
 | RT1 | `nft.updated` atualiza catálogo, detalhe e carrinho | B5 | `realtime.spec`, T9 | ☑ |
-| RT2 | `order.updated` atualiza o pedido; mostra confirmação/recusa | B6 | T6, T7 | ☐ |
+| RT2 | `order.updated` atualiza o pedido; mostra confirmação/recusa | B6 | T6, T7 | ☑ |
 | RT3 | Eventos com id estável, recurso e versão; dedupe; não regridem nem reaplicam | B5 | unit `apply.spec` + T10 | ☑ |
-| RT4 | Reconexão → reconciliação com REST | B5, B6 | `realtime.spec`, T10 | ◐ |
-| RT5 | Evento de sessão anterior não afeta outro usuário | B3, B5 | T10 | ◐ |
-| RT6 | Listeners liberados ao fim do ciclo de vida | B5 | T3 (logout) + revisão | ◐ |
-| RT7 | Cenário: item no carrinho → muda preço/estoque → UI avisa e atualiza o resumo → checkout bloqueia cotação velha | B5, B6 | T9 | ◐ |
-| RT8 | Queda de conexão com pedido pendente → reconectar/recarregar recupera sem nova compra; terminais | B6 | T10 | ☐ |
+| RT4 | Reconexão → reconciliação com REST | B5, B6 | `realtime.spec`, T10 | ☑ |
+| RT5 | Evento de sessão anterior não afeta outro usuário | B3, B5 | T10 | ☑ |
+| RT6 | Listeners liberados ao fim do ciclo de vida | B5 | T3 (logout) + revisão | ☑ |
+| RT7 | Cenário: item no carrinho → muda preço/estoque → UI avisa e atualiza o resumo → checkout bloqueia cotação velha | B5, B6 | T9 | ☑ |
+| RT8 | Queda de conexão com pedido pendente → reconectar/recarregar recupera sem nova compra; terminais | B6 | T10 | ☑ |
 
 ## Interface e a11y (§8)
 | ID | Requisito | Bloco | Teste | St |
@@ -150,11 +150,11 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | T3 | Cadastro, login, expiração, logout, troca de usuário | B3 | ☑ |
 | T4 | Favoritos + falha de mutation + recuperação | B4 | ☑ |
 | T5 | Carrinho, quantidades, remoção, cupom, persistência refresh/login | B5 | ☑ |
-| T6 | Compra completa até o recibo confirmado | B6 | ☐ |
-| T7 | Falha de pagamento, clique repetido, timeout → mesmo pedido | B6 | ☐ |
+| T6 | Compra completa até o recibo confirmado | B6 | ☑ |
+| T7 | Falha de pagamento, clique repetido, timeout → mesmo pedido | B6 | ☑ |
 | T8 | Perfil, avatar, senha, carteiras + erros de validação | B3 | ☐ |
-| T9 | Preço/disponibilidade via Socket.IO durante o checkout | B6 | ☐ |
-| T10 | Eventos duplicados/antigos, desconexão, retomada de pendente | B6 | ☐ |
+| T9 | Preço/disponibilidade via Socket.IO durante o checkout | B6 | ☑ |
+| T10 | Eventos duplicados/antigos, desconexão, retomada de pendente | B6 | ☑ |
 | T11 | Teclado, foco em diálogos, validação de formulários | B3–B7 | ☐ |
 | T12 | Skeleton em carga lenta, feedback de falha, nova tentativa | B4 | ☑ |
 | TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ◐ |
