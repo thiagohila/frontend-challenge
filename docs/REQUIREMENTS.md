@@ -160,7 +160,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | TQ1 | Fluxos principais em Chromium desktop + mobile (+ tablet no smoke/layout) | todos | ☑ |
 | TQ2 | VIS de início, detalhe, carrinho, pagamento; baselines Linux versionadas (Docker), pulado fora do Linux; dados estáveis | B7 | ☑ |
 | TQ3 | Estado isolado por teste (init só na 1ª carga); controle de relógio (timeout em JS), latência e eventos | B2 | ☑ |
-| TQ4 | Relatório HTML + traces de falha **entregues**: `docs/playwright-report/` (201 ✓, checkout limpo de `2e75c69`) | B9 | ☑ |
+| TQ4 | Relatório HTML + traces de falha **entregues**: `docs/playwright-report/` (218 ✓, checkout limpo de `b70094c`) | B9 | ☑ |
 | TQ5 | Asserções na UI e no resultado das operações; realtime via cliente Socket.IO, REST via MSW | todos | ☑ |
 
 ## Performance (§10)
@@ -183,7 +183,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | D5 | Docs: contratos REST/eventos, sessão, carrinho, cache, reconciliação REST × Socket | B9 | ARCHITECTURE | ◐ |
 | D6 | ARCHITECTURE: limitações, decisões de UX, desvios do Figma | B9 | ARCHITECTURE §15 (espelha DESIGN.md) | ◐ |
 | D7 | Comandos: dev com mocks, build, preview, typecheck, lint, e2e, lighthouse | B0 | package.json | ☑ |
-| D8 | Roda de checkout limpo sem serviços privados | B9 | `git clone && npm ci && typecheck && lint && format:check && CI=1 test:e2e` (build no webServer): 201 ✓ em 2026-10-22 (`2e75c69`) | ☑ |
+| D8 | Roda de checkout limpo sem serviços privados | B9 | `git clone && npm ci && typecheck && lint && format:check && CI=1 test:e2e` (build no webServer): 218 ✓ em 2026-10-22 (`b70094c`) | ☑ |
 
 ## Extras (fora do enunciado, PLAN §8)
 | ID | Requisito | Bloco | Teste | St |
