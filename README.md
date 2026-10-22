@@ -43,7 +43,7 @@ Solução do desafio frontend: descoberta, compra e conta do colecionador, deskt
 
 **Resiliência** (o que já está aplicado: `ARCHITECTURE.md` §6, "Resiliência")
 
-- **Jitter no retry das consultas**: hoje o backoff é exponencial, mas determinístico (500 ms → 1 s → 2 s). Aleatorizar o atraso (como já faz a reconexão do Socket.IO) evita que muitos clientes tentem de novo no mesmo instante depois de uma queda.
+- **Jitter no retry das consultas**: hoje o backoff é exponencial, mas determinístico (500 ms e depois 1 s). Aleatorizar o atraso (como já faz a reconexão do Socket.IO) evita que muitos clientes tentem de novo no mesmo instante depois de uma queda.
 - **Uso offline de verdade (PWA)**: service worker de produção com cache do shell e dos assets, mais o último catálogo e carrinho, e um aviso "você está offline" com o `onlineManager` do TanStack Query. Hoje há só a indisponibilidade simulada (cenário `offline`). Detalhe a tratar: sem internet, o Query pausa as consultas por padrão, mesmo com o servidor simulado na página.
 - **Fila de mutations offline**: guardar favoritos e itens de carrinho feitos sem conexão e reenviar ao voltar (`persistQueryClient` + mutations pausadas).
 
