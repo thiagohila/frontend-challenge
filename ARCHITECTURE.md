@@ -58,10 +58,10 @@ src/
     money.ts               # decimal.js helpers
     format.ts              # Intl date/time
     zod-form.ts            # useZodForm (resolver próprio)
-    idempotency.ts         # geração/persistência de Idempotency-Key
   i18n/                    # dicionários tipados (pt.ts, en.ts) + t()
   features/
     catalog/  nft/  favorites/  cart/  checkout/  orders/  auth/  profile/  wallets/
+                           # checkout/attempt.ts: Idempotency-Key por tentativa de compra (§5)
       api.ts               # chamadas axios + parse zod
       queries.ts           # queryOptions + mutations
       components/          # UI da feature
