@@ -112,7 +112,7 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | M5 | Cenários: sucesso/vazio · latência/fora de ordem · conexão/4xx/5xx · sessão expirada/não autorizado (`unauthorized`) · conflito cadastro/validação · cupom inválido/expirado · preço/esgotado na compra · timeout pós-criação · pagamento confirmado/recusado | B2 | `mocks/scenarios.ts` + README | ◐ |
 | M6 | Socket via MSW + `@mswjs/socket.io-binding`; transporte e limitações documentados (ping, ack, sid) | B5 | ARCHITECTURE §10 | ◐ |
 | M7 | Cenários exercitam `socket.io-client` (sem setters/cache diretos) | B5, B6 | T9, T10, `realtime.spec` | ☐ |
-| M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ◐ |
+| M8 | Mocks ativados por config e presentes no build de demo | B1b | deploy | ☑ |
 | M9 | Mudança no dado simulado → REST **e** evento | B5 | `realtime.spec` (`updateNft` → evento + refetch iguais) | ☐ |
 
 ## Tempo real (§7)
@@ -177,8 +177,8 @@ Status: ☐ pendente · ◐ parcial · ☑ feito. **Atualizar o status ao fechar
 | ID | Requisito | Bloco | Evidência | St |
 |---|---|---|---|---|
 | D1 | Código, lockfile, assets, mocks, fixtures, testes e configs de auditoria | B9 | repo | ◐ |
-| D2 | Deploy público = código entregue; mocks e realtime ativos; refresh/acesso direto | B1b, B9 | `deploy.spec` (`/version.json` = HEAD) | ☐ |
-| D3 | Link do repositório (push) | B1b | GitHub | ☐ |
+| D2 | Deploy público = código entregue; mocks e realtime ativos; refresh/acesso direto | B1b, B9 | `deploy.spec` (`/version.json` = HEAD) | ◐ |
+| D3 | Link do repositório (push) | B1b | GitHub | ◐ |
 | D4 | README: setup, env, credenciais fictícias, cenários (seleção/reset), comandos, como reproduzir falhas | B9 | README | ☐ |
 | D5 | Docs: contratos REST/eventos, sessão, carrinho, cache, reconciliação REST × Socket | B9 | ARCHITECTURE | ◐ |
 | D6 | ARCHITECTURE: limitações, decisões de UX, desvios do Figma | B9 | ARCHITECTURE §15 (espelha DESIGN.md) | ◐ |

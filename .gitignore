@@ -20,3 +20,4 @@ dist
 /blob-report
 /playwright/.cache
 /.lighthouse-tmp
+.vercel
