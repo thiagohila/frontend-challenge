@@ -85,27 +85,34 @@ export const quoteQuery = (owner: Owner, network: Network, enabled = true) =>
 export function useCartMutations() {
   const owner = useCartOwner()
   const queryClient = useQueryClient()
-  const onCart = async (cart: Cart) => {
+  // The mutation ends with the cart response; the quote re-prices in the background (the summary shows
+  // it updating) instead of holding every control until a second round trip completes.
+  const onCart = (cart: Cart) => {
     if (!owner) return
     queryClient.setQueryData<Cart>(queryKeys.cart(owner), cart)
-    await queryClient.invalidateQueries({ queryKey: queryKeys.quotes(owner) })
+    void queryClient.invalidateQueries({ queryKey: queryKeys.quotes(owner) })
   }
+  // One queue for every cart write: quick clicks on different lines run in order, so an older response
+  // can never overwrite a newer cart (no optimistic update needed).
+  const scope = { id: 'cart-writes' }
   const onError = (error: unknown) => toast.error(isApiError(error) ? translateMessage(error.message) : t.cart.updateFailed)
   return {
     updateQuantity: useMutation({
       mutationFn: ({ itemId, quantity }: { itemId: string; quantity: number }) => cartApi.update(itemId, quantity),
+      scope,
       onSuccess: onCart,
       onError,
     }),
     remove: useMutation({
       mutationFn: (itemId: string) => cartApi.remove(itemId),
-      onSuccess: async (cart) => {
-        await onCart(cart)
+      scope,
+      onSuccess: (cart) => {
+        onCart(cart)
         announce(t.cart.removed)
       },
       onError,
     }),
-    applyCoupon: useMutation({ mutationFn: (code: string) => cartApi.applyCoupon(code), onSuccess: onCart }),
-    removeCoupon: useMutation({ mutationFn: () => cartApi.removeCoupon(), onSuccess: onCart, onError }),
+    applyCoupon: useMutation({ mutationFn: (code: string) => cartApi.applyCoupon(code), scope, onSuccess: onCart }),
+    removeCoupon: useMutation({ mutationFn: () => cartApi.removeCoupon(), scope, onSuccess: onCart, onError }),
   }
 }

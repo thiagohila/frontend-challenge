@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -9,7 +9,7 @@ import { profileQuery } from '@/features/profile/queries'
 import { walletsQuery } from '@/features/wallets/queries'
 import { t } from '@/i18n'
 import { useSessionUser } from '@/lib/session/store'
-import { MARKET_ANCHOR } from '@/lib/anchors'
+import { Breadcrumb } from '@/components/layout/Breadcrumb'
 
 export const Route = createFileRoute('/_auth/checkout')({
   head: () => ({ meta: [{ title: t.titles.checkout }] }),
@@ -38,20 +38,7 @@ function CheckoutRoute() {
         </button>
         <h1 className="flex-1 text-xl font-bold lg:sr-only">{t.checkout.mobileTitle}</h1>
       </div>
-      <nav aria-label={t.detail.breadcrumb} className="mb-6 hidden text-[15px] font-bold lg:block">
-        <ol className="flex gap-1">
-          <li>
-            <Link to="/">{t.detail.home}</Link> /
-          </li>
-          <li>
-            <Link to="/" hash={MARKET_ANCHOR}>
-              {t.detail.market}
-            </Link>{' '}
-            /
-          </li>
-          <li aria-current="page">{t.checkout.breadcrumb}</li>
-        </ol>
-      </nav>
+      <Breadcrumb className="mb-6" current={t.checkout.breadcrumb} />
 
       {failed ? (
         <div role="alert" className="flex items-center gap-4">

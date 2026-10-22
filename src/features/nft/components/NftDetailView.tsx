@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Link, useRouter } from '@tanstack/react-router'
+import { useRouter } from '@tanstack/react-router'
 import { ChevronLeft, Heart } from 'lucide-react'
 import { nftDetailQuery } from '@/features/catalog/queries'
 import { nftDisplayName } from '@/features/catalog/format'
@@ -10,7 +10,7 @@ import { NftGallery } from './NftGallery'
 import { NftInfoTabs } from './NftInfoTabs'
 import { PurchasePanel } from './PurchasePanel'
 import { RelatedNfts } from './RelatedNfts'
-import { MARKET_ANCHOR } from '@/lib/anchors'
+import { Breadcrumb } from '@/components/layout/Breadcrumb'
 
 interface NftDetailViewProps {
   nftId: string
@@ -48,18 +48,7 @@ export function NftDetailView({ nftId, editionId, onEditionChange }: NftDetailVi
         </button>
       </div>
 
-      <nav aria-label={t.detail.breadcrumb} className="mb-4 hidden text-[15px] font-bold lg:block">
-        <ol className="flex gap-1">
-          <li>
-            <Link to="/">{t.detail.home}</Link> /
-          </li>
-          <li>
-            <Link to="/" hash={MARKET_ANCHOR}>
-              {t.detail.market}
-            </Link>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumb className="mb-4" />
 
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         <NftGallery art={nft.art} name={name} />

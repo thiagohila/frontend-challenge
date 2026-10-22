@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { Trash2 } from 'lucide-react'
 import { NftArt } from '@/components/nft/NftArt'
+import { useMutationState } from '@tanstack/react-query'
 import { QuantityStepper } from '@/components/nft/QuantityStepper'
 import type { CartItem } from '@/contracts/cart'
 import { nftDisplayName } from '@/features/catalog/format'
@@ -13,11 +14,22 @@ const maxFor = (item: CartItem) => Math.max(1, Math.min(item.available, item.max
 /** Desktop: table (Figma columns). Mobile: cards. Quantities are bounded by stock per edition (K1). */
 export function CartLines({ items }: { items: CartItem[] }) {
   const { updateQuantity, remove } = useCartMutations()
-  const busy = updateQuantity.isPending || remove.isPending
+  // Only the lines with a write in flight (or queued) wait; the rest of the cart stays usable.
+  const busyIds = new Set(
+    useMutationState({
+      filters: { status: 'pending' },
+      select: (mutation) => {
+        const variables: unknown = mutation.state.variables
+        if (typeof variables === 'string') return variables // remove(itemId)
+        return typeof variables === 'object' && variables !== null && 'itemId' in variables ? String(variables.itemId) : null
+      },
+    }),
+  )
 
   return (
     <>
-      <table className="hidden w-full border-separate border-spacing-y-3 lg:table">
+      {/* -mt-3 cancels the row spacing above the header so it starts level with the summary title. */}
+      <table className="-mt-3 hidden w-full border-separate border-spacing-y-3 lg:table">
         <caption className="sr-only">{t.cart.title}</caption>
         <thead>
           <tr className="text-left text-base font-bold">
@@ -55,13 +67,13 @@ export function CartLines({ items }: { items: CartItem[] }) {
                     </div>
                   </div>
                 </td>
-                <td className="font-bold text-text-accent">{formatEth(item.unitPriceEth)}</td>
+                <td className="font-bold text-muted-foreground">{formatEth(item.unitPriceEth)}</td>
                 <td>
                   <QuantityStepper
                     value={item.quantity}
                     max={maxFor(item)}
                     label={t.cart.quantityOf(name)}
-                    disabled={busy}
+                    disabled={busyIds.has(item.id)}
                     onChange={(quantity) => updateQuantity.mutate({ itemId: item.id, quantity })}
                   />
                   {item.available < item.quantity && <p className="mt-1 text-xs text-destructive">{t.cart.stockWarning(item.available)}</p>}
@@ -73,7 +85,7 @@ export function CartLines({ items }: { items: CartItem[] }) {
                   <button
                     type="button"
                     aria-label={t.cart.remove(name)}
-                    disabled={busy}
+                    disabled={busyIds.has(item.id)}
                     onClick={() => remove.mutate(item.id)}
                     className="text-brand-secondary hover:text-destructive"
                   >
@@ -104,7 +116,7 @@ export function CartLines({ items }: { items: CartItem[] }) {
                   <button
                     type="button"
                     aria-label={t.cart.remove(name)}
-                    disabled={busy}
+                    disabled={busyIds.has(item.id)}
                     onClick={() => remove.mutate(item.id)}
                     className="shrink-0 text-primary"
                   >
@@ -118,7 +130,7 @@ export function CartLines({ items }: { items: CartItem[] }) {
                     value={item.quantity}
                     max={maxFor(item)}
                     label={t.cart.quantityOf(name)}
-                    disabled={busy}
+                    disabled={busyIds.has(item.id)}
                     onChange={(quantity) => updateQuantity.mutate({ itemId: item.id, quantity })}
                   />
                 </div>

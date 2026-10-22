@@ -49,12 +49,12 @@ test.describe('T5 — cart', () => {
 
     await code.fill('kurio10')
     await apply.click()
-    await expect(page.getByText('Cupom KURIO10 aplicado (10% de desconto).')).toBeVisible()
+    await expect(page.locator('#conteudo').getByText('Cupom KURIO10 aplicado (10% de desconto).')).toBeVisible() // not the live region copy
     await expect(summary(page)).toContainText('(-) 0.238')
     await expect(page.getByTestId('cart-total')).toHaveText('2.158 ETH') // 2.38 - 0.238 + 0.016
 
     await page.reload()
-    await expect(page.getByText('Cupom KURIO10 aplicado (10% de desconto).')).toBeVisible()
+    await expect(page.locator('#conteudo').getByText('Cupom KURIO10 aplicado (10% de desconto).')).toBeVisible() // not the live region copy
     await page.getByRole('button', { name: 'Remover cupom' }).click()
     await expect(page.getByTestId('cart-total')).toHaveText('2.396 ETH')
   })

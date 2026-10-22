@@ -1,7 +1,7 @@
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { NftArt } from '@/components/nft/NftArt'
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import type { ArtName } from '@/lib/assets'
 import { t } from '@/i18n'
 import { cn } from '@/lib/utils'
@@ -38,9 +38,19 @@ export function NftGallery({ art, name }: { art: ArtName; name: string }) {
           >
             <Search aria-hidden className="size-4" />
           </DialogTrigger>
-          <DialogContent className="w-[min(900px,calc(100vw-2rem))] max-w-none bg-card p-2 sm:max-w-none">
+          {/* Square art fitted to the window (both sides), never cropped by a short viewport. */}
+          <DialogContent
+            showCloseButton={false}
+            className="w-[min(900px,calc(100vw-2rem),calc(100dvh-2rem))] max-w-none bg-card p-2 sm:max-w-none"
+          >
             <DialogTitle className="sr-only">{name}</DialogTitle>
             <NftArt art={art} alt={name} width={900} className="w-full rounded-xl" />
+            <DialogClose
+              aria-label={t.auth.close}
+              className="absolute top-4 right-4 grid size-9 place-items-center rounded-full bg-ink/80 text-foreground transition-colors hover:text-text-accent"
+            >
+              <X aria-hidden className="size-5" />
+            </DialogClose>
           </DialogContent>
         </Dialog>
       </div>

@@ -100,12 +100,15 @@ export async function nftDetail(ctx: ServerContext, id: string) {
   return toDetail(findNft(await ctx.db.read(), id))
 }
 
+const RELATED_LIMIT = 10
+
 export async function related(ctx: ServerContext, id: string) {
   const state = await ctx.db.read()
   const nft = findNft(state, id)
-  const items = state.nfts.filter((candidate) => candidate.id !== id && candidate.art === nft.art).slice(0, 5)
+  // Up to 10 (two carousel pages of 5): same collection first, then the rest of the catalog.
+  const items = state.nfts.filter((candidate) => candidate.id !== id && candidate.collection === nft.collection).slice(0, RELATED_LIMIT)
   const filler = state.nfts.filter((candidate) => candidate.id !== id && !items.includes(candidate))
-  return { items: [...items, ...filler].slice(0, 5).map(toSummary) }
+  return { items: [...items, ...filler].slice(0, RELATED_LIMIT).map(toSummary) }
 }
 
 export interface NftPatch {

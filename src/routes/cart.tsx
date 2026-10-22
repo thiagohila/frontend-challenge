@@ -7,6 +7,7 @@ import { useCart, useCartOwner } from '@/features/cart/queries'
 import { RelatedNfts } from '@/features/nft/components/RelatedNfts'
 import { t } from '@/i18n'
 import { MARKET_ANCHOR } from '@/lib/anchors'
+import { Breadcrumb } from '@/components/layout/Breadcrumb'
 
 export const Route = createFileRoute('/cart')({
   head: () => ({ meta: [{ title: t.titles.cart }] }),
@@ -31,20 +32,7 @@ function CartRoute() {
         </button>
         <h1 className="flex-1 pr-[30px] text-center text-xl font-bold lg:sr-only">{t.cart.title}</h1>
       </div>
-      <nav aria-label={t.detail.breadcrumb} className="mb-2 hidden text-[15px] font-bold lg:block">
-        <ol className="flex gap-1">
-          <li>
-            <Link to="/">{t.detail.home}</Link> /
-          </li>
-          <li>
-            <Link to="/" hash={MARKET_ANCHOR}>
-              {t.detail.market}
-            </Link>{' '}
-            /
-          </li>
-          <li aria-current="page">{t.cart.breadcrumbCart}</li>
-        </ol>
-      </nav>
+      <Breadcrumb className="mb-2" current={t.cart.breadcrumbCart} />
 
       {cart.isPending || !owner ? (
         <div aria-busy="true" className="flex flex-col gap-3">

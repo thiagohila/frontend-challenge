@@ -91,7 +91,14 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
 
       {/* Desktop actions (Figma: stepper left, COMPRAR + Favoritar right). */}
       <div className="hidden items-center justify-between gap-4 lg:flex">
-        <QuantityStepper value={clamped} max={Math.max(max, 1)} onChange={setQuantity} label={t.detail.quantity} disabled={unavailable} />
+        <QuantityStepper
+          variant="pill"
+          value={clamped}
+          max={Math.max(max, 1)}
+          onChange={setQuantity}
+          label={t.detail.quantity}
+          disabled={unavailable}
+        />
         <div className="flex gap-2">
           <Button
             onClick={() => add('cart')}
@@ -118,7 +125,14 @@ export function PurchasePanel({ nft, editionId, onEditionChange }: PurchasePanel
       ) : (
         max > 0 &&
         clamped >= max && (
-          <p className="text-xs text-muted-foreground">{inCart > 0 ? t.detail.limitWithCart(limit, inCart) : t.detail.limit(limit)}</p>
+          <p className="text-xs text-muted-foreground" data-testid="quantity-limit">
+            {/* Say why "+" stopped: what is left in stock, or the per-order cap. */}
+            {edition && edition.available <= nft.maxPerOrder
+              ? t.detail.stockLeft(edition.available, inCart)
+              : inCart > 0
+                ? t.detail.limitWithCart(limit, inCart)
+                : t.detail.limit(limit)}
+          </p>
         )
       )}
       <NftFacts nft={nft} />

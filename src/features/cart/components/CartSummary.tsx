@@ -21,7 +21,8 @@ export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
       aria-labelledby="summary-title"
       className="flex flex-col gap-5 rounded-t-[31px] bg-card p-6 lg:w-[332px] lg:rounded-none lg:bg-transparent lg:p-0"
     >
-      <h2 id="summary-title" className="hidden border-b border-border pb-3 text-lg font-bold lg:block">
+      {/* Same line box as the table header (24 px + 12 px + border): both bottom rules line up. */}
+      <h2 id="summary-title" className="hidden border-b border-border pb-3 text-lg leading-6 font-bold lg:block">
         {t.cart.summaryTitle}
       </h2>
       <CouponForm coupon={cart.coupon} />

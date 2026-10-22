@@ -153,7 +153,8 @@ function buildNfts(): NftRecord[] {
       ],
       rating: { average: Number((3.8 + random.next() * 1.2).toFixed(1)), count: random.int(3, 60) },
       editions,
-      maxPerOrder: 10,
+      // Per-order cap above any numbered edition: stock is what limits in practice (1/10 → up to its stock).
+      maxPerOrder: 50,
       contract: { address: `0x7A42${pad(index, 4)}19E8${'0'.repeat(28)}`.slice(0, 42), standard: 'ERC-721' },
       royaltyPct: 5,
       metadataStorage: 'IPFS',

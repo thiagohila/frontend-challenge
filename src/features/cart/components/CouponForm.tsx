@@ -48,7 +48,8 @@ export function CouponForm({ coupon }: { coupon: Coupon | null }) {
         hideLabel="mobile"
         error={form.formState.errors.code?.message ?? (formError && !form.formState.errors.code ? formError : undefined)}
       >
-        <CouponInput pending={applyCoupon.isPending} {...form.register('code')} />
+        {/* Typing a new code clears the API's answer for the previous one (field and form message alike). */}
+        <CouponInput pending={applyCoupon.isPending} {...form.register('code', { onChange: () => setFormError(null) })} />
       </FormField>
     </form>
   )

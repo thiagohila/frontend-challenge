@@ -258,6 +258,8 @@ export const en = {
     limit: (max: number) => `Limit of ${max} per order for this edition.`,
     limitWithCart: (max: number, inCart: number) => `Limit of ${max} per order for this edition; ${inCart} already in your cart.`,
     cartFull: (max: number) => `You already have this edition's limit in your cart (${max}).`,
+    stockLeft: (available: number, inCart: number) =>
+      inCart > 0 ? `${available} left in this edition; ${inCart} already in your cart.` : `${available} left in this edition.`,
     buy: 'BUY',
     buyMobile: 'Buy NFT',
     adding: 'Adding…',

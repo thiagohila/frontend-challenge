@@ -19,7 +19,7 @@ test.describe('T2 — NFT detail', () => {
     await increase.click()
     await expect(stepper.locator('output')).toHaveText('3')
     await expect(increase).toBeDisabled()
-    await expect(page.getByText('Limite de 3 por pedido nesta edição.')).toBeVisible()
+    await expect(page.getByTestId('quantity-limit')).toHaveText('Restam 3 nesta edição.') // stock is the limit, said as such
   })
 
   test('the quantity limit counts what is already in the cart (K1)', async ({ page, isMobile }) => {
@@ -28,7 +28,7 @@ test.describe('T2 — NFT detail', () => {
     await page.goto('/')
     await addToCart(page, [['emerald-ape-042', 'ed-1-10', 2]]) // 3 in stock
     await page.goto('/nft/emerald-ape-042?edition=ed-1-10')
-    await expect(page.getByText('Limite de 3 por pedido nesta edição; 2 já no seu carrinho.')).toBeVisible()
+    await expect(page.getByTestId('quantity-limit')).toHaveText('Restam 3 nesta edição; 2 já no seu carrinho.')
     await expect(stepper.getByRole('button', { name: 'Aumentar quantidade' })).toBeDisabled()
     await expect(buy).toBeEnabled()
 
