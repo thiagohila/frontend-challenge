@@ -42,7 +42,8 @@ export function ReviewDialog({
           event.preventDefault()
           returnFocusTo.current?.focus()
         }}
-        className="max-h-[90dvh] w-[min(560px,calc(100vw-2rem))] max-w-none overflow-y-auto rounded-lg border border-border bg-card p-6 sm:max-w-none"
+        // Only the item list scrolls (OrderLines scrollLines): title, totals and the actions stay in view.
+        className="flex max-h-[90dvh] w-[min(560px,calc(100vw-2rem))] max-w-none flex-col overflow-hidden rounded-lg border border-border bg-card p-6 sm:max-w-none"
       >
         <DialogTitle className="text-xl font-bold">{t.checkout.review.title}</DialogTitle>
         <DialogDescription className="text-sm text-muted-foreground">{t.checkout.review.description}</DialogDescription>
@@ -61,13 +62,13 @@ export function ReviewDialog({
             {t.checkout.staleQuote}
           </p>
         )}
-        <OrderLines quote={quote} />
+        <OrderLines quote={quote} scrollLines />
         <FormError message={error} />
-        <div className="flex flex-col gap-3 sm:flex-row-reverse">
-          <Button onClick={onSubmit} disabled={submitting} className="h-11 flex-1 font-bold">
+        <div className="flex shrink-0 flex-col gap-3 sm:flex-row-reverse">
+          <Button onClick={onSubmit} disabled={submitting} className="h-[52px] text-base font-bold sm:flex-1">
             {submitting ? t.checkout.review.submitting : changed ? t.checkout.review.acknowledge : t.checkout.review.submit}
           </Button>
-          <Button variant="outline" onClick={onClose} disabled={submitting} className="h-11 flex-1">
+          <Button variant="outline" onClick={onClose} disabled={submitting} className="h-[52px] text-base sm:flex-1">
             {t.checkout.review.back}
           </Button>
         </div>

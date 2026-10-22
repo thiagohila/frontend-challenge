@@ -1,10 +1,11 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { QuantityStepper } from '@/components/nft/QuantityStepper'
 import { Button } from '@/components/ui/button'
 import type { Money } from '@/contracts/common'
 import { t } from '@/i18n'
 import { iconSrc } from '@/lib/assets'
 import { formatEth } from '@/lib/money'
+import { useBottomBarHeight } from '@/hooks/use-bottom-bar-height'
 
 interface MobileBuyBarProps {
   quantity: number
@@ -20,20 +21,7 @@ interface MobileBuyBarProps {
 /** Mobile buy bar (Figma): fixed at the bottom with quantity, price and the two CTAs. */
 export function MobileBuyBar({ quantity, max, onQuantityChange, priceEth, disabled, pending, onBuy, onAddToCart }: MobileBuyBarProps) {
   const bar = useRef<HTMLDivElement>(null)
-  // The footer reserves exactly this much at the bottom (no guessed padding, no dead space).
-  useLayoutEffect(() => {
-    const element = bar.current
-    if (!element) return
-    const root = document.documentElement
-    const publish = () => root.style.setProperty('--bottom-bar-height', `${element.offsetHeight}px`)
-    publish()
-    const observer = new ResizeObserver(publish)
-    observer.observe(element)
-    return () => {
-      observer.disconnect()
-      root.style.removeProperty('--bottom-bar-height')
-    }
-  }, [])
+  useBottomBarHeight(bar)
   return (
     // Figma 70396:… buy bar: rounded-t 40, pt 20 / pb 36. Its height is published so the page ends above it.
     <div

@@ -65,7 +65,7 @@ export function SavedWalletPicker({ form, wallets }: SavedWalletPickerProps) {
                 <span className="text-sm text-muted-foreground">{t.checkout.networkOf(t.networks[wallet.network])}</span>
               </span>
               {/* Figma: the selected card has no menu glyph. */}
-              {walletId !== wallet.id && <MoreVertical aria-hidden className="size-4 text-text-accent" />}
+              {walletId !== wallet.id && <MoreVertical aria-hidden className="size-4 text-text-accent max-lg:hidden" />}
             </label>
           ))
         )}
@@ -133,7 +133,7 @@ export function WalletProviderPicker({
   return (
     <div className="flex flex-col gap-4">
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-center text-lg font-bold lg:text-base">{t.checkout.provider}</legend>
+        <legend className="mb-1 text-base font-bold lg:text-center">{t.checkout.provider}</legend>
         {walletTypeSchema.options.map((provider) => (
           <label
             key={provider}

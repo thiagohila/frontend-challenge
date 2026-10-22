@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, Navigate, useNavigate } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
+import { useBottomBarHeight } from '@/hooks/use-bottom-bar-height'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Cart } from '@/contracts/cart'
@@ -62,6 +63,8 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [staleNotice, setStaleNotice] = useState<string | null>(null)
   const confirmButton = useRef<HTMLButtonElement>(null)
+  const ctaBar = useRef<HTMLDivElement>(null)
+  useBottomBarHeight(ctaBar)
   const [review, setReview] = useState<{ values: CheckoutFormOutput; signature: string } | null>(null)
 
   if (cart.items.length === 0) return <Navigate to="/cart" />
@@ -133,16 +136,16 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
     <form noValidate onSubmit={onConfirm} className="flex flex-col gap-8 lg:flex-row lg:justify-between">
       {/* Figma: desktop = collector form, then wallet; mobile = wallet first (form collapsed). */}
       <div className="flex min-w-0 flex-col gap-8 lg:w-[763px]">
-        <div className="order-2 lg:order-1">
-          <CollectorFields form={form} />
-        </div>
+        {/* No wrapper: hidden on mobile, the section must not leave a flex gap behind. */}
+        <CollectorFields form={form} className="order-2 lg:order-1" />
         <div className="order-1 lg:order-2">
           <SavedWalletPicker form={form} wallets={wallets} />
         </div>
       </div>
 
+      {/* Mobile (Figma): wallets, network and "Carteira e rede", then "Total:" and a CTA fixed to the bottom. */}
       <aside aria-labelledby="checkout-summary-title" className="flex flex-col gap-4 lg:w-[405px]">
-        <h2 id="checkout-summary-title" className="text-lg font-bold">
+        <h2 id="checkout-summary-title" className="text-lg font-bold max-lg:sr-only">
           {t.checkout.yourNfts}
         </h2>
         {staleNotice && (
@@ -150,38 +153,47 @@ export function CheckoutView({ userId, owner, cart, wallets, profile }: Checkout
             {staleNotice}
           </p>
         )}
-        {quote.isPending ? (
-          <div aria-busy="true" className="flex flex-col gap-3">
-            <span className="sr-only">{t.catalog.updating}</span>
-            <Skeleton className="h-[70px] w-full" />
-            <Skeleton className="h-32 w-full" />
-          </div>
-        ) : quote.isError ? (
-          <QuoteError error={quote.error} onRetry={() => void quote.refetch()} />
-        ) : (
-          <OrderLines quote={quote.data} />
-        )}
-        <Link to="/cart" className="text-center text-sm text-muted-foreground hover:text-text-accent">
+        <div className="max-lg:order-2">
+          {quote.isPending ? (
+            <div aria-busy="true" className="flex flex-col gap-3">
+              <span className="sr-only">{t.catalog.updating}</span>
+              <Skeleton className="h-[70px] w-full max-lg:hidden" />
+              <Skeleton className="h-8 w-full lg:h-32" />
+            </div>
+          ) : quote.isError ? (
+            <QuoteError error={quote.error} onRetry={() => void quote.refetch()} />
+          ) : (
+            <OrderLines quote={quote.data} totalOnlyOnMobile />
+          )}
+        </div>
+        <Link to="/cart" className="text-center text-sm text-muted-foreground hover:text-text-accent max-lg:hidden">
           {t.checkout.couponHint}
         </Link>
-        <WalletProviderPicker
-          form={form}
-          hasWallets={wallets.length > 0}
-          connection={connection}
-          connecting={connect.isPending}
-          connectError={connectError}
-          onConnect={onConnect}
-          onDisconnect={() => selectedWallet && disconnect.mutate(selectedWallet.id)}
-        />
-        <Button
-          ref={confirmButton}
-          type="submit"
-          // A placeholder is the previous network's quote: wait for the real one before reviewing.
-          disabled={!quote.data || quote.isPlaceholderData || placeOrder.isPending}
-          className="h-[60px] rounded-full text-base font-bold lg:h-[45px] lg:rounded-lg"
+        <div className="max-lg:order-1">
+          <WalletProviderPicker
+            form={form}
+            hasWallets={wallets.length > 0}
+            connection={connection}
+            connecting={connect.isPending}
+            connectError={connectError}
+            onConnect={onConnect}
+            onDisconnect={() => selectedWallet && disconnect.mutate(selectedWallet.id)}
+          />
+        </div>
+        <div
+          ref={ctaBar}
+          className="fixed inset-x-0 bottom-0 z-40 bg-background px-7 pt-4 pb-[max(2rem,env(safe-area-inset-bottom))] max-lg:order-3 lg:static lg:z-auto lg:bg-transparent lg:p-0"
         >
-          {t.checkout.confirm}
-        </Button>
+          <Button
+            ref={confirmButton}
+            type="submit"
+            // A placeholder is the previous network's quote: wait for the real one before reviewing.
+            disabled={!quote.data || quote.isPlaceholderData || placeOrder.isPending}
+            className="h-[60px] w-full rounded-full bg-[linear-gradient(108deg,#d28a4c_4%,rgba(210,138,76,.8)_122%)] text-base font-bold lg:h-[45px] lg:rounded-lg lg:bg-primary lg:bg-none"
+          >
+            {t.checkout.confirm}
+          </Button>
+        </div>
       </aside>
 
       {review && quote.data && (

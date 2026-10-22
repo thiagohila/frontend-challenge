@@ -13,9 +13,10 @@ async function readyCheckout(page: Page, loginAs: (user: 'ana') => Promise<void>
   await expect(page.getByTestId('wallet-status')).toContainText('MetaMask conectada')
 }
 
-/** The collector form is collapsed on mobile (the Figma mobile frame has no form). */
-async function openCollector(page: Page, isMobile: boolean) {
-  if (isMobile) await page.getByText('Perfil do colecionador').click()
+/** The Figma mobile frame has no collector form: hidden there, prefilled from the profile. */
+async function expectCollectorPrefilled(page: Page, isMobile: boolean) {
+  const name = page.getByRole('textbox', { name: 'Nome de exibição' })
+  await (isMobile ? expect(name).toBeHidden() : expect(name).toHaveValue('Ana Sato'))
 }
 
 const review = (page: Page) => page.getByRole('dialog', { name: 'Revise seu pedido' })
@@ -37,8 +38,7 @@ test.describe('T6 — full purchase', () => {
     await expect(page).toHaveURL('/cart')
     await page.getByRole('link', { name: 'Comprar', exact: true }).click() // signed in: just "Comprar"
     await expect(page).toHaveURL('/checkout')
-    await openCollector(page, isMobile)
-    await expect(page.getByRole('textbox', { name: 'Nome de exibição' })).toHaveValue('Ana Sato')
+    await expectCollectorPrefilled(page, isMobile)
 
     await page.getByRole('button', { name: 'Conectar carteira' }).click()
     await expect(page.getByTestId('wallet-status')).toBeVisible()
@@ -125,8 +125,8 @@ test.describe('T7 — failures, double click, timeout', () => {
   })
 
   test('session expires during checkout: re-auth keeps the filled form (A4)', async ({ page, loginAs, mock, isMobile }) => {
+    test.skip(isMobile, 'the collector form (and its note) is desktop-only in the Figma')
     await readyCheckout(page, loginAs)
-    await openCollector(page, isMobile)
     await page.getByRole('textbox', { name: 'Observação do colecionador (opcional)' }).fill('Entregar na carteira principal')
     await mock.expireSession()
     await page.getByRole('button', { name: 'Desconectar' }).click() // any private call now gets 401
