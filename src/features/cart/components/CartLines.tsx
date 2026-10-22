@@ -29,8 +29,16 @@ export function CartLines({ items }: { items: CartItem[] }) {
   return (
     <>
       {/* -mt-3 cancels the row spacing above the header so it starts level with the summary title. */}
-      <table className="-mt-3 hidden w-full border-separate border-spacing-y-3 lg:table">
+      {/* table-fixed + colgroup: columns keep their width when a quantity or total gains a digit (no jitter). */}
+      <table className="-mt-3 hidden w-full table-fixed border-separate border-spacing-y-3 tabular-nums lg:table">
         <caption className="sr-only">{t.cart.title}</caption>
+        <colgroup>
+          <col />
+          <col className="w-[130px]" />
+          <col className="w-[140px]" />
+          <col className="w-[130px]" />
+          <col className="w-12" />
+        </colgroup>
         <thead>
           <tr className="text-left text-base font-bold">
             <th scope="col" className="border-b border-border pb-3">
@@ -55,7 +63,7 @@ export function CartLines({ items }: { items: CartItem[] }) {
             const name = nftDisplayName(item)
             return (
               <tr key={item.id} className="bg-card" data-testid={`cart-line-${item.nftId}`}>
-                <td className="w-[300px] p-0">
+                <td className="p-0">
                   <div className="flex items-center gap-4">
                     <NftArt art={item.art} alt="" width={70} className="size-[70px] rounded-md" />
                     <div>
@@ -70,6 +78,7 @@ export function CartLines({ items }: { items: CartItem[] }) {
                 <td className="font-bold text-muted-foreground">{formatEth(item.unitPriceEth)}</td>
                 <td>
                   <QuantityStepper
+                    variant="pill-sm"
                     value={item.quantity}
                     max={maxFor(item)}
                     label={t.cart.quantityOf(name)}

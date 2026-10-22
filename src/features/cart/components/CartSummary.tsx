@@ -42,7 +42,7 @@ export function CartSummary({ owner, cart }: { owner: Owner; cart: Cart }) {
         asChild
         className="h-[60px] rounded-full bg-[linear-gradient(105deg,#d28a4c_4%,rgba(210,138,76,.8)_122%)] text-base font-bold lg:h-10 lg:rounded-[3px] lg:bg-primary lg:bg-none"
       >
-        <Link to="/checkout">{t.cart.checkout}</Link>
+        <Link to="/checkout">{owner.kind === 'user' ? t.cart.checkoutSignedIn : t.cart.checkout}</Link>
       </Button>
       <Link to="/" hash={MARKET_ANCHOR} className="hidden text-center text-base text-text-accent hover:underline lg:block">
         {t.cart.continue}

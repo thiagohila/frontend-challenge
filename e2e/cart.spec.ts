@@ -102,4 +102,16 @@ test.describe('empty cart entry point', () => {
       .click()
     await expect(page.getByText('Seu carrinho está vazio.')).toBeVisible()
   })
+
+  test('the checkout CTA reads "Conectar e comprar" for a guest and "Comprar" once signed in', async ({ page, loginAs }) => {
+    await page.goto('/cart')
+    await addToCart(page, [['emerald-ape-042', 'ed-1-50', 1]])
+    await page.reload()
+    await expect(page.getByRole('link', { name: 'Conectar e comprar' })).toBeVisible()
+    await loginAs('ana') // API sign-in (no guest merge, covered in T5): give Ana her own item
+    await addToCart(page, [['emerald-ape-042', 'ed-1-50', 1]])
+    await page.goto('/cart')
+    await expect(page.getByRole('link', { name: 'Comprar', exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Conectar e comprar' })).toHaveCount(0)
+  })
 })

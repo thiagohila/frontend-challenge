@@ -35,7 +35,7 @@ test.describe('T6 — full purchase', () => {
     await page.goto('/nft/emerald-ape-042')
     await page.getByRole('button', { name: isMobile ? 'Comprar NFT' : 'COMPRAR', exact: true }).click()
     await expect(page).toHaveURL('/cart')
-    await page.getByRole('link', { name: 'Conectar e finalizar' }).click()
+    await page.getByRole('link', { name: 'Comprar', exact: true }).click() // signed in: just "Comprar"
     await expect(page).toHaveURL('/checkout')
     await openCollector(page, isMobile)
     await expect(page.getByRole('textbox', { name: 'Nome de exibição' })).toHaveValue('Ana Sato')

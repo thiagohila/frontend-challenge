@@ -467,7 +467,9 @@ export const pt = {
     networkFee: 'Taxa de rede',
     estimated: 'Taxa estimada',
     total: 'Total',
-    checkout: 'Conectar e finalizar',
+    // Guest: signing in is part of the step; signed in: just buy.
+    checkout: 'Conectar e comprar',
+    checkoutSignedIn: 'Comprar',
     continue: 'Continuar explorando',
     summaryError: 'Não foi possível calcular o resumo.',
     retry: 'Tentar novamente',
