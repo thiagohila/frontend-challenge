@@ -1,5 +1,5 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useLocation, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import type { NftSummary } from '@/contracts/nft'
 import { t } from '@/i18n'
@@ -22,7 +22,6 @@ export function useFavorites() {
   const userId = state.status === 'authenticated' ? state.user.id : null
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const location = useLocation()
   const favorites = useQuery({ ...favoritesQuery(userId ?? ''), enabled: Boolean(userId) })
   const ids = new Set(favorites.data?.map((nft) => nft.id))
 
@@ -54,7 +53,8 @@ export function useFavorites() {
     isPending: (nftId: string) => mutation.isPending && mutation.variables?.nft.id === nftId,
     toggle(nft: NftSummary) {
       if (!userId) {
-        void navigate({ to: '/login', search: { redirect: location.href, intent: `favorite:${nft.id}` } })
+        // Sign in over this page, then the favorite is applied (intent) and the user stays here.
+        void navigate({ to: '.', search: (previous) => ({ ...previous, auth: 'login', intent: `favorite:${nft.id}` }) })
         return
       }
       mutation.mutate({ nft, favorite: !ids.has(nft.id) })

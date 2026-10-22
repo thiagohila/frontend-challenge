@@ -11,7 +11,7 @@ test.describe('T4 — favorites', () => {
   test('a visitor signs in and the favorite is applied afterwards (intent)', async ({ page, isMobile }) => {
     await page.goto('/nft/emerald-ape-042')
     await favoriteButton(page, isMobile).click()
-    await expect(page).toHaveURL(/\/login\?.*intent=favorite%3Aemerald-ape-042/)
+    await expect(page).toHaveURL(/auth=login.*intent=favorite%3Aemerald-ape-042|intent=favorite%3Aemerald-ape-042.*auth=login/)
     const dialog = page.getByRole('dialog')
     await dialog.getByRole('textbox', { name: 'E-mail' }).fill(DEMO_USERS.bruno.email)
     await dialog.getByLabel('Senha', { exact: true }).fill(DEMO_PASSWORD)

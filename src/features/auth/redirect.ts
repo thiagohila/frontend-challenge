@@ -21,3 +21,16 @@ export const authSearchSchema = z.object({
   intent: intentSchema.optional().catch(undefined),
 })
 export type AuthSearch = z.infer<typeof authSearchSchema>
+
+/** Which auth dialog is open over the current page (`?auth=login|register`), validated at the root route. */
+export const authModeSchema = z.enum(['login', 'register'])
+export type AuthMode = z.infer<typeof authModeSchema>
+export const authOverlaySearchSchema = authSearchSchema.extend({ auth: authModeSchema.optional().catch(undefined) })
+
+/** Same page, with the sign-in dialog open over it and where to go once signed in. */
+export function withSignIn(href: string, redirectTo: string): string {
+  const url = new URL(href, window.location.origin)
+  url.searchParams.set('auth', 'login')
+  url.searchParams.set('redirect', redirectTo)
+  return `${url.pathname}${url.search}${url.hash}`
+}

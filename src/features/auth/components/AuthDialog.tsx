@@ -1,38 +1,29 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import { CatalogHome } from '@/features/catalog/components/CatalogHome'
 import { DESKTOP_QUERY, useMediaQuery } from '@/hooks/use-media-query'
 import { t } from '@/i18n'
 import { iconSrc } from '@/lib/assets'
 import { cn } from '@/lib/utils'
-import type { AuthSearch } from '../redirect'
-
-const noop = () => undefined
+import type { AuthMode } from '../redirect'
 
 interface AuthDialogProps {
   mode: 'signIn' | 'signUp'
-  search: AuthSearch
   onClose: () => void
   children: ReactNode
 }
 
 /**
- * Figma: desktop = modal over the marketplace page; mobile = full screen with the KURIO wordmark.
+ * Figma: desktop = modal over the current page; mobile = full screen with the KURIO wordmark.
  * Radix Dialog provides focus trap, Esc to close and focus restoration (U5).
  */
-export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps) {
+export function AuthDialog({ mode, onClose, children }: AuthDialogProps) {
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const title = mode === 'signIn' ? t.auth.signInTab : isDesktop ? t.auth.signUpTab : t.auth.signUpMobileTitle
   const subtitle = mode === 'signIn' ? t.auth.signInSubtitle : t.auth.signUpSubtitle
 
   return (
     <>
-      {isDesktop && (
-        <div inert aria-hidden>
-          <CatalogHome search={{}} onSearchChange={noop} onClearFilters={noop} />
-        </div>
-      )}
       <Dialog open onOpenChange={(open) => !open && onClose()}>
         <DialogContent
           showCloseButton={false}
@@ -70,11 +61,11 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
             </p>
             {/* Desktop tabs "Entrar | Criar conta" */}
             <nav aria-label={t.auth.signInTab} className="hidden justify-center gap-0 text-xl lg:flex">
-              <AuthTab to="/login" active={mode === 'signIn'} search={search}>
+              <AuthTab target="login" active={mode === 'signIn'}>
                 {t.auth.signInTab}
               </AuthTab>
               <span aria-hidden className="mx-2 w-px bg-coral" />
-              <AuthTab to="/register" active={mode === 'signUp'} search={search}>
+              <AuthTab target="register" active={mode === 'signUp'}>
                 {t.auth.signUpTab}
               </AuthTab>
             </nav>
@@ -85,8 +76,9 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
             <div className="mt-8 lg:mt-6">{children}</div>
 
             <Link
-              to={mode === 'signIn' ? '/register' : '/login'}
-              search={search}
+              to="."
+              search={(previous) => ({ ...previous, auth: mode === 'signIn' ? 'register' : 'login' })}
+              replace
               className="mt-12 text-center text-sm text-muted-foreground hover:text-text-accent lg:hidden"
             >
               {mode === 'signIn' ? t.auth.toSignUp : t.auth.toSignIn}
@@ -98,21 +90,13 @@ export function AuthDialog({ mode, search, onClose, children }: AuthDialogProps)
   )
 }
 
-function AuthTab({
-  to,
-  active,
-  search,
-  children,
-}: {
-  to: '/login' | '/register'
-  active: boolean
-  search: AuthSearch
-  children: ReactNode
-}) {
+/** Switches the dialog in place: only `?auth` changes (no navigation, the page behind stays). */
+function AuthTab({ target, active, children }: { target: AuthMode; active: boolean; children: ReactNode }) {
   return (
     <Link
-      to={to}
-      search={search}
+      to="."
+      search={(previous) => ({ ...previous, auth: target })}
+      replace
       aria-current={active ? 'page' : undefined}
       className={cn('font-medium', active ? 'text-text-accent' : 'text-foreground')}
     >

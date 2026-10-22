@@ -64,7 +64,7 @@ test.describe('T5 — cart', () => {
     await addToCart(page, [['emerald-ape-042', 'ed-1-10', 3]])
     await page.reload()
     await page.goto('/checkout') // requires auth → login
-    await expect(page).toHaveURL(/\/login/)
+    await expect(page).toHaveURL(/auth=login/)
     const dialog = page.getByRole('dialog')
     await dialog.getByRole('textbox', { name: 'E-mail' }).fill(DEMO_USERS.bruno.email)
     await dialog.getByLabel('Senha', { exact: true }).fill(DEMO_PASSWORD)

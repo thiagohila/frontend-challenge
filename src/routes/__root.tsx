@@ -1,4 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query'
+import type { ParsedLocation } from '@tanstack/react-router'
 import { createRootRouteWithContext, HeadContent, Link, Outlet, useLocation, useRouter } from '@tanstack/react-router'
 import { Fragment, useEffect, useRef } from 'react'
 import { Footer } from '@/components/layout/Footer'
@@ -6,6 +7,8 @@ import { Header } from '@/components/layout/Header'
 import { LiveRegion } from '@/components/layout/LiveRegion'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
 import { DeferredShell } from '@/components/layout/DeferredShell'
+import { AuthOverlay } from '@/features/auth/components/AuthOverlay'
+import { authOverlaySearchSchema } from '@/features/auth/redirect'
 import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
 import { PendingOrderBanner } from '@/features/orders/components/PendingOrderBanner'
 import { t } from '@/i18n'
@@ -15,9 +18,13 @@ import type { session } from '@/lib/session/store'
 export interface RouterContext {
   queryClient: QueryClient
   session: typeof session
+  /** The page the user is on (last resolved location): guards open sign-in over it instead of leaving. */
+  currentPage: () => ParsedLocation | undefined
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  // `?auth=login|register` (+ redirect/intent) is valid on every route: the auth dialog overlays any page.
+  validateSearch: authOverlaySearchSchema,
   component: RootLayout,
   notFoundComponent: NotFound,
 })
@@ -54,6 +61,7 @@ function RootLayout() {
         {showChrome && <Footer />}
         {showTabBar && <MobileTabBar />}
         <FavoriteIntentRunner />
+        <AuthOverlay />
         <LiveRegion />
       </Fragment>
       <DeferredShell />

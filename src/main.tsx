@@ -11,7 +11,7 @@ import './index.css'
 
 const router = createRouter({
   routeTree,
-  context: { queryClient, session },
+  context: { queryClient, session, currentPage: () => router.state.resolvedLocation },
   defaultPreload: 'intent',
   scrollRestoration: true,
   // In-page anchors (#mercado) glide into view, unless the user prefers reduced motion.

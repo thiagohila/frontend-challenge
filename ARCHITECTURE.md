@@ -161,30 +161,30 @@ Envelope: `{ eventId: string, type, resourceId: string, version: number, occurre
 - `lib/session`: store externo (`useSyncExternalStore`) com `{ status: 'unknown'|'authenticated'|'anonymous'|'expired', user, token }`; token persistido em `sessionStorage`.
 - Boot: se há token → `GET /auth/session` antes de resolver guards. A sessão entra em `createRouter({ context: { queryClient, session } })`, e cada mudança de sessão chama `router.invalidate()` para reavaliar os guards.
 - A chave do token (`kurio:session`) é fixa. As demais chaves privadas do app usam o namespace `kurio:<userId>:*`.
-- Guard: layout route `_auth` com `beforeLoad` → `redirect({ to: '/login', search: { redirect: location.href } })`. `redirect` só é aceito se `new URL(value, location.origin).origin === location.origin` (bloqueia `//evil`, `/\evil`, `javascript:`).
+- **Login/cadastro são um diálogo sobre a página atual** (`?auth=login|register`, validado na rota raiz; `AuthOverlay` no layout): o conteúdo atrás continua montado e trocar de aba só troca o parâmetro. Guard `_auth` (`beforeLoad`): anônimo → abre o login **sobre a página em que o usuário está** (`context.currentPage()` = última localização resolvida) com `redirect=<destino>`; acesso direto/recarregar → sobre `/`. `redirect` só é aceito se `new URL(value, location.origin).origin === location.origin` (bloqueia `//evil`, `/\evil`, `javascript:`). `/login` e `/register` existem só para links antigos e redirecionam para o diálogo.
 - **Expiração no meio da navegação/checkout**: `session.expire()` abre o `ReauthDialog` (não navega), e o formulário e a rota ficam preservados. Ao relogar com o mesmo usuário, refaz as queries; se for outro usuário, aplica as regras de troca.
-- **Logout/troca de usuário** (ordem): marcar a sessão como `anonymous` → navegar para rota pública (`/` ou `/login`) → desconectar socket → limpar versões/dedupe do realtime → `queryClient.cancelQueries()` + `clear()` → limpar storages privados `kurio:<userId>:*`.
+- **Logout/troca de usuário** (ordem): marcar a sessão como `anonymous` → navegar para rota pública (`/`) → encerrar o socket **desse usuário** (o bridge já abre o anônimo) → limpar versões/dedupe do realtime → cancelar e remover só as queries `['user', id]` (públicas seguem montadas) → limpar storages privados `kurio:<userId>:*`.
 - Login de visitante com carrinho: `POST /cart/merge { guestCartId }` com o token novo **antes** de publicar a sessão (o `signIn` reavalia os guards e pode navegar na hora, abortando o merge — REVIEW-LOG B5) → anunciar `adjustments` → descartar o guestId.
-- **Ação protegida a partir de tela pública** (favoritar, ir ao checkout): navega para `/login?redirect=<rota>&intent=<ação>`; após o login, volta à rota e executa a intenção (ex.: `favorite:<nftId>`). A intenção é validada por schema e só aceita ações da allowlist.
+- **Ação protegida a partir de tela pública** (favoritar, "Conectar e comprar"): abre o login sobre a própria tela com `intent=<ação>` e/ou `redirect=<rota>`; após o login executa a intenção (ex.: `favorite:<nftId>`) ou segue para o destino. A intenção é validada por schema e só aceita ações da allowlist.
 - Ao logar, um pedido `pending` do usuário (`GET /orders?status=pending`) é retomado: banner + link para o status (RT8).
 
 ## 8. Rotas
 
-| Rota               | Arquivo                     | Auth       | Search (zod)                                                      |
-| ------------------ | --------------------------- | ---------- | ----------------------------------------------------------------- |
-| `/`                | `index.tsx`                 | —          | `q, collection[], network[], priceMin, priceMax, tab, sort, page` |
-| `/nft/$nftId`      | `nft.$nftId.tsx`            | —          | `edition?`                                                        |
-| `/cart`            | `cart.tsx`                  | —          | —                                                                 |
-| (layout)           | `_auth.tsx`                 | ✅         | `beforeLoad` com o guard                                          |
-| `/checkout`        | `_auth/checkout.tsx`        | ✅         | `step: 'details'                                                  | 'review'` |
-| `/orders/$orderId` | `_auth/orders.$orderId.tsx` | ✅         | — (confirmação/recibo)                                            |
-| `/login`           | `login.tsx`                 | só anônimo | `redirect?`, `intent?`                                            |
-| `/register`        | `register.tsx`              | só anônimo | `redirect?`, `intent?`                                            |
-| `/favorites`       | `_auth/favorites.tsx`       | ✅         | — (lista de favoritos; Tab Bar mobile e "Lista de interesse")     |
-| `/account/profile` | `_auth/account.profile.tsx` | ✅         | —                                                                 |
-| `/account/wallets` | `_auth/account.wallets.tsx` | ✅         | —                                                                 |
-| `/tx/$hash`        | `_auth/tx.$hash.tsx`        | ✅ (dono)  | — (explorador simulado; 404 para os demais)                       |
-| `*`                | `__root notFoundComponent`  | —          | —                                                                 |
+| Rota                  | Arquivo                     | Auth       | Search (zod)                                                      |
+| --------------------- | --------------------------- | ---------- | ----------------------------------------------------------------- |
+| `/`                   | `index.tsx`                 | —          | `q, collection[], network[], priceMin, priceMax, tab, sort, page` |
+| `/nft/$nftId`         | `nft.$nftId.tsx`            | —          | `edition?`                                                        |
+| `/cart`               | `cart.tsx`                  | —          | —                                                                 |
+| (layout)              | `_auth.tsx`                 | ✅         | `beforeLoad` com o guard                                          |
+| `/checkout`           | `_auth/checkout.tsx`        | ✅         | `step: 'details'                                                  | 'review'`                   |
+| `/orders/$orderId`    | `_auth/orders.$orderId.tsx` | ✅         | — (confirmação/recibo)                                            |
+| `/login`, `/register` | `login.tsx`, `register.tsx` | —          | redirecionam para `/?auth=…` (o diálogo é `?auth=login            | register` em qualquer rota) |
+| `/register`           | `register.tsx`              | só anônimo | `redirect?`, `intent?`                                            |
+| `/favorites`          | `_auth/favorites.tsx`       | ✅         | — (lista de favoritos; Tab Bar mobile e "Lista de interesse")     |
+| `/account/profile`    | `_auth/account.profile.tsx` | ✅         | —                                                                 |
+| `/account/wallets`    | `_auth/account.wallets.tsx` | ✅         | —                                                                 |
+| `/tx/$hash`           | `_auth/tx.$hash.tsx`        | ✅ (dono)  | — (explorador simulado; 404 para os demais)                       |
+| `*`                   | `__root notFoundComponent`  | —          | —                                                                 |
 
 - Mudança de qualquer filtro → `page: 1` (feito no helper `updateFilters`, nunca no componente).
 - `loader` do detalhe: `queryClient.ensureQueryData(nftDetail(id))`; 404 → `throw notFound()`.

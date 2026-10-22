@@ -55,8 +55,9 @@ export function Header() {
             </Link>
           ) : (
             <Link
-              to="/login"
-              search={{ redirect: pathname }}
+              // Opens the sign-in dialog over this page (no navigation away).
+              to="."
+              search={(previous) => ({ ...previous, auth: 'login' })}
               className="flex h-[35px] w-[100px] items-center justify-center gap-1 rounded-md bg-primary text-base font-medium text-primary-foreground hover:bg-text-accent"
             >
               <img src={iconSrc('icon-login-ink')} alt="" width={20} height={20} />

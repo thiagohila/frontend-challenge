@@ -25,7 +25,7 @@ export function ReauthDialog() {
         <LoginForm compact defaultEmail={state.user.email} onSuccess={() => undefined} />
         <button
           type="button"
-          onClick={() => void signOut(() => navigate({ to: '/login' }))}
+          onClick={() => void signOut(() => navigate({ to: '/', search: { auth: 'login' } }))}
           className="text-sm text-text-accent underline-offset-4 hover:underline"
         >
           {t.auth.reauthSignOut}

@@ -40,7 +40,7 @@ test.describe('T3 — account and session', () => {
 
   test('sign-in rejects bad credentials and returns to the protected page', async ({ page }) => {
     await page.goto('/account/wallets')
-    await expect(page).toHaveURL(/\/login\?redirect=%2Faccount%2Fwallets/)
+    await expect(page).toHaveURL(/auth=login&redirect=%2Faccount%2Fwallets/)
     await signIn(page, DEMO_USERS.ana.email, 'senhaErrada1')
     await expect(dialog(page).getByRole('alert')).toHaveText('E-mail ou senha incorretos.')
 
@@ -80,7 +80,7 @@ test.describe('T3 — account and session', () => {
     await expect(page).toHaveURL('/')
     expect(await page.evaluate(() => sessionStorage.getItem('kurio:session'))).toBeNull()
     await page.goto('/account/wallets')
-    await expect(page).toHaveURL(/\/login/)
+    await expect(page).toHaveURL(/auth=login/)
 
     await signIn(page, DEMO_USERS.bruno.email)
     await expect(page).toHaveURL('/account/wallets')
@@ -109,7 +109,7 @@ test.describe('T3 — account and session', () => {
       history.pushState({}, '', '/favorites')
       dispatchEvent(new PopStateEvent('popstate'))
     })
-    await expect(page).toHaveURL(/\/login/)
+    await expect(page).toHaveURL(/auth=login/)
     await signIn(page, DEMO_USERS.bruno.email)
     await expect(page).toHaveURL('/favorites')
     await expect(page.getByText('Você ainda não favoritou nenhum NFT.')).toBeVisible()
@@ -128,5 +128,38 @@ test.describe('T3 — account and session', () => {
     await mock.expireSession()
     await page.reload()
     await expect(page.getByRole('dialog', { name: 'Sua sessão expirou' })).toBeVisible()
+  })
+})
+
+test.describe('auth dialog over the current page', () => {
+  test('signing in from the cart keeps the cart behind; switching tabs only swaps ?auth (no navigation); then continues to checkout', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto('/nft/emerald-ape-042')
+    await page.getByRole('button', { name: isMobile ? 'Comprar NFT' : 'COMPRAR', exact: true }).click()
+    await expect(page).toHaveURL('/cart')
+    await page.evaluate(() => {
+      document.querySelector('main')?.setAttribute('data-kept', 'yes')
+    })
+    await page.getByRole('link', { name: 'Conectar e comprar' }).click()
+    await expect(page).toHaveURL(/\/cart\?auth=login/)
+    await expect(page.locator('main[data-kept=yes]')).toHaveCount(1) // the cart is still mounted behind
+
+    const dialog = page.getByRole('dialog')
+    await dialog
+      .getByRole('link', { name: /Criar (conta|perfil)|Novo na Kurio/ })
+      .first()
+      .click()
+    await expect(page).toHaveURL(/\/cart\?auth=register/)
+    await expect(page.locator('main[data-kept=yes]')).toHaveCount(1) // same page: no reload, no route change
+    await dialog
+      .getByRole('link', { name: /^Entrar$|Já tem uma conta/ })
+      .first()
+      .click()
+    await expect(page).toHaveURL(/\/cart\?auth=login/)
+
+    await signIn(page, DEMO_USERS.ana.email)
+    await expect(page).toHaveURL('/checkout')
   })
 })
