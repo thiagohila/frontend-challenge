@@ -1,8 +1,8 @@
 import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { Slider } from '@/components/ui/slider'
-import type { Network } from '@/contracts/common'
-import type { CollectionSlug, NftListResponse } from '@/contracts/nft'
+import { networkSchema } from '@/contracts/common'
+import { collectionSlugSchema, type NftListResponse } from '@/contracts/nft'
 import { t } from '@/i18n'
 import { money } from '@/lib/money'
 import { cn } from '@/lib/utils'
@@ -14,8 +14,8 @@ interface CatalogFiltersProps {
   onChange: (patch: Partial<Omit<CatalogSearch, 'page'>>) => void
 }
 
-const ALL_COLLECTIONS = Object.keys(t.collectionsLabel) as CollectionSlug[]
-const ALL_NETWORKS = Object.keys(t.networks) as Network[]
+const ALL_COLLECTIONS = collectionSlugSchema.options
+const ALL_NETWORKS = networkSchema.options
 
 /** Figma sidebar: collections, price range and network — combinable, counts from the API facets. */
 export function CatalogFilters({ search, facets, onChange }: CatalogFiltersProps) {

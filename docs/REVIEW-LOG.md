@@ -48,3 +48,6 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B8 | LCP mobile dependente da API | arte do hero vinha de `/nfts/featured` | hero editorial estático + preload; chunk do MSW em `modulepreload` | `docs/lighthouse/README.md` |
 | EX | Rótulos que não trocariam de idioma | dicionário lido em constantes de módulo (`MobileTabBar` items, `WalletForm` `fields`) | leitura no render; a constante guarda a **chave** | regra em ARCH §11 + `e2e/prefs.spec.ts` verifica a tab bar/header em en-US |
 | EX | Títulos de página e mensagem genérica fora do dicionário | strings literais em `head()` das rotas e em `applyApiErrors` | `t.titles.*`, `t.form.genericError` | busca por literais pt fora de `src/i18n` antes do commit |
+| EX | Foco ia para o `<body>` ao trocar o idioma | o shell remonta por `key={locale}` e desmonta o `select` focado | o seletor recupera o foco ao remontar | `prefs.spec` (`toBeFocused`) |
+| EX | Checagem de capturas só pegava linhas únicas | `grep` por padrão de uma linha | varredura em en-US de 7 telas logadas sem copy pt | `prefs.spec` "no pt-BR UI copy" |
+| EX | Processo: `git checkout <commit> -- src` para medir bundle apagou edições não commitadas | medição no working tree | medir commits antigos em `git worktree` | prática |

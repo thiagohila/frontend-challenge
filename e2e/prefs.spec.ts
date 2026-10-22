@@ -8,6 +8,7 @@ test.describe('EX1 — language switch', () => {
 
     await page.getByLabel('Idioma').selectOption('en-US')
     await expect(page.locator('html')).toHaveAttribute('lang', 'en-US')
+    await expect(page.getByLabel('Language')).toBeFocused() // the shell remounted under the select
     await expect(page).toHaveTitle('Kurio — NFT Marketplace')
     await expect(page.getByRole('heading', { name: 'NFT catalog' })).toBeVisible()
     await expect(page.getByText(/\d+ NFTs? found/)).toBeVisible()
@@ -23,6 +24,20 @@ test.describe('EX1 — language switch', () => {
     await page.getByLabel('Language').selectOption('pt-BR')
     await expect(page.getByRole('heading', { name: 'Catálogo de NFTs' })).toBeVisible()
     await expect(page).toHaveTitle('Kurio — Marketplace de NFTs')
+  })
+
+  test('no pt-BR UI copy left on the main screens in en-US (catches captures outside render)', async ({ page, loginAs }) => {
+    await page.goto('/')
+    await loginAs('ana')
+    await addToCart(page, [['emerald-ape-042', 'ed-1-50', 1]])
+    await page.getByLabel('Idioma').selectOption('en-US')
+    // Labels the app owns; NFT descriptions and server messages are data, not UI copy.
+    const ptCopy = /\b(Carrinho|Entrar|Carteiras?|Pagamento|Início|Favoritos|Tentar novamente|Perfil|Rede|Edição|Quantidade)\b/
+    for (const path of ['/', '/nft/emerald-ape-042', '/cart', '/checkout', '/favorites', '/account/profile', '/account/wallets'] as const) {
+      await page.goto(path)
+      await expect(page.locator('main h1').first()).toBeVisible()
+      await expect(page.locator('body'), path).not.toContainText(ptCopy)
+    }
   })
 
   test('client validation messages follow the language (contract messages are translated at render)', async ({ page }) => {

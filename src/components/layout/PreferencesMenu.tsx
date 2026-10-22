@@ -1,14 +1,23 @@
-import { useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { t } from '@/i18n'
 import { HOUR_CYCLES, LOCALES, prefs, usePrefs, type HourCycle, type Locale } from '@/lib/prefs'
 
 const isLocale = (value: string): value is Locale => (LOCALES as readonly string[]).includes(value)
 const isHourCycle = (value: string): value is HourCycle => (HOUR_CYCLES as readonly string[]).includes(value)
 
+// A locale change remounts the shell (ADR 18), unmounting the focused select: hand focus back to it.
+let refocusLocaleSelect = false
+
 /** Language and time format (extras EX1/EX2). Not in the Figma: native selects, footer placement (ARCH §15). */
 export function PreferencesMenu() {
   const current = usePrefs()
   const id = useId()
+  const localeSelect = useRef<HTMLSelectElement>(null)
+  useEffect(() => {
+    if (!refocusLocaleSelect) return
+    refocusLocaleSelect = false
+    localeSelect.current?.focus()
+  }, [])
   const selectClass = 'h-8 rounded border border-border-soft bg-surface-dark px-2 text-xs text-foreground'
 
   return (
@@ -17,9 +26,14 @@ export function PreferencesMenu() {
       <span className="flex items-center gap-2">
         <label htmlFor={`${id}-locale`}>{t.prefs.language}</label>
         <select
+          ref={localeSelect}
           id={`${id}-locale`}
           value={current.locale}
-          onChange={(event) => isLocale(event.target.value) && prefs.set({ locale: event.target.value })}
+          onChange={(event) => {
+            if (!isLocale(event.target.value)) return
+            refocusLocaleSelect = true
+            prefs.set({ locale: event.target.value })
+          }}
           className={selectClass}
         >
           {LOCALES.map((locale) => (

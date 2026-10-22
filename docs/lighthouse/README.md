@@ -22,7 +22,7 @@ Configuração versionada: [`scripts/lighthouse.mjs`](../../scripts/lighthouse.m
 | Navegador | Chromium headless 156 (do Playwright 1.64.1, `HeadlessChrome/156.0.0.0`) |
 | Node | v22.23.0 |
 | Máquina | macOS (Darwin 25.5.0), Intel Core i5-1038NG7 2.0 GHz ×8, 16 GB |
-| Alvo | https://kurio-gold.vercel.app, commit `78785fa`, medido em 2026-10-22 ~04:37 UTC |
+| Alvo | https://kurio-gold.vercel.app, commit `78785fa`, medido em 2026-10-22 ~04:37 UTC. Depois disso, os extras EX1/EX2 somaram +1,4 KB ao chunk de entrada (289,95 → 291,30 KB; +0,3 KB gzip), sem nova medição |
 | Mobile | emulação 412×823, rede lenta 4G simulada (RTT 150 ms, ~1,6 Mbps), **CPU 4× mais lenta** |
 | Desktop | emulação desktop, sem throttling de CPU (config padrão desktop do Lighthouse) |
 
