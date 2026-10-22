@@ -45,6 +45,8 @@ export const mockControl = {
   /** Closes every socket transport; clients reconnect and reconcile with REST. */
   dropConnection: () => realtimeControl.dropConnections(),
   socketConnections: () => realtimeControl.connectionCount,
+  /** Keep new orders pending for `ms` (null = default 3 s) — deterministic pending/recovery tests. */
+  setOrderResolution: (ms: number | null) => runtime.setOrderResolution(ms),
   resolveOrder: (id: string, outcome: 'confirmed' | 'declined') => forceResolveOrder(ctx, id, outcome),
   async disconnectWallet(walletId: string) {
     const wallet = (await db.read()).wallets.find((candidate) => candidate.id === walletId)

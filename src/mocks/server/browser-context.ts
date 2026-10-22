@@ -2,6 +2,7 @@ import { runtime } from '../runtime'
 import type { ServerContext } from './context'
 import { createDb, type DbState, type Persistence } from './db'
 import { createSeed } from './seed'
+import { ORDER_RESOLUTION_MS } from './services/orders'
 
 const DB_KEY = 'msw-server-db:v1'
 
@@ -44,4 +45,5 @@ export const serverContext: ServerContext = {
   schedule: (callback, delayMs) => {
     setTimeout(callback, delayMs)
   },
+  orderResolutionMs: () => runtime.orderResolutionMs ?? ORDER_RESOLUTION_MS,
 }

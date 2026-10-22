@@ -2,6 +2,7 @@ import type { Scenario } from '../../src/mocks/scenarios'
 import type { ServerContext } from '../../src/mocks/server/context'
 import { createDb, memoryPersistence } from '../../src/mocks/server/db'
 import { createSeed } from '../../src/mocks/server/seed'
+import { ORDER_RESOLUTION_MS } from '../../src/mocks/server/services/orders'
 
 /** In-memory simulated server with a controllable clock and manual timers. */
 export function createTestServer(flags: NonNullable<Scenario['flags']> = {}) {
@@ -16,6 +17,7 @@ export function createTestServer(flags: NonNullable<Scenario['flags']> = {}) {
     schedule: (callback, delayMs) => {
       timers.push({ at: now + delayMs, callback })
     },
+    orderResolutionMs: () => ORDER_RESOLUTION_MS,
   }
   return {
     ctx,

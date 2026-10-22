@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures'
+import { addToCart, expect, test } from './fixtures'
 
 // No horizontal overflow (U10). At 390px this also covers 400% zoom of a 1280px window (WCAG 1.4.10).
 for (const path of ['/', '/nft/emerald-ape-042', '/login', '/register', '/rota-inexistente']) {
@@ -20,6 +20,17 @@ test('no horizontal overflow on the cart with items', async ({ page }) => {
   await page.goto('/nft/emerald-ape-042')
   await page.getByRole('button', { name: /^(COMPRAR|Comprar NFT)$/ }).click()
   await expect(page.getByTestId('cart-total')).toBeVisible()
+  const widths = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth, window.innerWidth])
+  expect(widths[0]).toBeLessThanOrEqual(widths[1] ?? 0)
+  expect(widths[2]).toBe(widths[1])
+})
+
+test('no horizontal overflow on checkout', async ({ page, loginAs }) => {
+  await page.goto('/')
+  await loginAs('ana')
+  await addToCart(page, [['emerald-ape-042', 'ed-1-50', 1]])
+  await page.goto('/checkout')
+  await expect(page.getByTestId('checkout-total')).toBeVisible()
   const widths = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth, window.innerWidth])
   expect(widths[0]).toBeLessThanOrEqual(widths[1] ?? 0)
   expect(widths[2]).toBe(widths[1])

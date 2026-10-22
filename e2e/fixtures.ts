@@ -20,6 +20,23 @@ export async function waitForMockServer(page: Page) {
   await page.waitForFunction(() => Boolean(window.__mock))
 }
 
+/** Adds items as the current owner (guest or signed-in user) through the REST API — same contract as the UI. */
+export async function addToCart(page: Page, items: [nftId: string, editionId: string, quantity: number][]) {
+  await waitForMockServer(page)
+  await page.waitForFunction(() => localStorage.getItem('kurio:guest-cart') ?? sessionStorage.getItem('kurio:session'))
+  await page.evaluate(async (lines) => {
+    const session = JSON.parse(sessionStorage.getItem('kurio:session') ?? 'null') as { token: string } | null
+    const guest = JSON.parse(localStorage.getItem('kurio:guest-cart') ?? 'null') as string | null
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (session) headers.Authorization = `Bearer ${session.token}`
+    else if (guest) headers['X-Guest-Cart-Id'] = guest
+    for (const [nftId, editionId, quantity] of lines) {
+      const response = await fetch('/api/cart/items', { method: 'POST', headers, body: JSON.stringify({ nftId, editionId, quantity }) })
+      if (!response.ok) throw new Error(`addToCart failed: ${response.status}`)
+    }
+  }, items)
+}
+
 export const test = base.extend<Fixtures>({
   scenario: ['default', { option: true }],
 

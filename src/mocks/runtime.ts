@@ -12,6 +12,7 @@ interface RuntimeState {
   latency: number | readonly [number, number] | null
   failures: FailureRule[]
   consumedFlags: string[]
+  orderResolutionMs?: number | null
 }
 
 const random = createRandom(42)
@@ -60,6 +61,13 @@ export const runtime = {
   },
   addFailure(rule: FailureRule) {
     state.failures.push(rule)
+    save()
+  },
+  get orderResolutionMs(): number | null {
+    return state.orderResolutionMs ?? null
+  },
+  setOrderResolution(ms: number | null) {
+    state.orderResolutionMs = ms
     save()
   },
   clearFailures() {

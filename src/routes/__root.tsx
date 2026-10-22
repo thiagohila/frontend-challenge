@@ -9,6 +9,7 @@ import { RealtimeBridge } from '@/components/layout/RealtimeBridge'
 import { Toaster } from '@/components/ui/sonner'
 import { ReauthDialog } from '@/features/auth/components/ReauthDialog'
 import { FavoriteIntentRunner } from '@/features/favorites/components/FavoriteIntentRunner'
+import { PendingOrderBanner } from '@/features/orders/components/PendingOrderBanner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { t } from '@/i18n'
 import type { session } from '@/lib/session/store'
@@ -41,6 +42,7 @@ function RootLayout() {
         {t.skipToContent}
       </a>
       <Header />
+      <PendingOrderBanner />
       <main id="conteudo" tabIndex={-1} className="outline-none">
         <Outlet />
       </main>

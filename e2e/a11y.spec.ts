@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import type { Page } from '@playwright/test'
-import { expect, test } from './fixtures'
+import { addToCart, expect, test } from './fixtures'
 
 async function expectNoSeriousViolations(page: Page) {
   await page.waitForLoadState('networkidle')
@@ -31,6 +31,26 @@ test('no serious a11y violations on /cart (with items and coupon error)', async 
   await page.getByRole('textbox', { name: 'Código promocional' }).fill('XYZ')
   await page.getByRole('button', { name: 'Aplicar' }).click()
   await expect(page.getByRole('textbox', { name: 'Código promocional' })).toHaveAttribute('aria-invalid', 'true')
+  await expectNoSeriousViolations(page)
+})
+
+test('no serious a11y violations on /checkout, the review dialog and the receipt', async ({ page, loginAs }) => {
+  await page.goto('/')
+  await loginAs('ana')
+  await addToCart(page, [['emerald-ape-042', 'ed-1-50', 1]])
+  await page.goto('/checkout')
+  await expect(page.getByTestId('checkout-total')).toBeVisible()
+  await expectNoSeriousViolations(page)
+
+  await page.getByRole('button', { name: 'Conectar carteira' }).click()
+  await expect(page.getByTestId('wallet-status')).toBeVisible()
+  await page.getByRole('button', { name: 'Confirmar compra' }).click()
+  const review = page.getByRole('dialog', { name: 'Revise seu pedido' })
+  await expect(review).toBeVisible()
+  await expectNoSeriousViolations(page)
+
+  await review.getByRole('button', { name: 'Enviar pedido' }).click()
+  await expect(page.getByTestId('order-confirmed')).toBeVisible({ timeout: 15_000 })
   await expectNoSeriousViolations(page)
 })
 

@@ -30,3 +30,9 @@ Abaixo, o que apareceu, a causa raiz, a correção e **como evitamos que volte**
 | B5 | Preço "oculto" casado no mobile | `getByText(...).first()` pegava o preço do layout desktop (`display:none`) | `.filter({ visible: true })` | padrão nos specs de realtime |
 | B5 | Lint: `role="status"`, spread "inútil", supressões de `exhaustive-deps` | atalhos | `<output>`, dependências estáveis (chave do dono) sem supressão | lint |
 | B5 | `<dl>` inválido no resumo (axe) | `div > div > dt` na linha da taxa de rede | "Taxa estimada" dentro do `<dd>` | axe no carrinho com itens |
+| B6 | Formulário do checkout perdido ao expirar a sessão | `useCartOwner` virava `null` em `expired` → a rota trocava o `CheckoutView` por skeleton (desmontava o form) | sessão expirada mantém o dono (mesmo usuário) | e2e A4 no checkout |
+| B6 | Recibo adivinhava a arte pelo id do NFT | atalho (heurística) | `art` passa a fazer parte do snapshot da linha da cotação/pedido | contrato `quoteLineSchema` |
+| B6 | Reconfirmação exigida sem mudança real (intermitente) | revisão comparava `quoteId`; o evento após o 409 gerava nova cotação com os mesmos valores | comparar o **conteúdo** da cotação (linhas, preços, taxas, total) | e2e T9 repetido 3× |
+| B6 | `<details open>` controlado não deixava abrir no mobile | React reverte o atributo no próximo render | estado do usuário via `onToggle` | revisão |
+| B6 | Casts em `error.details` | dado de servidor não confiável tratado com `as` | `safeParse` com zod | checklist "sem cast" |
+

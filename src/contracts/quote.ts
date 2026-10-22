@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { id, isoDate, money, networkSchema, quantity } from './common'
 import { couponSchema } from './cart'
+import { artSchema } from './nft'
 
 export const quoteRequestSchema = z.object({ network: networkSchema })
 
@@ -8,6 +9,7 @@ export const quoteLineSchema = z.object({
   nftId: id,
   editionId: id,
   name: z.string(),
+  art: artSchema, // part of the receipt snapshot
   tokenId: z.string(),
   editionLabel: z.string(),
   quantity,

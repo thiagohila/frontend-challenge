@@ -1,23 +1,6 @@
 import type { Page } from '@playwright/test'
 import { DEMO_PASSWORD, DEMO_USERS } from '../src/mocks/server/seed'
-import { expect, test, waitForMockServer } from './fixtures'
-
-/** Adds items as the current owner (guest or user) through the REST API, like the UI does. */
-async function addToCart(page: Page, items: [nftId: string, editionId: string, quantity: number][]) {
-  // Requests must go through MSW, and the app creates the guest cart id on first render.
-  await waitForMockServer(page)
-  await page.waitForFunction(() => localStorage.getItem('kurio:guest-cart') ?? sessionStorage.getItem('kurio:session'))
-  await page.evaluate(async (lines) => {
-    const session = JSON.parse(sessionStorage.getItem('kurio:session') ?? 'null') as { token: string } | null
-    const guest = JSON.parse(localStorage.getItem('kurio:guest-cart') ?? 'null') as string | null
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (session) headers.Authorization = `Bearer ${session.token}`
-    else if (guest) headers['X-Guest-Cart-Id'] = guest
-    for (const [nftId, editionId, quantity] of lines) {
-      await fetch('/api/cart/items', { method: 'POST', headers, body: JSON.stringify({ nftId, editionId, quantity }) })
-    }
-  }, items)
-}
+import { addToCart, expect, test } from './fixtures'
 
 const summary = (page: Page) => page.getByTestId('cart-summary')
 const line = (page: Page, nftId: string, isMobile: boolean) => page.getByTestId(isMobile ? `cart-card-${nftId}` : `cart-line-${nftId}`)

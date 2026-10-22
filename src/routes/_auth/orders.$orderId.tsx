@@ -1,11 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useCartOwner } from '@/features/cart/queries'
+import { OrderView } from '@/features/orders/components/OrderView'
+import { useSessionUser } from '@/lib/session/store'
 
-// Scaffold — implemented in its PLAN block.
 export const Route = createFileRoute('/_auth/orders/$orderId')({
   head: () => ({ meta: [{ title: 'Confirmação de pedido — Kurio' }] }),
-  component: () => (
-    <div className="mx-auto max-w-page px-4 py-8 lg:px-0">
-      <h1 className="text-2xl font-bold">Confirmação de pedido</h1>
-    </div>
-  ),
+  component: OrderRoute,
 })
+
+function OrderRoute() {
+  const { orderId } = Route.useParams()
+  const user = useSessionUser()
+  const owner = useCartOwner()
+  return (
+    <div className="mx-auto max-w-page px-4 py-10 lg:px-0">
+      {user && <OrderView userId={user.id} orderId={orderId} cartOwner={owner} />}
+    </div>
+  )
+}

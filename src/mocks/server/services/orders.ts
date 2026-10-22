@@ -97,7 +97,7 @@ export async function createOrder(
       declineReason: null,
       txHash: null,
       plannedOutcome: ctx.flags.paymentOutcome ?? 'confirmed',
-      resolveAt: iso(createdAt + ORDER_RESOLUTION_MS),
+      resolveAt: iso(createdAt + ctx.orderResolutionMs()),
       reservations: quote.lines.map(({ nftId, editionId, quantity }) => ({ nftId, editionId, quantity })),
       receipt: {
         lines: quote.lines,
@@ -111,7 +111,7 @@ export async function createOrder(
       },
     }
     state.orders.push(order)
-    ctx.schedule(() => void resolveDueOrders(ctx), ORDER_RESOLUTION_MS)
+    ctx.schedule(() => void resolveDueOrders(ctx), ctx.orderResolutionMs())
     return { order: toOrderView(order), replayed: false }
   })
 }

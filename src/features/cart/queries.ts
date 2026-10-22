@@ -16,7 +16,8 @@ import { cartApi } from './api'
 /** The cart belongs to the signed-in user, or to the anonymous guest cart (K2, K3). */
 export function useCartOwner(): Owner | null {
   const state = useSession()
-  if (state.status === 'authenticated') return { kind: 'user', id: state.user.id }
+  // An expired session keeps its owner: screens stay mounted (forms intact) while re-authenticating (A4).
+  if (state.status === 'authenticated' || state.status === 'expired') return { kind: 'user', id: state.user.id }
   if (state.status === 'anonymous') return { kind: 'guest', id: guestCart.id() }
   return null
 }

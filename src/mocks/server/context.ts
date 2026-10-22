@@ -8,6 +8,8 @@ export interface ServerContext {
   flags: NonNullable<Scenario['flags']>
   consumeFlag: (flag: string) => boolean
   schedule: (callback: () => void, delayMs: number) => void
+  /** How long a new order stays pending before the simulated payment resolves. */
+  orderResolutionMs: () => number
 }
 
 export const iso = (ms: number) => new Date(ms).toISOString()

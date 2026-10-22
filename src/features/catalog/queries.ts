@@ -1,6 +1,7 @@
 import { keepPreviousData, queryOptions, replaceEqualDeep } from '@tanstack/react-query'
 import type { NftDetail, NftListQuery, NftListResponse } from '@/contracts/nft'
 import { queryKeys } from '@/lib/query-keys'
+import { keepNewerVersion } from '@/lib/versioning'
 import { catalogApi } from './api'
 
 /**
@@ -32,9 +33,6 @@ function keepNewerItems(previous: NftListResponse | undefined, next: NftListResp
   return replaceEqualDeep(previous, merged)
 }
 
-const keepNewerDetail = (previous: NftDetail | undefined, next: NftDetail) =>
-  previous && previous.version > next.version ? previous : replaceEqualDeep(previous, next)
-
 export const featuredQuery = () =>
   queryOptions({ queryKey: queryKeys.nfts.featured(), queryFn: ({ signal }) => catalogApi.featured(signal), staleTime: 5 * 60_000 })
 
@@ -42,7 +40,7 @@ export const nftDetailQuery = (id: string) =>
   queryOptions({
     queryKey: queryKeys.nfts.detail(id),
     queryFn: ({ signal }) => catalogApi.detail(id, signal),
-    structuralSharing: (previous, next) => keepNewerDetail(previous as NftDetail | undefined, next as NftDetail),
+    structuralSharing: keepNewerVersion<NftDetail>,
   })
 
 export const relatedQuery = (id: string) =>

@@ -1,11 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { TransactionView } from '@/features/orders/components/TransactionView'
+import { useSessionUser } from '@/lib/session/store'
 
-// Scaffold — implemented in its PLAN block.
 export const Route = createFileRoute('/_auth/tx/$hash')({
   head: () => ({ meta: [{ title: 'Explorador simulado — Kurio' }] }),
-  component: () => (
-    <div className="mx-auto max-w-page px-4 py-8 lg:px-0">
-      <h1 className="text-2xl font-bold">Explorador simulado</h1>
-    </div>
-  ),
+  component: TxRoute,
 })
+
+function TxRoute() {
+  const { hash } = Route.useParams()
+  const user = useSessionUser()
+  return <div className="mx-auto max-w-page px-4 py-10 lg:px-0">{user && <TransactionView userId={user.id} hash={hash} />}</div>
+}
